@@ -8,8 +8,9 @@
 
 import UIKit
 
-class ViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate {
+class ViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource {
     // Var
+
     var lastOffsetWithSound: CGFloat = 0
     var chosenDate: Int = 0
 
@@ -87,16 +88,31 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             }
         }
     }
+    
+    // TableView
+    
+    private let tasksTable = UITableView()
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 10
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "TaskCell", for: indexPath) as! TaskCell
+        cell.configure(title: "hello world")
+        return cell
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
-        
-        let safeAreaView = UIView(frame: CGRect(x: 0,y: 0, width: self.view.frame.width, height: UIApplication.shared.statusBarFrame.maxY))
+
+        let safeAreaView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: UIApplication.shared.statusBarFrame.maxY))
         safeAreaView.backgroundColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
-        safeAreaView.layer.zPosition = 1000
+        safeAreaView.layer.zPosition = 1_000
         self.view.addSubview(safeAreaView)
-        
+        self.view.addSubview(tasksTable)
+
         self.view.addSubview(topView)
         topView.translatesAutoresizingMaskIntoConstraints = false
         topView.topAnchor.constraint(equalTo: topView.superview!.safeAreaLayoutGuide.topAnchor).isActive = true
@@ -134,12 +150,23 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         guard let myCollection = daysCollectionView else {
             return
         }
-        view.addSubview(myCollection)
+        self.view.addSubview(myCollection)
         myCollection.translatesAutoresizingMaskIntoConstraints = false
         myCollection.heightAnchor.constraint(equalToConstant: 53).isActive = true
         myCollection.leadingAnchor.constraint(equalTo: topView.leadingAnchor, constant: 0).isActive = true
         myCollection.trailingAnchor.constraint(equalTo: topView.trailingAnchor, constant: 0).isActive = true
         myCollection.topAnchor.constraint(equalTo: dayLabel.bottomAnchor, constant: 16).isActive = true
+        
+        
+        tasksTable.register(TaskCell.self, forCellReuseIdentifier: TaskCell.identifier)
+        tasksTable.dataSource = self
+        tasksTable.delegate = self
+        tasksTable.translatesAutoresizingMaskIntoConstraints = false
+        tasksTable.topAnchor.constraint(equalTo: topView.bottomAnchor, constant: 0).isActive = true
+        tasksTable.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: 0).isActive = true
+        tasksTable.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 0).isActive = true
+        tasksTable.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 0).isActive = true
+        
     }
 
     override func viewDidLayoutSubviews() {
