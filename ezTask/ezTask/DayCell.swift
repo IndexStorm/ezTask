@@ -11,59 +11,86 @@ import UIKit
 class DayCell: UICollectionViewCell {
     static let identifier = "DayCell"
 
-    private let myImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.clipsToBounds = true
-        imageView.contentMode = .scaleAspectFill
-        imageView.layer.masksToBounds = true
-        imageView.layer.cornerRadius = 150.0 / 2.0
-        imageView.backgroundColor = .white
-        
+    private let dayNumber: UILabel = {
+        let label = UILabel()
+        label.text = ""
+        label.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
+        label.textColor = .white
+        label.textAlignment = .center
+//        label.backgroundColor = .red
 
-        return imageView
+        return label
     }()
 
-    private let dayNumber: UILabel = {
-        let label = UILabel() // frame: CGRect(x: 5, y: 0, width: 35, height: 45))
+    private let dayName: UILabel = {
+        let label = UILabel()
         label.text = ""
-        label.font = UIFont.systemFont(ofSize: 20)
-        label.textColor = .yellow
-        
-        
+        label.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
+        label.textColor = .white
+        label.textAlignment = .center
+//        label.backgroundColor = .green
+
         return label
+    }()
+    
+    private let circleView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        view.layer.masksToBounds = true
+        view.layer.cornerRadius = 5.0/2.0
+        view.alpha = 0
+        
+        return view
     }()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
+        contentView.addSubview(dayName)
         contentView.addSubview(dayNumber)
-        contentView.backgroundColor = .red
-        contentView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tap)))
-    }
-    
-    @objc
-    func tap() {
-        print("tapped")
-        let generator = UISelectionFeedbackGenerator()
-        generator.selectionChanged()
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        contentView.addSubview(circleView)
     }
 
     override func layoutSubviews() {
         super.layoutSubviews()
-//        myImageView.frame = contentView.bounds
-        dayNumber.frame = contentView.bounds
+        dayName.translatesAutoresizingMaskIntoConstraints = false
+        dayName.heightAnchor.constraint(equalToConstant: 20).isActive = true
+        dayName.widthAnchor.constraint(equalToConstant: 40).isActive = true
+        dayName.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
+        dayName.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
+        
+        dayNumber.translatesAutoresizingMaskIntoConstraints = false
+        dayNumber.heightAnchor.constraint(equalToConstant: 28).isActive = true
+        dayNumber.widthAnchor.constraint(equalToConstant: 28).isActive = true
+        dayNumber.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
+        dayNumber.topAnchor.constraint(equalTo: dayName.bottomAnchor).isActive = true
+        
+        circleView.translatesAutoresizingMaskIntoConstraints = false
+        circleView.heightAnchor.constraint(equalToConstant: 5).isActive = true
+        circleView.widthAnchor.constraint(equalToConstant: 5).isActive = true
+        circleView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
+        circleView.topAnchor.constraint(equalTo: dayNumber.bottomAnchor).isActive = true
     }
 
-    public func configure(with name: String) {
-        dayNumber.text = name
+    public func configure(name: String, number: Int, busy: Bool, isChosen: Bool) {
+        if busy {
+            circleView.alpha = 1
+        }
+        if isChosen {
+            contentView.alpha = 1
+        } else {
+            contentView.alpha = 0.6
+        }
+        dayNumber.text = "\(number)"
+        dayName.text = name
     }
 
     override func prepareForReuse() {
         super.prepareForReuse()
-//        myImageView.image = nil
         dayNumber.text = ""
+        dayName.text = ""
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }

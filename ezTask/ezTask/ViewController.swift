@@ -9,17 +9,43 @@
 import UIKit
 
 class ViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate {
-    
-    //var
+    // Var
     var lastOffsetWithSound: CGFloat = 0
-    
+    var chosenDate: Int = 0
+
     // Views
 
     let topView: UIView = {
         let view = UIView()
         view.backgroundColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
+        view.layer.cornerRadius = 25
+        view.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
+        view.layer.shadowColor = UIColor.black.cgColor
+        view.layer.shadowOpacity = 0.25
+        view.layer.shadowOffset = CGSize(width: 0, height: 4)
+        view.layer.shadowRadius = 5
 
         return view
+    }()
+
+    let dateLabel: UILabel = {
+        let label = UILabel()
+        label.text = "July 18, 2020"
+        label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
+        label.textColor = .white
+        label.textAlignment = .left
+
+        return label
+    }()
+
+    let dayLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Today"
+        label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
+        label.textColor = .white
+        label.textAlignment = .left
+
+        return label
     }()
 
     // CollectionView
@@ -32,48 +58,23 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = daysCollectionView?.dequeueReusableCell(withReuseIdentifier: DayCell.identifier, for: indexPath) as! DayCell
-        cell.configure(with: "\(indexPath[1])")
+        cell.configure(name: "Mon", number: indexPath[1] + 1, busy: true, isChosen: indexPath[1] == chosenDate)
         return cell
     }
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        self.view.backgroundColor = .white
-        self.view.addSubview(topView)
-        topView.translatesAutoresizingMaskIntoConstraints = false
-        topView.topAnchor.constraint(equalTo: topView.superview!.topAnchor).isActive = true
-        topView.heightAnchor.constraint(equalToConstant: 200).isActive = true
-        topView.leadingAnchor.constraint(equalTo: topView.superview!.leadingAnchor, constant: 0).isActive = true
-        topView.trailingAnchor.constraint(equalTo: topView.superview!.trailingAnchor, constant: 0).isActive = true
-        
-        let layout = SnappingCollectionViewLayout()
-        
-        layout.scrollDirection = .horizontal
-        layout.itemSize = CGSize(width: 50, height: 50)
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-
-        daysCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        daysCollectionView?.register(DayCell.self, forCellWithReuseIdentifier: DayCell.identifier)
-        daysCollectionView?.showsHorizontalScrollIndicator = false
-        daysCollectionView?.delegate = self
-        daysCollectionView?.dataSource = self
-        daysCollectionView?.backgroundColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
-        daysCollectionView?.decelerationRate = UIScrollView.DecelerationRate.fast
-        guard let myCollection = daysCollectionView else {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let cell = collectionView.cellForItem(at: indexPath) else {
             return
         }
-        view.addSubview(myCollection)
+        let generator = UIImpactFeedbackGenerator(style: .medium)
+        generator.impactOccurred()
+
+        cell.contentView.alpha = 1
+        chosenDate = indexPath[1]
+        collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+        collectionView.reloadData()
     }
 
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        daysCollectionView?.frame = CGRect(x: 0, y: 100, width: view.frame.size.width, height: 100).integral
-    }
-
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .lightContent
-    }
-    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if let flowLayout = ((scrollView as? UICollectionView)?.collectionViewLayout as? UICollectionViewFlowLayout) {
             let lineHeight = flowLayout.itemSize.width + flowLayout.minimumInteritemSpacing
@@ -86,11 +87,71 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             }
         }
     }
-    
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.view.backgroundColor = .white
+        
+        let safeAreaView = UIView(frame: CGRect(x: 0,y: 0, width: self.view.frame.width, height: UIApplication.shared.statusBarFrame.maxY))
+        safeAreaView.backgroundColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
+        safeAreaView.layer.zPosition = 1000
+        self.view.addSubview(safeAreaView)
+        
+        self.view.addSubview(topView)
+        topView.translatesAutoresizingMaskIntoConstraints = false
+        topView.topAnchor.constraint(equalTo: topView.superview!.safeAreaLayoutGuide.topAnchor).isActive = true
+        topView.heightAnchor.constraint(equalToConstant: 170).isActive = true
+        topView.leadingAnchor.constraint(equalTo: topView.superview!.leadingAnchor, constant: 0).isActive = true
+        topView.trailingAnchor.constraint(equalTo: topView.superview!.trailingAnchor, constant: 0).isActive = true
+
+        self.view.addSubview(dateLabel)
+        dateLabel.translatesAutoresizingMaskIntoConstraints = false
+        dateLabel.topAnchor.constraint(equalTo: topView.safeAreaLayoutGuide.topAnchor, constant: 10).isActive = true
+        dateLabel.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        dateLabel.leadingAnchor.constraint(equalTo: topView.leadingAnchor, constant: 21).isActive = true
+        dateLabel.widthAnchor.constraint(equalToConstant: 200).isActive = true
+
+        self.view.addSubview(dayLabel)
+        dayLabel.translatesAutoresizingMaskIntoConstraints = false
+        dayLabel.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: 0).isActive = true
+        dayLabel.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        dayLabel.leadingAnchor.constraint(equalTo: topView.leadingAnchor, constant: 21).isActive = true
+        dayLabel.widthAnchor.constraint(equalToConstant: 200).isActive = true
+
+        let layout = SnappingCollectionViewLayout()
+        layout.scrollDirection = .horizontal
+        layout.itemSize = CGSize(width: 40, height: 53)
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 0)
+        layout.minimumLineSpacing = 12
+
+        daysCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        daysCollectionView?.register(DayCell.self, forCellWithReuseIdentifier: DayCell.identifier)
+        daysCollectionView?.showsHorizontalScrollIndicator = false
+        daysCollectionView?.delegate = self
+        daysCollectionView?.dataSource = self
+        daysCollectionView?.backgroundColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
+        daysCollectionView?.decelerationRate = UIScrollView.DecelerationRate.fast
+        guard let myCollection = daysCollectionView else {
+            return
+        }
+        view.addSubview(myCollection)
+        myCollection.translatesAutoresizingMaskIntoConstraints = false
+        myCollection.heightAnchor.constraint(equalToConstant: 53).isActive = true
+        myCollection.leadingAnchor.constraint(equalTo: topView.leadingAnchor, constant: 0).isActive = true
+        myCollection.trailingAnchor.constraint(equalTo: topView.trailingAnchor, constant: 0).isActive = true
+        myCollection.topAnchor.constraint(equalTo: dayLabel.bottomAnchor, constant: 16).isActive = true
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+    }
+
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
 }
 
 class SnappingCollectionViewLayout: UICollectionViewFlowLayout {
-
     override func targetContentOffset(forProposedContentOffset proposedContentOffset: CGPoint, withScrollingVelocity velocity: CGPoint) -> CGPoint {
         guard let collectionView = collectionView else { return super.targetContentOffset(forProposedContentOffset: proposedContentOffset, withScrollingVelocity: velocity) }
 
@@ -101,19 +162,13 @@ class SnappingCollectionViewLayout: UICollectionViewFlowLayout {
 
         let layoutAttributesArray = super.layoutAttributesForElements(in: targetRect)
 
-        layoutAttributesArray?.forEach({ (layoutAttributes) in
+        layoutAttributesArray?.forEach { layoutAttributes in
             let itemOffset = layoutAttributes.frame.origin.x
             if fabsf(Float(itemOffset - horizontalOffset)) < fabsf(Float(offsetAdjustment)) {
                 offsetAdjustment = itemOffset - horizontalOffset
             }
-        })
+        }
 
-        return CGPoint(x: proposedContentOffset.x + offsetAdjustment, y: proposedContentOffset.y)
+        return CGPoint(x: proposedContentOffset.x + offsetAdjustment - sectionInset.left, y: proposedContentOffset.y)
     }
 }
-
-//extension ViewController: UIScrollViewDelegate {
-//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//
-//    }
-//}
