@@ -22,6 +22,11 @@ class TaskCell: UITableViewCell {
     
     public func configure(title: String) {
         titleLabel.text = title
+        if #available(iOS 13.0, *) {
+            contentView.backgroundColor = .systemBackground
+        } else {
+            // Fallback on earlier versions
+        }
     }
 
     override func awakeFromNib() {

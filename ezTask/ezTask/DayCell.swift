@@ -17,7 +17,6 @@ class DayCell: UICollectionViewCell {
         label.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
         label.textColor = .white
         label.textAlignment = .center
-//        label.backgroundColor = .red
 
         return label
     }()
@@ -28,7 +27,6 @@ class DayCell: UICollectionViewCell {
         label.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
         label.textColor = .white
         label.textAlignment = .center
-//        label.backgroundColor = .green
 
         return label
     }()
