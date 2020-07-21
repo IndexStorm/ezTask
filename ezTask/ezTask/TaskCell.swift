@@ -9,51 +9,42 @@
 import UIKit
 
 class TaskCell: UITableViewCell {
-    
     static let identifier = "TaskCell"
-    
+
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "test"
-        label.font = UIFont.systemFont(ofSize: 22)
-        label.backgroundColor = .red
+        label.text = "Finish the app"
+        label.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
+
         return label
     }()
-    
+
     public func configure(title: String) {
         titleLabel.text = title
-        if #available(iOS 13.0, *) {
-            contentView.backgroundColor = .systemBackground
-        } else {
-            // Fallback on earlier versions
-        }
     }
 
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        
     }
-    
+
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.addSubview(titleLabel)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
-        titleLabel.widthAnchor.constraint(equalToConstant: 40).isActive = true
-        titleLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-        titleLabel.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
-        
+        titleLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -50).isActive = true
+        titleLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 25).isActive = true
+        titleLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
     }
-
 }

@@ -49,6 +49,38 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         return label
     }()
 
+    let backTodayBtn: UIButton = {
+        // TODO: add arrow icon
+        let btn = UIButton(type: .system)
+        btn.setTitle("Today", for: .normal)
+        btn.backgroundColor = .white
+        btn.tintColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
+        btn.layer.cornerRadius = 13
+        btn.layer.shadowColor = UIColor.black.cgColor
+        btn.layer.shadowOpacity = 0.3
+        btn.layer.shadowOffset = CGSize(width: 0, height: 0)
+        btn.layer.shadowRadius = 5
+        btn.addTarget(self, action: #selector(backTodayPressed), for: .touchUpInside)
+        btn.alpha = 0
+
+        return btn
+    }()
+
+    let calendarOrList: UIButton = {
+        let btn = UIButton(type: .system)
+        btn.setTitle("List", for: .normal)
+        btn.backgroundColor = .white
+        btn.tintColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
+        btn.layer.cornerRadius = 13
+        btn.layer.shadowColor = UIColor.black.cgColor
+        btn.layer.shadowOpacity = 0.2
+        btn.layer.shadowOffset = CGSize(width: 0, height: 4)
+        btn.layer.shadowRadius = 5
+        btn.addTarget(self, action: #selector(calendarOrListPressed), for: .touchUpInside)
+
+        return btn
+    }()
+
     // CollectionView
 
     private var daysCollectionView: UICollectionView?
@@ -81,6 +113,15 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             let lineHeight = flowLayout.itemSize.width + flowLayout.minimumInteritemSpacing
             let offset = scrollView.contentOffset.x
             let roundedOffset = offset - offset.truncatingRemainder(dividingBy: lineHeight)
+            if offset > 200 && lastOffsetWithSound - roundedOffset < 0 {
+                UIView.animate(withDuration: 0.2) {
+                    self.backTodayBtn.alpha = 1
+                }
+            } else if offset < 200 && backTodayBtn.alpha != 0 {
+                UIView.animate(withDuration: 0.2) {
+                    self.backTodayBtn.alpha = 0
+                }
+            }
             if abs(lastOffsetWithSound - roundedOffset) >= lineHeight {
                 lastOffsetWithSound = roundedOffset
                 let generator = UIImpactFeedbackGenerator(style: .light)
@@ -93,6 +134,8 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
 
     private let tasksTable = UITableView()
 
+    var refreshControl = UIRefreshControl()
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 10
     }
@@ -103,19 +146,53 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         return cell
     }
 
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 44
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setup()
+
+        let attributes = [NSAttributedString.Key.foregroundColor: UIColor.green, NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14)]
+        refreshControl.attributedTitle = NSAttributedString(string: "Pull to add a new task", attributes: attributes)
+        refreshControl.addTarget(self, action: #selector(self.newTask(_:)), for: .valueChanged)
+        refreshControl.tintColor = .green
+        refreshControl.layer.zPosition = -1
+        tasksTable.refreshControl = refreshControl
     }
 
-    func setup() {
-        if #available(iOS 13.0, *) {
-            self.view.backgroundColor = .systemGray6
-        } else {
-            // Fallback on earlier versions
-        }
+    @objc
+    func newTask(_ sender: AnyObject) {
+        let newVC = NewTaskVC()
+        self.present(newVC, animated: true, completion: {
+            self.refreshControl.endRefreshing()
+        })
+    }
 
-        let safeAreaView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: UIApplication.shared.statusBarFrame.maxY))
+    @objc
+    func backTodayPressed() {
+        guard let myCollection = daysCollectionView else {
+            return
+        }
+//        myCollection.scrollToItem(at: IndexPath(row: 0, section: 0), at: .left, animated: true)
+        self.chosenDate = 0
+        UIView.animate(withDuration: 1) {
+            myCollection.setContentOffset(CGPoint.zero, animated: true)
+        }
+        UIView.animate(withDuration: 0.2) {
+            self.backTodayBtn.alpha = 0
+        }
+        myCollection.reloadData()
+    }
+
+    @objc
+    func calendarOrListPressed() {}
+
+    func setup() {
+        self.view.backgroundColor = .white
+
+        let safeAreaView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: UIApplication.shared.statusBarFrame.maxY + 1))
         safeAreaView.backgroundColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
         safeAreaView.layer.zPosition = 1_000
         self.view.addSubview(safeAreaView)
@@ -143,7 +220,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         dayLabel.widthAnchor.constraint(equalToConstant: 200).isActive = true
 
         createCollection()
-        
+
         guard let myCollection = daysCollectionView else {
             return
         }
@@ -154,19 +231,33 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         myCollection.topAnchor.constraint(equalTo: dayLabel.bottomAnchor, constant: 16).isActive = true
 
         createTable()
-        
+
         tasksTable.translatesAutoresizingMaskIntoConstraints = false
         tasksTable.topAnchor.constraint(equalTo: topView.bottomAnchor, constant: 0).isActive = true
         tasksTable.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: 0).isActive = true
         tasksTable.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 0).isActive = true
         tasksTable.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 0).isActive = true
+
+        self.view.addSubview(backTodayBtn)
+        backTodayBtn.translatesAutoresizingMaskIntoConstraints = false
+        backTodayBtn.widthAnchor.constraint(equalToConstant: 70).isActive = true
+        backTodayBtn.heightAnchor.constraint(equalToConstant: 26).isActive = true
+        backTodayBtn.centerYAnchor.constraint(equalTo: topView.bottomAnchor).isActive = true
+        backTodayBtn.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 26).isActive = true
+
+        self.view.addSubview(calendarOrList)
+        calendarOrList.translatesAutoresizingMaskIntoConstraints = false
+        calendarOrList.widthAnchor.constraint(equalToConstant: 70).isActive = true
+        calendarOrList.heightAnchor.constraint(equalToConstant: 26).isActive = true
+        calendarOrList.centerYAnchor.constraint(equalTo: dayLabel.centerYAnchor).isActive = true
+        calendarOrList.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -25).isActive = true
     }
-    
+
     func createCollection() {
         let layout = SnappingCollectionViewLayout()
         layout.scrollDirection = .horizontal
         layout.itemSize = CGSize(width: 40, height: 53)
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 0)
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         layout.minimumLineSpacing = 12
 
         daysCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -181,12 +272,11 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         }
         self.view.addSubview(myCollection)
     }
-    
+
     func createTable() {
         tasksTable.register(TaskCell.self, forCellReuseIdentifier: TaskCell.identifier)
         tasksTable.dataSource = self
         tasksTable.delegate = self
-        print(tasksTable.backgroundColor)
     }
 
     override func viewDidLayoutSubviews() {
