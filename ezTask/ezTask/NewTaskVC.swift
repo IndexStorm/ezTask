@@ -9,12 +9,8 @@
 import UIKit
 import ViewAnimator
 
-protocol SecondControllerDelegate : NSObjectProtocol {
+protocol SecondControllerDelegate: NSObjectProtocol {
     func didBackButtonPressed(task: TaskModel)
-}
-
-struct TaskModel {
-    let mainText: String
 }
 
 class NewTaskVC: UIViewController, UITextViewDelegate {
@@ -23,7 +19,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
     var delegate: SecondControllerDelegate?
 
     // Views
-    
+
     private let swipeArrow: UIImageView = {
         let image = UIImageView()
         image.image = UIImage(named: "swipe_down")
@@ -90,7 +86,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
 
         return field
     }()
-    
+
     private let datePicker = UIDatePicker()
 
     private let timeImage: UIImageView = {
@@ -104,15 +100,15 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
         return image
     }()
 
-    private let timeLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Add Reminder"
-        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        label.textColor = .black
-        label.alpha = 0.3
+    private let timeTextField: UITextField = {
+        let field = UITextField()
+        field.placeholder = "Add Reminder"
+        field.font = UIFont.systemFont(ofSize: 16, weight: .medium)
 
-        return label
+        return field
     }()
+
+    private let timePicker = UIDatePicker()
 
     private let priorityImage: UIImageView = {
         let image = UIImageView()
@@ -133,22 +129,38 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
 
         return label
     }()
-    
+
     func createDatePicker() {
         let toolbar = UIToolbar()
         toolbar.sizeToFit()
-        let doneBtn = UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: #selector(pickerDonePressed))
+        let doneBtn = UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: #selector(datePickerDonePressed))
+        let cancelBtn = UIBarButtonItem(title: "Today", style: .plain, target: nil, action: #selector(datePickerCancelPressed))
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-        toolbar.setItems([flexibleSpace, doneBtn], animated: true)
+        toolbar.setItems([cancelBtn, flexibleSpace, doneBtn], animated: true)
         dateTextField.inputAccessoryView = toolbar
         dateTextField.inputView = datePicker
         datePicker.datePickerMode = .date
+    }
+
+    func createTimePicker() {
+        let toolbar = UIToolbar()
+        toolbar.sizeToFit()
+        let doneBtn = UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: #selector(timePickerDonePressed))
+        let cancelBtn = UIBarButtonItem(title: "Remove", style: .plain, target: nil, action: #selector(timePickerCancelPressed))
+        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        toolbar.setItems([cancelBtn, flexibleSpace, doneBtn], animated: true)
+        timeTextField.inputAccessoryView = toolbar
+        timeTextField.inputView = timePicker
+        timePicker.datePickerMode = .time
+        timePicker.minuteInterval = 5
+        timePicker.date = Date()
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setup()
         createDatePicker()
+        createTimePicker()
     }
 
     @objc
@@ -166,21 +178,61 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
         let generator = UIImpactFeedbackGenerator(style: .light)
         generator.impactOccurred()
     }
-    
+
     @objc
-    func pickerDonePressed() {
+    func datePickerDonePressed() {
         let formatter = DateFormatter()
         formatter.dateStyle = .full
         formatter.timeStyle = .none
         dateTextField.text = formatter.string(from: datePicker.date)
         self.view.endEditing(true)
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
     }
-    
+
+    @objc
+    func datePickerCancelPressed() {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .full
+        formatter.timeStyle = .none
+        dateTextField.text = formatter.string(from: Date())
+        self.view.endEditing(true)
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
+    }
+
+    @objc
+    func timePickerDonePressed() {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .none
+        formatter.timeStyle = .short
+        timeTextField.text = formatter.string(from: timePicker.date)
+        self.view.endEditing(true)
+        timeImage.tintColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
+        timeImage.alpha = 0.9
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
+    }
+
+    @objc
+    func timePickerCancelPressed() {
+        timeTextField.text = ""
+        self.view.endEditing(true)
+        timeImage.tintColor = .black
+        timeImage.alpha = 0.3
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
+    }
+
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         let task = TaskModel(mainText: mainText.text)
+        // if reminder
+        setupReminder()
         delegate?.didBackButtonPressed(task: task)
     }
+
+    func setupReminder() {}
 
     func dismiss() {
         // TODO: add dismiss cross button
@@ -189,14 +241,14 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
 
     func setup() {
         self.view.backgroundColor = .white
-        
+
         self.view.addSubview(swipeArrow)
         swipeArrow.translatesAutoresizingMaskIntoConstraints = false
         swipeArrow.heightAnchor.constraint(equalToConstant: 10).isActive = true
         swipeArrow.widthAnchor.constraint(equalToConstant: 140).isActive = true
         swipeArrow.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
         swipeArrow.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 15).isActive = true
-        
+
         self.view.addSubview(topLabel)
         topLabel.translatesAutoresizingMaskIntoConstraints = false
         topLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
@@ -250,21 +302,19 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
         timeImage.isUserInteractionEnabled = true
         timeImage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(timeTapped)))
 
-        self.view.addSubview(timeLabel)
-        timeLabel.translatesAutoresizingMaskIntoConstraints = false
-        timeLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
-        timeLabel.widthAnchor.constraint(equalToConstant: 200).isActive = true
-        timeLabel.leadingAnchor.constraint(equalTo: timeImage.trailingAnchor, constant: 12).isActive = true
-        timeLabel.topAnchor.constraint(equalTo: dateTextField.bottomAnchor, constant: 20).isActive = true
-        timeLabel.isUserInteractionEnabled = true
-        timeLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(timeTapped)))
+        self.view.addSubview(timeTextField)
+        timeTextField.translatesAutoresizingMaskIntoConstraints = false
+        timeTextField.heightAnchor.constraint(equalToConstant: 20).isActive = true
+        timeTextField.widthAnchor.constraint(equalToConstant: 200).isActive = true
+        timeTextField.leadingAnchor.constraint(equalTo: timeImage.trailingAnchor, constant: 12).isActive = true
+        timeTextField.topAnchor.constraint(equalTo: dateTextField.bottomAnchor, constant: 20).isActive = true
 
         self.view.addSubview(priorityImage)
         priorityImage.translatesAutoresizingMaskIntoConstraints = false
         priorityImage.heightAnchor.constraint(equalToConstant: 20).isActive = true
         priorityImage.widthAnchor.constraint(equalToConstant: 20).isActive = true
         priorityImage.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 25).isActive = true
-        priorityImage.topAnchor.constraint(equalTo: timeLabel.bottomAnchor, constant: 20).isActive = true
+        priorityImage.topAnchor.constraint(equalTo: timeTextField.bottomAnchor, constant: 20).isActive = true
         priorityImage.isUserInteractionEnabled = true
         priorityImage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(priorityTapped)))
 
@@ -273,7 +323,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
         priorityLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
         priorityLabel.widthAnchor.constraint(equalToConstant: 100).isActive = true
         priorityLabel.leadingAnchor.constraint(equalTo: priorityImage.trailingAnchor, constant: 12).isActive = true
-        priorityLabel.topAnchor.constraint(equalTo: timeLabel.bottomAnchor, constant: 20).isActive = true
+        priorityLabel.topAnchor.constraint(equalTo: timeTextField.bottomAnchor, constant: 20).isActive = true
         priorityLabel.isUserInteractionEnabled = true
         priorityLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(priorityTapped)))
     }

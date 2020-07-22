@@ -53,8 +53,8 @@ class TaskCell: UITableViewCell {
 
         self.contentView.addSubview(checkbox)
         checkbox.translatesAutoresizingMaskIntoConstraints = false
-        checkbox.heightAnchor.constraint(equalToConstant: 20).isActive = true
-        checkbox.widthAnchor.constraint(equalToConstant: 20).isActive = true
+        checkbox.heightAnchor.constraint(equalToConstant: 22).isActive = true
+        checkbox.widthAnchor.constraint(equalToConstant: 22).isActive = true
         checkbox.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 32).isActive = true
         checkbox.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor).isActive = true
         checkbox.isUserInteractionEnabled = true
