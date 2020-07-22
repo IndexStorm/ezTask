@@ -8,11 +8,19 @@
 
 import UIKit
 
+protocol SecondControllerDelegate : NSObjectProtocol {
+    func didBackButtonPressed(task: TaskModel)
+}
+
+struct TaskModel {
+    let mainText: String
+}
+
 class NewTaskVC: UIViewController, UITextViewDelegate {
-    
     // Var
     var isPriority: Bool = false
-    
+    weak var delegate: SecondControllerDelegate?
+
     // Views
 
     private let topLabel: UILabel = {
@@ -49,7 +57,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
 
         return view
     }()
-    
+
     private let dateImage: UIImageView = {
         let image = UIImageView()
         image.image = UIImage(named: "calendar")
@@ -65,7 +73,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
 
         return label
     }()
-    
+
     private let timeImage: UIImageView = {
         let image = UIImageView()
         image.image = UIImage(named: "bell")
@@ -81,17 +89,17 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
 
         return label
     }()
-    
+
     private let priorityImage: UIImageView = {
         let image = UIImageView()
         image.image = UIImage(named: "square")
         image.contentMode = .scaleAspectFit
         image.tintColor = #colorLiteral(red: 0.8509803922, green: 0.2196078431, blue: 0.1607843137, alpha: 1)
         image.alpha = 0.9
-        
+
         return image
     }()
-    
+
     private let priorityLabel: UILabel = {
         let label = UILabel()
         label.text = "High Priority"
@@ -113,10 +121,8 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
     }
 
     @objc
-    func timeTapped() {
-        
-    }
-    
+    func timeTapped() {}
+
     @objc
     func priorityTapped() {
         if isPriority {
@@ -126,6 +132,12 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
             isPriority = true
             priorityImage.image = UIImage(named: "square_filled")
         }
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        let task = TaskModel(mainText: mainText.text)
+        delegate?.didBackButtonPressed(task: task)
     }
 
     func dismiss() {
@@ -174,7 +186,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
         dateImage.topAnchor.constraint(equalTo: separator.bottomAnchor, constant: 35).isActive = true
         dateImage.isUserInteractionEnabled = true
         dateImage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dateTapped)))
-        
+
         self.view.addSubview(dateLabel)
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
         dateLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
@@ -192,7 +204,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
         timeImage.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: 20).isActive = true
         timeImage.isUserInteractionEnabled = true
         timeImage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(timeTapped)))
-        
+
         self.view.addSubview(timeLabel)
         timeLabel.translatesAutoresizingMaskIntoConstraints = false
         timeLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
@@ -201,7 +213,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
         timeLabel.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: 20).isActive = true
         timeLabel.isUserInteractionEnabled = true
         timeLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(timeTapped)))
-        
+
         self.view.addSubview(priorityImage)
         priorityImage.translatesAutoresizingMaskIntoConstraints = false
         priorityImage.heightAnchor.constraint(equalToConstant: 20).isActive = true
@@ -210,7 +222,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
         priorityImage.topAnchor.constraint(equalTo: timeLabel.bottomAnchor, constant: 20).isActive = true
         priorityImage.isUserInteractionEnabled = true
         priorityImage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(priorityTapped)))
-        
+
         self.view.addSubview(priorityLabel)
         priorityLabel.translatesAutoresizingMaskIntoConstraints = false
         priorityLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true

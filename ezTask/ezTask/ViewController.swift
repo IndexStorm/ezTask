@@ -6,10 +6,11 @@
 //  Copyright © 2020 Mike Ovyan. All rights reserved.
 //
 
+import CoreData
 import UIKit
 import ViewAnimator
 
-class ViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource {
+class ViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource, TableViewCellDelegate {
     // Var
 
     var lastOffsetWithSound: CGFloat = 0
@@ -102,7 +103,6 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         }
         let generator = UIImpactFeedbackGenerator(style: .medium)
         generator.impactOccurred()
-
         cell.contentView.alpha = 1
         chosenDate = indexPath[1]
         collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
@@ -137,13 +137,19 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
 
     var refreshControl = UIRefreshControl()
 
+    var undoneTasks: [NSManagedObject] = []
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return undoneTasks.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TaskCell", for: indexPath) as! TaskCell
-        cell.configure(title: "hello world")
+        let task = undoneTasks[undoneTasks.count - indexPath.row - 1] // TODO: fix by sorting
+        if let mainText = task.value(forKey: "mainText"), let id = task.value(forKey: "id") as? UUID {
+            cell.configure(title: "\(mainText)", id: id)
+        }
+        cell.delegate = self
         return cell
     }
 
@@ -151,21 +157,36 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         return 44
     }
 
+    func checkboxTapped(cell: TaskCell) {
+        if let indexPath = tasksTable.indexPath(for: cell) {
+            // update
+            if let id = cell.id {
+                setUndone(id: id)
+            }
+            undoneTasks.remove(at: indexPath.row)
+            tasksTable.deleteRows(at: [indexPath], with: .fade)
+        }
+    }
+
+    private func insertNewTask(task: TaskModel) {
+        save(mainText: task.mainText)
+        tasksTable.insertRows(at: [IndexPath(row: 0, section: 0)], with: .top)
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setup()
+    }
 
-        let attributes = [NSAttributedString.Key.foregroundColor: UIColor.green, NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14)]
-        refreshControl.attributedTitle = NSAttributedString(string: "Pull to add a new task", attributes: attributes)
-        refreshControl.addTarget(self, action: #selector(self.newTask(_:)), for: .valueChanged)
-        refreshControl.tintColor = .green
-        refreshControl.layer.zPosition = -1
-        tasksTable.refreshControl = refreshControl
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        fetchUndoneTasks()
     }
 
     @objc
     func newTask(_ sender: AnyObject) {
         let newVC = NewTaskVC()
+        newVC.delegate = self
         self.present(newVC, animated: true, completion: {
             self.refreshControl.endRefreshing()
         })
@@ -176,7 +197,6 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         guard let myCollection = daysCollectionView else {
             return
         }
-//        myCollection.scrollToItem(at: IndexPath(row: 0, section: 0), at: .left, animated: true)
         self.chosenDate = 0
         UIView.animate(withDuration: 1) {
             myCollection.setContentOffset(CGPoint.zero, animated: true)
@@ -189,11 +209,12 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
 
     @objc
     func calendarOrListPressed() {}
-    
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         // TODO: fix animation
-        UIView.animate(views: tasksTable.visibleCells, animations: [AnimationType.from(direction: .top, offset: 30)])
+        UIView.animate(views: [dateLabel, dayLabel, calendarOrList], animations: [AnimationType.from(direction: .top, offset: 10.0)], initialAlpha: 0, finalAlpha: 1, duration: 1)
+        UIView.animate(views: tasksTable.visibleCells, animations: [AnimationType.from(direction: .top, offset: 10.0)], initialAlpha: 0, finalAlpha: 1, duration: 1)
     }
 
     func setup() {
@@ -241,9 +262,19 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
 
         tasksTable.translatesAutoresizingMaskIntoConstraints = false
         tasksTable.topAnchor.constraint(equalTo: topView.bottomAnchor, constant: 0).isActive = true
-        tasksTable.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: 0).isActive = true
+        tasksTable.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 0).isActive = true
         tasksTable.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 0).isActive = true
         tasksTable.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 0).isActive = true
+        tasksTable.separatorStyle = .none
+        tasksTable.contentInset.top = 10
+        tasksTable.contentInset.bottom = 10
+
+        let attributes = [NSAttributedString.Key.foregroundColor: UIColor.green, NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14)]
+        refreshControl.attributedTitle = NSAttributedString(string: "Pull to add a new task", attributes: attributes)
+        refreshControl.addTarget(self, action: #selector(self.newTask(_:)), for: .valueChanged)
+        refreshControl.tintColor = .green
+        refreshControl.layer.zPosition = -1
+        tasksTable.refreshControl = refreshControl
 
         self.view.addSubview(backTodayBtn)
         backTodayBtn.translatesAutoresizingMaskIntoConstraints = false
@@ -292,6 +323,69 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
+    }
+}
+
+extension ViewController {
+    func save(mainText: String) {
+        guard let appDelegate =
+            UIApplication.shared.delegate as? AppDelegate else {
+            return
+        }
+        let managedContext = appDelegate.persistentContainer.viewContext
+        let entity = NSEntityDescription.entity(forEntityName: "TaskCoreModel", in: managedContext)!
+        let task = NSManagedObject(entity: entity, insertInto: managedContext)
+        task.setValue(mainText, forKeyPath: "mainText")
+        task.setValue(false, forKeyPath: "isDone")
+        task.setValue(UUID(), forKey: "id")
+        do {
+            try managedContext.save()
+            undoneTasks.append(task)
+        } catch let error as NSError {
+            print("Could not save. \(error), \(error.userInfo)")
+        }
+    }
+
+    func fetchUndoneTasks() {
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            return
+        }
+        let managedContext = appDelegate.persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<TaskCoreModel>(entityName: "TaskCoreModel")
+        fetchRequest.predicate = NSPredicate(format: "isDone = false")
+        do {
+            undoneTasks = try managedContext.fetch(fetchRequest)
+        } catch let error as NSError {
+            print("Could not fetch. \(error), \(error.userInfo)")
+        }
+    }
+
+    func setUndone(id: UUID) {
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            return
+        }
+        let managedContext = appDelegate.persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<TaskCoreModel>(entityName: "TaskCoreModel")
+        fetchRequest.predicate = NSPredicate(format: "id = %@", id.uuidString)
+        do {
+            let res = try managedContext.fetch(fetchRequest)
+            if !res.isEmpty {
+                res[0].setValue(true, forKey: "isDone")
+            }
+        } catch let error as NSError {
+            print("Could not fetch. \(error), \(error.userInfo)")
+        }
+        do {
+            try managedContext.save()
+        } catch {
+            print("Failed to save updated")
+        }
+    }
+}
+
+extension ViewController: SecondControllerDelegate {
+    func didBackButtonPressed(task: TaskModel) {
+        insertNewTask(task: task)
     }
 }
 
