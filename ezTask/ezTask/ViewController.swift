@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import ViewAnimator
 
 class ViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource {
     // Var
@@ -188,6 +189,12 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
 
     @objc
     func calendarOrListPressed() {}
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        // TODO: fix animation
+        UIView.animate(views: tasksTable.visibleCells, animations: [AnimationType.from(direction: .top, offset: 30)])
+    }
 
     func setup() {
         self.view.backgroundColor = .white

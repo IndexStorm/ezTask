@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -12,6 +12,7 @@
 		E60DFBDA24C2121B00043A76 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E60DFBD924C2121B00043A76 /* Assets.xcassets */; };
 		E60DFBDD24C2121B00043A76 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E60DFBDB24C2121B00043A76 /* LaunchScreen.storyboard */; };
 		E656C30224C771FF00FCF85E /* NewTaskVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E656C30124C771FF00FCF85E /* NewTaskVC.swift */; };
+		E68450D224C84632005D72A5 /* ViewAnimator in Frameworks */ = {isa = PBXBuildFile; productRef = E68450D124C84632005D72A5 /* ViewAnimator */; };
 		E6D6EEEE24C2D94400AF82A3 /* DayCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D6EEED24C2D94400AF82A3 /* DayCell.swift */; };
 		E6D6EEF024C37CE300AF82A3 /* TaskCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D6EEEF24C37CE300AF82A3 /* TaskCell.swift */; };
 /* End PBXBuildFile section */
@@ -33,6 +34,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E68450D224C84632005D72A5 /* ViewAnimator in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -86,6 +88,9 @@
 			dependencies = (
 			);
 			name = ezTask;
+			packageProductDependencies = (
+				E68450D124C84632005D72A5 /* ViewAnimator */,
+			);
 			productName = ezTask;
 			productReference = E60DFBCD24C2121600043A76 /* ezTask.app */;
 			productType = "com.apple.product-type.application";
@@ -114,6 +119,9 @@
 				Base,
 			);
 			mainGroup = E60DFBC424C2121600043A76;
+			packageReferences = (
+				E68450D024C84632005D72A5 /* XCRemoteSwiftPackageReference "ViewAnimator" */,
+			);
 			productRefGroup = E60DFBCE24C2121600043A76 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -336,6 +344,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		E68450D024C84632005D72A5 /* XCRemoteSwiftPackageReference "ViewAnimator" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/marcosgriselli/ViewAnimator";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.7.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E68450D124C84632005D72A5 /* ViewAnimator */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E68450D024C84632005D72A5 /* XCRemoteSwiftPackageReference "ViewAnimator" */;
+			productName = ViewAnimator;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = E60DFBC524C2121600043A76 /* Project object */;
 }
