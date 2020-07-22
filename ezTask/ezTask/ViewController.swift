@@ -165,6 +165,8 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             }
             undoneTasks.remove(at: indexPath.row)
             tasksTable.deleteRows(at: [indexPath], with: .fade)
+            let generator = UIImpactFeedbackGenerator(style: .light)
+            generator.impactOccurred()
         }
     }
 
@@ -185,6 +187,8 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
 
     @objc
     func newTask(_ sender: AnyObject) {
+        let generator = UIImpactFeedbackGenerator(style: .medium)
+        generator.impactOccurred()
         let newVC = NewTaskVC()
         newVC.delegate = self
         self.present(newVC, animated: true, completion: {
@@ -385,7 +389,12 @@ extension ViewController {
 
 extension ViewController: SecondControllerDelegate {
     func didBackButtonPressed(task: TaskModel) {
+        if task.mainText.isEmpty {
+            return
+        }
         insertNewTask(task: task)
+        let generator = UINotificationFeedbackGenerator()
+        generator.notificationOccurred(.success)
     }
 }
 

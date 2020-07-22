@@ -23,6 +23,7 @@ class TaskCell: UITableViewCell {
         let image = UIImageView()
         image.image = UIImage(named: "square")
         image.contentMode = .scaleAspectFit
+        image.tintColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
         image.alpha = 0.9
 
         return image
@@ -54,7 +55,7 @@ class TaskCell: UITableViewCell {
         checkbox.translatesAutoresizingMaskIntoConstraints = false
         checkbox.heightAnchor.constraint(equalToConstant: 20).isActive = true
         checkbox.widthAnchor.constraint(equalToConstant: 20).isActive = true
-        checkbox.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 25).isActive = true
+        checkbox.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 32).isActive = true
         checkbox.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor).isActive = true
         checkbox.isUserInteractionEnabled = true
         checkbox.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(checkboxTapped)))

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import ViewAnimator
 
 protocol SecondControllerDelegate : NSObjectProtocol {
     func didBackButtonPressed(task: TaskModel)
@@ -19,9 +20,19 @@ struct TaskModel {
 class NewTaskVC: UIViewController, UITextViewDelegate {
     // Var
     var isPriority: Bool = false
-    weak var delegate: SecondControllerDelegate?
+    var delegate: SecondControllerDelegate?
 
     // Views
+    
+    private let swipeArrow: UIImageView = {
+        let image = UIImageView()
+        image.image = UIImage(named: "swipe_down")
+        image.contentMode = .scaleAspectFit
+        image.tintColor = .black
+        image.alpha = 0.2
+
+        return image
+    }()
 
     private let topLabel: UILabel = {
         let label = UILabel()
@@ -62,30 +73,43 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
         let image = UIImageView()
         image.image = UIImage(named: "calendar")
         image.contentMode = .scaleAspectFit
+        image.tintColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
+        image.alpha = 0.9
 
         return image
     }()
 
-    private let dateLabel: UILabel = {
-        let label = UILabel()
-        label.text = "July 20, Monday"
-        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+    private let dateTextField: UITextField = {
+        let field = UITextField()
+        let formatter = DateFormatter()
+        formatter.dateStyle = .full
+        formatter.timeStyle = .none
+        field.text = formatter.string(from: Date())
+        field.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        field.tintColor = .clear
 
-        return label
+        return field
     }()
+    
+    private let datePicker = UIDatePicker()
 
     private let timeImage: UIImageView = {
         let image = UIImageView()
-        image.image = UIImage(named: "bell")
+        image.image = UIImage(named: "alarm")
         image.contentMode = .scaleAspectFit
+//        image.tintColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
+        image.tintColor = .black
+        image.alpha = 0.3
 
         return image
     }()
 
     private let timeLabel: UILabel = {
         let label = UILabel()
-        label.text = "20:00"
+        label.text = "Add Reminder"
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        label.textColor = .black
+        label.alpha = 0.3
 
         return label
     }()
@@ -109,15 +133,22 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
 
         return label
     }()
+    
+    func createDatePicker() {
+        let toolbar = UIToolbar()
+        toolbar.sizeToFit()
+        let doneBtn = UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: #selector(pickerDonePressed))
+        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        toolbar.setItems([flexibleSpace, doneBtn], animated: true)
+        dateTextField.inputAccessoryView = toolbar
+        dateTextField.inputView = datePicker
+        datePicker.datePickerMode = .date
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setup()
-    }
-
-    @objc
-    func dateTapped() {
-        print("hoh")
+        createDatePicker()
     }
 
     @objc
@@ -132,6 +163,17 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
             isPriority = true
             priorityImage.image = UIImage(named: "square_filled")
         }
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
+    }
+    
+    @objc
+    func pickerDonePressed() {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .full
+        formatter.timeStyle = .none
+        dateTextField.text = formatter.string(from: datePicker.date)
+        self.view.endEditing(true)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -147,20 +189,27 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
 
     func setup() {
         self.view.backgroundColor = .white
-
+        
+        self.view.addSubview(swipeArrow)
+        swipeArrow.translatesAutoresizingMaskIntoConstraints = false
+        swipeArrow.heightAnchor.constraint(equalToConstant: 10).isActive = true
+        swipeArrow.widthAnchor.constraint(equalToConstant: 140).isActive = true
+        swipeArrow.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        swipeArrow.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 15).isActive = true
+        
         self.view.addSubview(topLabel)
         topLabel.translatesAutoresizingMaskIntoConstraints = false
         topLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
         topLabel.widthAnchor.constraint(equalToConstant: 140).isActive = true
         topLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        topLabel.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 40).isActive = true
+        topLabel.topAnchor.constraint(equalTo: swipeArrow.bottomAnchor, constant: 15).isActive = true
 
         self.view.addSubview(planning)
         planning.translatesAutoresizingMaskIntoConstraints = false
         planning.heightAnchor.constraint(equalToConstant: 17).isActive = true
         planning.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 25).isActive = true
         planning.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -25).isActive = true
-        planning.topAnchor.constraint(equalTo: topLabel.bottomAnchor, constant: 25).isActive = true
+        planning.topAnchor.constraint(equalTo: topLabel.bottomAnchor, constant: 30).isActive = true
 
         self.view.addSubview(mainText)
         mainText.translatesAutoresizingMaskIntoConstraints = false
@@ -184,33 +233,29 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
         dateImage.widthAnchor.constraint(equalToConstant: 20).isActive = true
         dateImage.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 25).isActive = true
         dateImage.topAnchor.constraint(equalTo: separator.bottomAnchor, constant: 35).isActive = true
-        dateImage.isUserInteractionEnabled = true
-        dateImage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dateTapped)))
 
-        self.view.addSubview(dateLabel)
-        dateLabel.translatesAutoresizingMaskIntoConstraints = false
-        dateLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
-        dateLabel.widthAnchor.constraint(equalToConstant: 250).isActive = true
-        dateLabel.leadingAnchor.constraint(equalTo: dateImage.trailingAnchor, constant: 12).isActive = true
-        dateLabel.topAnchor.constraint(equalTo: separator.bottomAnchor, constant: 35).isActive = true
-        dateLabel.isUserInteractionEnabled = true
-        dateLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dateTapped)))
+        self.view.addSubview(dateTextField)
+        dateTextField.translatesAutoresizingMaskIntoConstraints = false
+        dateTextField.heightAnchor.constraint(equalToConstant: 20).isActive = true
+        dateTextField.leadingAnchor.constraint(equalTo: dateImage.trailingAnchor, constant: 12).isActive = true
+        dateTextField.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 25).isActive = true
+        dateTextField.topAnchor.constraint(equalTo: separator.bottomAnchor, constant: 35).isActive = true
 
         self.view.addSubview(timeImage)
         timeImage.translatesAutoresizingMaskIntoConstraints = false
         timeImage.heightAnchor.constraint(equalToConstant: 20).isActive = true
         timeImage.widthAnchor.constraint(equalToConstant: 20).isActive = true
         timeImage.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 25).isActive = true
-        timeImage.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: 20).isActive = true
+        timeImage.topAnchor.constraint(equalTo: dateTextField.bottomAnchor, constant: 20).isActive = true
         timeImage.isUserInteractionEnabled = true
         timeImage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(timeTapped)))
 
         self.view.addSubview(timeLabel)
         timeLabel.translatesAutoresizingMaskIntoConstraints = false
         timeLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
-        timeLabel.widthAnchor.constraint(equalToConstant: 100).isActive = true
+        timeLabel.widthAnchor.constraint(equalToConstant: 200).isActive = true
         timeLabel.leadingAnchor.constraint(equalTo: timeImage.trailingAnchor, constant: 12).isActive = true
-        timeLabel.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: 20).isActive = true
+        timeLabel.topAnchor.constraint(equalTo: dateTextField.bottomAnchor, constant: 20).isActive = true
         timeLabel.isUserInteractionEnabled = true
         timeLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(timeTapped)))
 
