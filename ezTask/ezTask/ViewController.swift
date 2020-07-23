@@ -12,6 +12,7 @@ import ViewAnimator
 
 struct TaskModel {
     let mainText: String
+    let isPriority: Bool
 }
 
 struct Reminder {
@@ -156,8 +157,8 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TaskCell", for: indexPath) as! TaskCell
         let task = undoneTasks[undoneTasks.count - indexPath.row - 1] // TODO: fix by sorting
-        if let mainText = task.value(forKey: "mainText"), let id = task.value(forKey: "id") as? UUID {
-            cell.configure(title: "\(mainText)", id: id)
+        if let mainText = task.value(forKey: "mainText"), let id = task.value(forKey: "id") as? UUID, let isPriority = task.value(forKey: "isPriority") as? Bool {
+            cell.configure(title: "\(mainText)", id: id, isPriority: isPriority)
         }
         cell.delegate = self
         return cell
@@ -184,7 +185,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     }
 
     private func insertNewTask(task: TaskModel) {
-        save(mainText: task.mainText)
+        save(model: task)
         tasksTable.insertRows(at: [IndexPath(row: 0, section: 0)], with: .top)
     }
 
@@ -230,8 +231,8 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         // TODO: fix animation
-        UIView.animate(views: [dateLabel, dayLabel, calendarOrList], animations: [AnimationType.from(direction: .top, offset: 10.0)], initialAlpha: 0, finalAlpha: 1, duration: 1.5)
-        UIView.animate(views: tasksTable.visibleCells, animations: [AnimationType.from(direction: .top, offset: 10.0)], initialAlpha: 0, finalAlpha: 1, duration: 1.5)
+        UIView.animate(views: [dateLabel, dayLabel, calendarOrList], animations: [AnimationType.from(direction: .top, offset: 10.0)], initialAlpha: 0, finalAlpha: 1, duration: 0.5)
+        UIView.animate(views: tasksTable.visibleCells, animations: [AnimationType.from(direction: .top, offset: 10.0)], initialAlpha: 0, finalAlpha: 1, duration: 0.5)
     }
 
     func setup() {
@@ -344,7 +345,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
 }
 
 extension ViewController {
-    func save(mainText: String) {
+    func save(model: TaskModel) {
         guard let appDelegate =
             UIApplication.shared.delegate as? AppDelegate else {
             return
@@ -352,9 +353,10 @@ extension ViewController {
         let managedContext = appDelegate.persistentContainer.viewContext
         let entity = NSEntityDescription.entity(forEntityName: "TaskCoreModel", in: managedContext)!
         let task = NSManagedObject(entity: entity, insertInto: managedContext)
-        task.setValue(mainText, forKeyPath: "mainText")
-        task.setValue(false, forKeyPath: "isDone")
         task.setValue(UUID(), forKey: "id")
+        task.setValue(model.mainText, forKeyPath: "mainText")
+        task.setValue(false, forKeyPath: "isDone")
+        task.setValue(model.isPriority, forKey: "isPriority")
         do {
             try managedContext.save()
             undoneTasks.append(task)

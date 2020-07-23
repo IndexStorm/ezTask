@@ -18,6 +18,15 @@ class TaskCell: UITableViewCell {
     public var id: UUID?
 
     static let identifier = "TaskCell"
+    
+    private let priorityIcon: UIView = {
+        let view = UIView()
+        view.layer.cornerRadius = 5
+        view.backgroundColor = .systemRed
+        view.alpha = 0
+        
+        return view
+    }()
 
     private let checkbox: UIImageView = {
         let image = UIImageView()
@@ -37,9 +46,10 @@ class TaskCell: UITableViewCell {
         return label
     }()
 
-    public func configure(title: String, id: UUID) {
+    public func configure(title: String, id: UUID, isPriority: Bool) {
         self.titleLabel.text = title
         self.id = id
+        self.priorityIcon.alpha = isPriority ? 0.9 : 0
     }
 
     @objc
@@ -50,12 +60,19 @@ class TaskCell: UITableViewCell {
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-
+        
+        self.contentView.addSubview(priorityIcon)
+        priorityIcon.translatesAutoresizingMaskIntoConstraints = false
+        priorityIcon.heightAnchor.constraint(equalToConstant: 10).isActive = true
+        priorityIcon.widthAnchor.constraint(equalToConstant: 10).isActive = true
+        priorityIcon.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 20).isActive = true
+        priorityIcon.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor).isActive = true
+        
         self.contentView.addSubview(checkbox)
         checkbox.translatesAutoresizingMaskIntoConstraints = false
         checkbox.heightAnchor.constraint(equalToConstant: 22).isActive = true
         checkbox.widthAnchor.constraint(equalToConstant: 22).isActive = true
-        checkbox.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 32).isActive = true
+        checkbox.leadingAnchor.constraint(equalTo: priorityIcon.trailingAnchor, constant: 12).isActive = true
         checkbox.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor).isActive = true
         checkbox.isUserInteractionEnabled = true
         checkbox.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(checkboxTapped)))

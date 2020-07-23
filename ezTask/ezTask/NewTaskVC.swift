@@ -93,7 +93,6 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
         let image = UIImageView()
         image.image = UIImage(named: "alarm")
         image.contentMode = .scaleAspectFit
-//        image.tintColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
         image.tintColor = .black
         image.alpha = 0.3
 
@@ -104,6 +103,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
         let field = UITextField()
         field.placeholder = "Add Reminder"
         field.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        field.tintColor = .clear
 
         return field
     }()
@@ -131,7 +131,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
     }()
 
     func createDatePicker() {
-        let toolbar = UIToolbar()
+        let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 35))
         toolbar.sizeToFit()
         let doneBtn = UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: #selector(datePickerDonePressed))
         let cancelBtn = UIBarButtonItem(title: "Today", style: .plain, target: nil, action: #selector(datePickerCancelPressed))
@@ -140,10 +140,12 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
         dateTextField.inputAccessoryView = toolbar
         dateTextField.inputView = datePicker
         datePicker.datePickerMode = .date
+        datePicker.addTarget(self, action: #selector(datePickerChanged(picker:)), for: .valueChanged)
+        datePicker.minimumDate = Date()
     }
 
     func createTimePicker() {
-        let toolbar = UIToolbar()
+        let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 35))
         toolbar.sizeToFit()
         let doneBtn = UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: #selector(timePickerDonePressed))
         let cancelBtn = UIBarButtonItem(title: "Remove", style: .plain, target: nil, action: #selector(timePickerCancelPressed))
@@ -154,6 +156,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
         timePicker.datePickerMode = .time
         timePicker.minuteInterval = 5
         timePicker.date = Date()
+        timePicker.addTarget(self, action: #selector(timePickerChanged(picker:)), for: .valueChanged)
     }
 
     override func viewDidLoad() {
@@ -161,10 +164,8 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
         setup()
         createDatePicker()
         createTimePicker()
+        setTimePickerDate()
     }
-
-    @objc
-    func timeTapped() {}
 
     @objc
     func priorityTapped() {
@@ -188,6 +189,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
         self.view.endEditing(true)
         let generator = UIImpactFeedbackGenerator(style: .light)
         generator.impactOccurred()
+        setTimePickerDate()
     }
 
     @objc
@@ -199,10 +201,39 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
         self.view.endEditing(true)
         let generator = UIImpactFeedbackGenerator(style: .light)
         generator.impactOccurred()
+        setTimePickerDate()
+    }
+
+    @objc
+    func datePickerChanged(picker: UIDatePicker) {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .full
+        formatter.timeStyle = .none
+        dateTextField.text = formatter.string(from: datePicker.date)
+        setTimePickerDate()
+    }
+
+    func setTimePickerDate() {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy MM dd"
+        let formattedDate = formatter.string(from: datePicker.date)
+        let today = formatter.string(from: Date())
+        verifyFiveMinutes()
+        if formattedDate == today {
+            timePicker.minimumDate = Date().addingTimeInterval(3 * 60)
+            timePicker.maximumDate = Date().endOfDay
+            if timePicker.date > timePicker.minimumDate! {
+                timePickerCancelPressed()
+            }
+        } else {
+            timePicker.minimumDate = datePicker.date.startOfDay
+            timePicker.maximumDate = datePicker.date.endOfDay
+        }
     }
 
     @objc
     func timePickerDonePressed() {
+        verifyFiveMinutes()
         let formatter = DateFormatter()
         formatter.dateStyle = .none
         formatter.timeStyle = .short
@@ -216,6 +247,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
 
     @objc
     func timePickerCancelPressed() {
+        verifyFiveMinutes()
         timeTextField.text = ""
         self.view.endEditing(true)
         timeImage.tintColor = .black
@@ -224,9 +256,26 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
         generator.impactOccurred()
     }
 
+    @objc
+    func timePickerChanged(picker: UIDatePicker) {
+        verifyFiveMinutes()
+        let formatter = DateFormatter()
+        formatter.dateStyle = .none
+        formatter.timeStyle = .short
+        timeTextField.text = formatter.string(from: timePicker.date)
+        timeImage.tintColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
+        timeImage.alpha = 0.9
+    }
+
+    func verifyFiveMinutes() {
+        if timePicker.date.minute % 5 != 0 {
+            timePicker.date += TimeInterval((5 - timePicker.date.minute % 5) * 60)
+        }
+    }
+
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        let task = TaskModel(mainText: mainText.text)
+        let task = TaskModel(mainText: mainText.text, isPriority: isPriority)
         // if reminder
         setupReminder()
         delegate?.didBackButtonPressed(task: task)
@@ -299,8 +348,6 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
         timeImage.widthAnchor.constraint(equalToConstant: 20).isActive = true
         timeImage.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 25).isActive = true
         timeImage.topAnchor.constraint(equalTo: dateTextField.bottomAnchor, constant: 20).isActive = true
-        timeImage.isUserInteractionEnabled = true
-        timeImage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(timeTapped)))
 
         self.view.addSubview(timeTextField)
         timeTextField.translatesAutoresizingMaskIntoConstraints = false
@@ -336,4 +383,22 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
         }
         return true
     }
+}
+
+extension Date {
+    var startOfDay: Date {
+        return Calendar.current.startOfDay(for: self)
+    }
+
+    var endOfDay: Date {
+        var components = DateComponents()
+        components.day = 1
+        components.second = -1
+        return Calendar.current.date(byAdding: components, to: startOfDay)!
+    }
+    
+    var second: Int { return Calendar.current.component(.second, from: self) }
+    var minute: Int { return Calendar.current.component(.minute, from: self) }
+    var hour: Int { return Calendar.current.component(.hour, from: self) }
+    var year: Int { return Calendar.current.component(.year, from: self) }
 }
