@@ -9,14 +9,11 @@
 import UIKit
 import ViewAnimator
 
-protocol SecondControllerDelegate: NSObjectProtocol {
-    func didBackButtonPressed(task: TaskModel)
-}
-
 class NewTaskVC: UIViewController, UITextViewDelegate {
     // Var
     var isPriority: Bool = false
-    var delegate: SecondControllerDelegate?
+    var isAlarmSet: Bool = false
+    public var returnTask: ((_ task: TaskModel) -> Void)?
 
     // Views
 
@@ -233,14 +230,8 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
 
     @objc
     func timePickerDonePressed() {
-        verifyFiveMinutes()
-        let formatter = DateFormatter()
-        formatter.dateStyle = .none
-        formatter.timeStyle = .short
-        timeTextField.text = formatter.string(from: timePicker.date)
+        timePickerChanged(picker: timePicker)
         self.view.endEditing(true)
-        timeImage.tintColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
-        timeImage.alpha = 0.9
         let generator = UIImpactFeedbackGenerator(style: .light)
         generator.impactOccurred()
     }
@@ -254,6 +245,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
         timeImage.alpha = 0.3
         let generator = UIImpactFeedbackGenerator(style: .light)
         generator.impactOccurred()
+        isAlarmSet = false
     }
 
     @objc
@@ -265,6 +257,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
         timeTextField.text = formatter.string(from: timePicker.date)
         timeImage.tintColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
         timeImage.alpha = 0.9
+        isAlarmSet = true
     }
 
     func verifyFiveMinutes() {
@@ -275,13 +268,10 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        let task = TaskModel(mainText: mainText.text, isPriority: isPriority)
-        // if reminder
-        setupReminder()
-        delegate?.didBackButtonPressed(task: task)
+        let task = TaskModel(id: UUID(), mainText: mainText.text, isPriority: isPriority, isDone: false, taskDate: datePicker.date, isAlarmSet: isAlarmSet, alarmDate: isAlarmSet ? timePicker.date : nil)
+        // TODO: move up
+        returnTask?(task)
     }
-
-    func setupReminder() {}
 
     func dismiss() {
         // TODO: add dismiss cross button
@@ -396,7 +386,7 @@ extension Date {
         components.second = -1
         return Calendar.current.date(byAdding: components, to: startOfDay)!
     }
-    
+
     var second: Int { return Calendar.current.component(.second, from: self) }
     var minute: Int { return Calendar.current.component(.minute, from: self) }
     var hour: Int { return Calendar.current.component(.hour, from: self) }

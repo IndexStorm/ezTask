@@ -6,13 +6,39 @@
 //  Copyright © 2020 Mike Ovyan. All rights reserved.
 //
 
-import UIKit
 import CoreData
+import UIKit
+import UserNotifications
 import ViewAnimator
 
 struct TaskModel {
+    let id: UUID
     let mainText: String
     let isPriority: Bool
+    let isDone: Bool
+    let taskDate: Date
+    let isAlarmSet: Bool
+    let alarmDate: Date?
+
+    init(task: NSManagedObject) {
+        self.id = task.value(forKey: "id") as! UUID
+        self.mainText = task.value(forKey: "mainText") as! String
+        self.isPriority = task.value(forKey: "isPriority") as! Bool
+        self.isDone = task.value(forKey: "isDone") as! Bool
+        self.taskDate = task.value(forKey: "taskDate") as! Date
+        self.isAlarmSet = task.value(forKey: "isAlarmSet") as! Bool
+        self.alarmDate = task.value(forKey: "alarmDate") as? Date
+    }
+
+    init(id: UUID, mainText: String, isPriority: Bool, isDone: Bool, taskDate: Date, isAlarmSet: Bool, alarmDate: Date?) {
+        self.id = id
+        self.mainText = mainText
+        self.isPriority = isPriority
+        self.isDone = isDone
+        self.taskDate = taskDate
+        self.isAlarmSet = isAlarmSet
+        self.alarmDate = alarmDate
+    }
 }
 
 struct Reminder {
@@ -157,17 +183,16 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TaskCell", for: indexPath) as! TaskCell
         let task = undoneTasks[undoneTasks.count - indexPath.row - 1] // TODO: fix by sorting
-        if let mainText = task.value(forKey: "mainText"), let id = task.value(forKey: "id") as? UUID, let isPriority = task.value(forKey: "isPriority") as? Bool {
-            cell.configure(title: "\(mainText)", id: id, isPriority: isPriority)
-        }
+        let model = TaskModel(task: task)
+        cell.configure(task: model)
         cell.delegate = self
         return cell
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 44
+        return 60
     }
-    
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
     }
@@ -175,7 +200,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     func checkboxTapped(cell: TaskCell) {
         if let indexPath = tasksTable.indexPath(for: cell) {
             if let id = cell.id {
-                setUndone(id: id)
+                setDone(id: id)
             }
             undoneTasks.remove(at: indexPath.row)
             tasksTable.deleteRows(at: [indexPath], with: .fade)
@@ -204,10 +229,55 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         let generator = UIImpactFeedbackGenerator(style: .medium)
         generator.impactOccurred()
         let newVC = NewTaskVC()
-        newVC.delegate = self
+        newVC.returnTask = { task in
+            print("-----RETURNED TASK-----\n", task, "\n", "-----RETURNED TASK-----\n\n")
+            if task.mainText.isEmpty {
+                return
+            }
+            self.DidReceivedNewTask(task: task)
+        }
         self.present(newVC, animated: true, completion: {
             self.refreshControl.endRefreshing()
         })
+    }
+
+    func DidReceivedNewTask(task: TaskModel) {
+        if task.isAlarmSet {
+            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound], completionHandler: { success, error in
+                if success {
+                    // schedule
+                } else if error != nil {
+                    print("error occured")
+                }
+            })
+            setupReminder()
+        }
+        self.insertNewTask(task: task)
+        let generator = UINotificationFeedbackGenerator()
+        generator.notificationOccurred(.success)
+    }
+
+    func setupReminder() {
+        let content = UNMutableNotificationContent()
+        content.title = "Hello world"
+        content.sound = .default
+        content.body = "Whats upp my boiz"
+        content.badge = 1
+        content.categoryIdentifier = "Category"
+
+        let targetDate = Date().addingTimeInterval(10)
+        let trigger = UNCalendarNotificationTrigger(dateMatching: Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: targetDate), repeats: false)
+        let request = UNNotificationRequest(identifier: "some_id", content: content, trigger: trigger)
+        UNUserNotificationCenter.current().add(request, withCompletionHandler: { error in
+            if error != nil {
+                print("Error with notifications")
+            } else {
+                print("Notification has been set")
+            }
+        })
+        let action = UNNotificationAction(identifier: "Complete", title: "Complete", options: .foreground)
+        let category = UNNotificationCategory(identifier: "Category", actions: [action], intentIdentifiers: [], options: [])
+        UNUserNotificationCenter.current().setNotificationCategories([category])
     }
 
     @objc
@@ -353,13 +423,18 @@ extension ViewController {
         let managedContext = appDelegate.persistentContainer.viewContext
         let entity = NSEntityDescription.entity(forEntityName: "TaskCoreModel", in: managedContext)!
         let task = NSManagedObject(entity: entity, insertInto: managedContext)
-        task.setValue(UUID(), forKey: "id")
+        task.setValue(model.id, forKey: "id")
         task.setValue(model.mainText, forKeyPath: "mainText")
-        task.setValue(false, forKeyPath: "isDone")
+        task.setValue(model.isDone, forKeyPath: "isDone")
         task.setValue(model.isPriority, forKey: "isPriority")
+        task.setValue(model.taskDate, forKey: "taskDate")
+        task.setValue(model.isAlarmSet, forKey: "isAlarmSet")
+        task.setValue(model.alarmDate, forKey: "alarmDate") // TODO: check if nil value saves correctly
         do {
             try managedContext.save()
-            undoneTasks.append(task)
+            if !model.isDone {
+                undoneTasks.append(task)
+            }
         } catch let error as NSError {
             print("Could not save. \(error), \(error.userInfo)")
         }
@@ -379,7 +454,7 @@ extension ViewController {
         }
     }
 
-    func setUndone(id: UUID) {
+    func setDone(id: UUID) {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             return
         }
@@ -399,17 +474,6 @@ extension ViewController {
         } catch {
             print("Failed to save updated")
         }
-    }
-}
-
-extension ViewController: SecondControllerDelegate {
-    func didBackButtonPressed(task: TaskModel) {
-        if task.mainText.isEmpty {
-            return
-        }
-        insertNewTask(task: task)
-        let generator = UINotificationFeedbackGenerator()
-        generator.notificationOccurred(.success)
     }
 }
 
