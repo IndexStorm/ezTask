@@ -91,8 +91,10 @@ class TaskCell: UITableViewCell {
             self.label.heightAnchor.constraint(equalToConstant: 20).isActive = true
         }
         
-        public func setLabel() {
-            self.label.text = "zdarovaa"
+        public func set(time: Date) {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "HH:mm"
+            self.label.text = formatter.string(from: time)
             self.label.layoutIfNeeded()
             self.addSubview(containerView)
             self.containerView.backgroundColor = .green
@@ -101,9 +103,9 @@ class TaskCell: UITableViewCell {
             self.containerView.widthAnchor.constraint(equalToConstant: viewWidth()).isActive = true
         }
         
-        public func unsetLabel() {
+        public func unset() {
             self.containerView.removeFromSuperview()
-            self.label.text = "kek"
+            self.label.text = ""
             self.label.layoutIfNeeded()
         }
 
@@ -111,7 +113,6 @@ class TaskCell: UITableViewCell {
             if self.alpha == 0 {
                 return 0
             }
-            print(self.label.frame.width, self.image.frame.width)
             return self.label.frame.width + self.image.frame.width + 2 + 5 // margin between and left
         }
     }
@@ -130,36 +131,6 @@ class TaskCell: UITableViewCell {
 
         return label
     }()
-    
-    func createAlarmView(task: TaskModel) -> UIView {
-        let view = UIView()
-        view.backgroundColor = .red
-        if !task.isAlarmSet {
-            return view
-        }
-        let image = UIImageView()
-        addSubview(image)
-        image.image = UIImage(named: "alarm")
-        image.contentMode = .scaleAspectFit
-        image.tintColor = .systemYellow
-        image.translatesAutoresizingMaskIntoConstraints = false
-        image.heightAnchor.constraint(equalToConstant: 14).isActive = true
-        image.widthAnchor.constraint(equalToConstant: 14).isActive = true
-        image.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0).isActive = true
-        image.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-        
-        let label = UILabel()
-        addSubview(label)
-        label.text = "20:30"
-        label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
-        label.textColor = .systemYellow
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.sizeToFit()
-        label.leadingAnchor.constraint(equalTo: image.trailingAnchor, constant: 2).isActive = true
-        label.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-        
-        return view
-    }
 
     public func configure(task: TaskModel) {
         self.titleLabel.text = task.mainText
@@ -176,7 +147,9 @@ class TaskCell: UITableViewCell {
             self.dayLabel.text = formatter.string(from: task.taskDate)
         }
         if task.isAlarmSet {
-            alarmView.setLabel()
+            if let alarmDate = task.alarmDate {
+                alarmView.set(time: alarmDate)
+            }
         }
     }
 
@@ -228,14 +201,13 @@ class TaskCell: UITableViewCell {
         self.contentView.addSubview(titleLabel)
         self.contentView.addSubview(alarmView)
         self.contentView.addSubview(dayLabel)
-
     }
 
     override func prepareForReuse() {
         super.prepareForReuse()
         titleLabel.text = ""
         checkbox.image = UIImage(named: "square")
-        alarmView.unsetLabel()
+        alarmView.unset()
     }
 
     override func awakeFromNib() {

@@ -7,10 +7,12 @@
 //
 
 import UIKit
+import UserNotifications
 import ViewAnimator
 
 class NewTaskVC: UIViewController, UITextViewDelegate {
     // Var
+    var notificationsStatus: UNAuthorizationStatus = .notDetermined
     var isPriority: Bool = false
     var isAlarmSet: Bool = false
     public var returnTask: ((_ task: TaskModel) -> Void)?
@@ -159,6 +161,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         setup()
+        checkNotifications()
         createDatePicker()
         createTimePicker()
         setTimePickerDate()
@@ -217,7 +220,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
         let today = formatter.string(from: Date())
         verifyFiveMinutes()
         if formattedDate == today {
-            timePicker.minimumDate = Date().addingTimeInterval(3 * 60)
+            timePicker.minimumDate = Date().addingTimeInterval(1 * 60)
             timePicker.maximumDate = Date().endOfDay
             if timePicker.date > timePicker.minimumDate! {
                 timePickerCancelPressed()
@@ -254,16 +257,54 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
         let formatter = DateFormatter()
         formatter.dateStyle = .none
         formatter.timeStyle = .short
-        timeTextField.text = formatter.string(from: timePicker.date)
+        timeTextField.text = formatter.string(from: picker.date)
         timeImage.tintColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
         timeImage.alpha = 0.9
         isAlarmSet = true
+        checkIfAllowedNotifications(picker: picker)
     }
 
     func verifyFiveMinutes() {
         if timePicker.date.minute % 5 != 0 {
             timePicker.date += TimeInterval((5 - timePicker.date.minute % 5) * 60)
         }
+    }
+
+    func checkIfAllowedNotifications(picker: UIDatePicker) {
+        if self.notificationsStatus == .authorized {
+            return
+        }
+        if self.notificationsStatus == .notDetermined {
+            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound], completionHandler: { success, error in
+                if success {
+                    self.checkNotifications()
+                } else if error != nil {
+                    print("error occured")
+                } else if error == nil {
+                    self.checkNotifications()
+                    DispatchQueue.main.async {
+                        self.timePickerCancelPressed()
+                        self.alertNotificationsDenied()
+                    }
+                }
+            })
+        }
+        if self.notificationsStatus == .denied {
+            timePickerCancelPressed()
+            alertNotificationsDenied()
+        }
+    }
+
+    func checkNotifications() {
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            self.notificationsStatus = settings.authorizationStatus
+        }
+    }
+
+    func alertNotificationsDenied() {
+        let alert = UIAlertController(title: "Alert", message: "Message", preferredStyle: UIAlertController.Style.alert)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
     }
 
     override func viewDidDisappear(_ animated: Bool) {
@@ -405,7 +446,7 @@ extension Date {
     public func isToday() -> Bool {
         return self.startOfDay == Date().startOfDay
     }
-    
+
     public func isTomorrow() -> Bool {
         return self.startOfDay == Date().dayAfter.startOfDay
     }
