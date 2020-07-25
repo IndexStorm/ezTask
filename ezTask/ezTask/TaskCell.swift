@@ -47,18 +47,21 @@ class TaskCell: UITableViewCell {
     }()
 
     class alarm: UIView {
+        var containerView: UIView!
         var label: UILabel!
         var image: UIImageView!
 
         convenience init(frame: CGRect, labelText: String) {
             self.init(frame: frame)
-            self.label.text = labelText
             setup()
+            self.label.text = labelText
         }
 
         override init(frame: CGRect) {
+            self.containerView = UIView()
             self.label = UILabel()
-            self.image = UIImageView()
+            self.image = UIImageView(frame: CGRect(x: 0, y: 0, width: 14, height: 14))
+            
             super.init(frame: frame)
         }
 
@@ -67,84 +70,114 @@ class TaskCell: UITableViewCell {
         }
 
         private func setup() {
-            self.backgroundColor = .green
-
-            self.addSubview(self.image)
+            self.containerView.addSubview(self.image)
             self.image.image = UIImage(named: "alarm")
             self.image.contentMode = .scaleAspectFit
             self.image.tintColor = .systemYellow
             self.image.translatesAutoresizingMaskIntoConstraints = false
             self.image.heightAnchor.constraint(equalToConstant: 14).isActive = true
             self.image.widthAnchor.constraint(equalToConstant: 14).isActive = true
-            self.image.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 0).isActive = true
-            self.image.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
-            
-            self.addSubview(self.label)
-            self.label.text = "20:11"
+            self.image.leadingAnchor.constraint(equalTo: self.containerView.leadingAnchor, constant: 0).isActive = true
+            self.image.centerYAnchor.constraint(equalTo: self.containerView.centerYAnchor).isActive = true
+
+            self.containerView.addSubview(self.label)
+            self.label.text = "20:30"
             self.label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
             self.label.textColor = .systemYellow
-            self.label.translatesAutoresizingMaskIntoConstraints = false
             self.label.sizeToFit()
+            self.label.translatesAutoresizingMaskIntoConstraints = false
             self.label.leadingAnchor.constraint(equalTo: self.image.trailingAnchor, constant: 2).isActive = true
-            self.label.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+            self.label.centerYAnchor.constraint(equalTo: self.containerView.centerYAnchor).isActive = true
+            self.label.heightAnchor.constraint(equalToConstant: 20).isActive = true
         }
         
+        public func setLabel() {
+            self.label.text = "zdarovaa"
+            self.label.layoutIfNeeded()
+            self.addSubview(containerView)
+            self.containerView.backgroundColor = .green
+            self.containerView.translatesAutoresizingMaskIntoConstraints = false
+            self.containerView.heightAnchor.constraint(equalToConstant: 20).isActive = true
+            self.containerView.widthAnchor.constraint(equalToConstant: viewWidth()).isActive = true
+        }
+        
+        public func unsetLabel() {
+            self.containerView.removeFromSuperview()
+            self.label.text = "kek"
+            self.label.layoutIfNeeded()
+        }
+
         public func viewWidth() -> CGFloat {
             if self.alpha == 0 {
                 return 0
             }
-//            print(self.label.frame.width, self.image.frame.width)
-            return self.label.frame.width + 14 + 2
+            print(self.label.frame.width, self.image.frame.width)
+            return self.label.frame.width + self.image.frame.width + 2 + 5 // margin between and left
         }
     }
 
-    private var alarmView = alarm()
+    private var alarmView = alarm(frame: CGRect(), labelText: "privet")
+
 
     private let dayLabel: UILabel = {
         let label = UILabel()
-        label.text = "just test"
+        label.text = "Today"
+        label.font = UIFont.systemFont(ofSize: 14, weight: .regular)
+        label.textColor = .black
+        label.alpha = 0.4
+        label.lineBreakMode = .byWordWrapping
+        label.numberOfLines = 0
 
         return label
     }()
-
-//    private let alarmView: UIView = {
-//        let view = UIView()
-//        view.alpha = 0
-//
-//        let image = UIImageView()
-//        view.addSubview(image)
-//        image.image = UIImage(named: "alarm")
-//        image.contentMode = .scaleAspectFit
-//        image.tintColor = .systemYellow
-//        image.translatesAutoresizingMaskIntoConstraints = false
-//        image.heightAnchor.constraint(equalToConstant: 14).isActive = true
-//        image.widthAnchor.constraint(equalToConstant: 14).isActive = true
-//        image.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0).isActive = true
-//        image.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-//
-//        let label = UILabel()
-//        view.addSubview(label)
-//        label.text = "20:00"
-//        label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
-//        label.textColor = .systemYellow
-//        label.translatesAutoresizingMaskIntoConstraints = false
-//        label.sizeToFit()
-//        label.leadingAnchor.constraint(equalTo: image.trailingAnchor, constant: 2).isActive = true
-//        label.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-//
-//        return view
-//    }()
+    
+    func createAlarmView(task: TaskModel) -> UIView {
+        let view = UIView()
+        view.backgroundColor = .red
+        if !task.isAlarmSet {
+            return view
+        }
+        let image = UIImageView()
+        addSubview(image)
+        image.image = UIImage(named: "alarm")
+        image.contentMode = .scaleAspectFit
+        image.tintColor = .systemYellow
+        image.translatesAutoresizingMaskIntoConstraints = false
+        image.heightAnchor.constraint(equalToConstant: 14).isActive = true
+        image.widthAnchor.constraint(equalToConstant: 14).isActive = true
+        image.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0).isActive = true
+        image.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        
+        let label = UILabel()
+        addSubview(label)
+        label.text = "20:30"
+        label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+        label.textColor = .systemYellow
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.sizeToFit()
+        label.leadingAnchor.constraint(equalTo: image.trailingAnchor, constant: 2).isActive = true
+        label.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        
+        return view
+    }
 
     public func configure(task: TaskModel) {
         self.titleLabel.text = task.mainText
         self.id = task.id
         self.priorityIcon.alpha = task.isPriority ? 0.9 : 0
-        if task.isAlarmSet {
-            alarmView = alarm(frame: CGRect(), labelText: "testik")
+        
+        if task.taskDate.isToday() { // TODO: make it switch
+            self.dayLabel.text = "Today"
+        } else if task.taskDate.isTomorrow() {
+            self.dayLabel.text = "Tomorrow"
         } else {
-            alarmView.alpha = 0
+            let formatter = DateFormatter()
+            formatter.dateFormat = "dd MMMM"
+            self.dayLabel.text = formatter.string(from: task.taskDate)
         }
-        self.contentView.addSubview(alarmView)
+        if task.isAlarmSet {
+            alarmView.setLabel()
+        }
     }
 
     override func layoutSubviews() {
@@ -169,19 +202,16 @@ class TaskCell: UITableViewCell {
         titleLabel.leadingAnchor.constraint(equalTo: checkbox.trailingAnchor, constant: 12).isActive = true
         titleLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -50).isActive = true
         titleLabel.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor).isActive = true
+        
+        dayLabel.translatesAutoresizingMaskIntoConstraints = false
+        dayLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
+        dayLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor, constant: 0).isActive = true
+        dayLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor).isActive = true
 
         alarmView.translatesAutoresizingMaskIntoConstraints = false
-        alarmView.widthAnchor.constraint(equalToConstant: alarmView.viewWidth() + 5).isActive = true
-        alarmView.heightAnchor.constraint(equalToConstant: 20).isActive = true
-        alarmView.leadingAnchor.constraint(equalTo: checkbox.trailingAnchor, constant: 12).isActive = true
+        alarmView.leadingAnchor.constraint(equalTo: dayLabel.trailingAnchor, constant: 5).isActive = true
         alarmView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor).isActive = true
-
-        dayLabel.translatesAutoresizingMaskIntoConstraints = false
-        dayLabel.sizeToFit()
-        dayLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
-        dayLabel.leadingAnchor.constraint(equalTo: alarmView.trailingAnchor, constant: 0).isActive = true
-        dayLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor).isActive = true
-        dayLabel.backgroundColor = .red
+        alarmView.backgroundColor = .black
     }
 
     @objc
@@ -198,13 +228,14 @@ class TaskCell: UITableViewCell {
         self.contentView.addSubview(titleLabel)
         self.contentView.addSubview(alarmView)
         self.contentView.addSubview(dayLabel)
+
     }
 
     override func prepareForReuse() {
         super.prepareForReuse()
         titleLabel.text = ""
         checkbox.image = UIImage(named: "square")
-        alarmView = alarm()
+        alarmView.unsetLabel()
     }
 
     override func awakeFromNib() {
@@ -222,16 +253,3 @@ class TaskCell: UITableViewCell {
         // Configure the view for the selected state
     }
 }
-
- extension UIView {
-    final func sizeToFitCustom() {
-        var w: CGFloat = 0,
-            h: CGFloat = 0
-        for view in subviews {
-            if view.frame.origin.x + view.frame.width > w { w = view.frame.origin.x + view.frame.width }
-            if view.frame.origin.y + view.frame.height > h { h = view.frame.origin.y + view.frame.height }
-        }
-        print(w, h)
-//        frame.size = CGSize(width: w, height: h)
-    }
- }
