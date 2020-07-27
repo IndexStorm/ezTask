@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  MainVC.swift
 //  ezTask
 //
 //  Created by Mike Ovyan on 17.07.2020.
@@ -11,43 +11,7 @@ import UIKit
 import UserNotifications
 import ViewAnimator
 
-struct TaskModel {
-    let id: UUID
-    let mainText: String
-    let isPriority: Bool
-    let isDone: Bool
-    let taskDate: Date
-    let isAlarmSet: Bool
-    let alarmDate: Date?
-
-    init(task: NSManagedObject) {
-        self.id = task.value(forKey: "id") as! UUID
-        self.mainText = task.value(forKey: "mainText") as! String
-        self.isPriority = task.value(forKey: "isPriority") as! Bool
-        self.isDone = task.value(forKey: "isDone") as! Bool
-        self.taskDate = task.value(forKey: "taskDate") as! Date
-        self.isAlarmSet = task.value(forKey: "isAlarmSet") as! Bool
-        self.alarmDate = task.value(forKey: "alarmDate") as? Date
-    }
-
-    init(id: UUID, mainText: String, isPriority: Bool, isDone: Bool, taskDate: Date, isAlarmSet: Bool, alarmDate: Date?) {
-        self.id = id
-        self.mainText = mainText
-        self.isPriority = isPriority
-        self.isDone = isDone
-        self.taskDate = taskDate
-        self.isAlarmSet = isAlarmSet
-        self.alarmDate = alarmDate
-    }
-}
-
-struct Reminder {
-    let title: String
-    let date: Date
-    let id: String
-}
-
-class ViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource, TableViewCellDelegate, UNUserNotificationCenterDelegate {
+class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource, TableViewCellDelegate, UNUserNotificationCenterDelegate {
     // Var
 
     var lastOffsetWithSound: CGFloat = 0
@@ -210,7 +174,9 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     }
 
     private func insertNewTask(task: TaskModel) {
-        save(model: task)
+        save(model: task, completion: {
+            fetchUndoneTasks()
+        })
         tasksTable.insertRows(at: [IndexPath(row: 0, section: 0)], with: .top)
     }
 
@@ -249,70 +215,6 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         self.insertNewTask(task: task)
         let generator = UINotificationFeedbackGenerator()
         generator.notificationOccurred(.success)
-    }
-
-    func setupReminder(task: TaskModel) {
-        let content = UNMutableNotificationContent()
-        content.title = task.mainText
-        content.sound = .default
-        content.categoryIdentifier = "Category"
-        content.userInfo = ["id" : task.id.uuidString]
-        content.badge = 1 // TODO: fix
-        let targetDate = task.alarmDate!
-        scheduleNotification(targetDate: targetDate, content: content, id: task.id.uuidString)
-    }
-    
-    func scheduleNotification(targetDate: Date, content: UNMutableNotificationContent, id: String) {
-        UNUserNotificationCenter.current().delegate = self
-        let userInfo = content.userInfo
-        let id = userInfo["id"] as! String
-        removeNotificationsById(id: id)
-        let ids = [id + "_1", id + "_2", id + "_3"]
-        let targetDates = [targetDate, targetDate.addingTimeInterval(15 * 60), targetDate.addingTimeInterval(30 * 60)]
-        for i in 0..<ids.count {
-            let trigger = UNCalendarNotificationTrigger(dateMatching: Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: targetDates[i]), repeats: false) // TODO: remove seconds
-            let request = UNNotificationRequest(identifier: ids[i], content: content, trigger: trigger)
-            UNUserNotificationCenter.current().add(request, withCompletionHandler: { error in
-                if error != nil {
-                    print("Error with notifications")
-                }
-            })
-        }
-        let completeAction = UNNotificationAction(identifier: "Complete", title: "Complete", options: UNNotificationActionOptions(rawValue: 0))
-        let postpone15MinAction = UNNotificationAction(identifier: "Postpone15Minutes", title: "Postpone by 15 minutes", options: UNNotificationActionOptions(rawValue: 0))
-        let postpone30MinutesAction = UNNotificationAction(identifier: "Postpone30Minutes", title: "Postpone by 30 minutes", options: UNNotificationActionOptions(rawValue: 0))
-        let category = UNNotificationCategory(identifier: "Category", actions: [completeAction, postpone15MinAction, postpone30MinutesAction], intentIdentifiers: [], options: .customDismissAction)
-        UNUserNotificationCenter.current().setNotificationCategories([category])
-    }
-
-    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        switch response.actionIdentifier {
-        case "Complete":
-            completeTaskFromNotification(notification: response.notification)
-        case "Postpone15Minutes":
-            postponeNotification(minutes: 15, notification: response.notification)
-        case "Postpone30Minutes":
-            postponeNotification(minutes: 30, notification: response.notification)
-        default:
-            print("Unknown action")
-        }
-        completionHandler()
-    }
-
-    func completeTaskFromNotification(notification: UNNotification) {
-        let userInfo = notification.request.content.userInfo
-        let id = userInfo["id"] as! String
-        setDone(id: id)
-    }
-    
-    func postponeNotification(minutes: Double, notification: UNNotification) {
-        scheduleNotification(targetDate: Date().addingTimeInterval(minutes * 60), content: notification.request.content.mutableCopy() as! UNMutableNotificationContent, id: notification.request.identifier)
-    }
-    
-    func removeNotificationsById(id: String) {
-        let ids = [id + "_1", id + "_2", id + "_3"]
-        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ids) // delete old
-        UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: ids)
     }
 
     @objc
@@ -449,32 +351,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     }
 }
 
-extension ViewController {
-    func save(model: TaskModel) {
-        guard let appDelegate =
-            UIApplication.shared.delegate as? AppDelegate else {
-            return
-        }
-        let managedContext = appDelegate.persistentContainer.viewContext
-        let entity = NSEntityDescription.entity(forEntityName: "TaskCoreModel", in: managedContext)!
-        let task = NSManagedObject(entity: entity, insertInto: managedContext)
-        task.setValue(model.id, forKey: "id")
-        task.setValue(model.mainText, forKeyPath: "mainText")
-        task.setValue(model.isDone, forKeyPath: "isDone")
-        task.setValue(model.isPriority, forKey: "isPriority")
-        task.setValue(model.taskDate, forKey: "taskDate")
-        task.setValue(model.isAlarmSet, forKey: "isAlarmSet")
-        task.setValue(model.alarmDate, forKey: "alarmDate") // TODO: check if nil value saves correctly
-        do {
-            try managedContext.save()
-            if !model.isDone {
-                undoneTasks.append(task)
-            }
-        } catch let error as NSError {
-            print("Could not save. \(error), \(error.userInfo)")
-        }
-    }
-
+extension MainVC {
     func fetchUndoneTasks() {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             return
@@ -486,31 +363,6 @@ extension ViewController {
             undoneTasks = try managedContext.fetch(fetchRequest)
         } catch let error as NSError {
             print("Could not fetch. \(error), \(error.userInfo)")
-        }
-    }
-
-    func setDone(id: String) {
-        // removing alarms
-        removeNotificationsById(id: id)
-        
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-            return
-        }
-        let managedContext = appDelegate.persistentContainer.viewContext
-        let fetchRequest = NSFetchRequest<TaskCoreModel>(entityName: "TaskCoreModel")
-        fetchRequest.predicate = NSPredicate(format: "id = %@", id)
-        do {
-            let res = try managedContext.fetch(fetchRequest)
-            if !res.isEmpty {
-                res[0].setValue(true, forKey: "isDone")
-            }
-        } catch let error as NSError {
-            print("Could not fetch. \(error), \(error.userInfo)")
-        }
-        do {
-            try managedContext.save()
-        } catch {
-            print("Failed to save updated")
         }
     }
 }
