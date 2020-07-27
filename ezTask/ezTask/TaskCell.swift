@@ -48,6 +48,7 @@ class TaskCell: UITableViewCell {
 
     class alarm: UIView {
         var containerView: UIView!
+        var widthConstraint: NSLayoutConstraint!
         var label: UILabel!
         var image: UIImageView!
 
@@ -61,7 +62,7 @@ class TaskCell: UITableViewCell {
             self.containerView = UIView()
             self.label = UILabel()
             self.image = UIImageView(frame: CGRect(x: 0, y: 0, width: 14, height: 14))
-            
+
             super.init(frame: frame)
         }
 
@@ -90,7 +91,7 @@ class TaskCell: UITableViewCell {
             self.label.centerYAnchor.constraint(equalTo: self.containerView.centerYAnchor).isActive = true
             self.label.heightAnchor.constraint(equalToConstant: 20).isActive = true
         }
-        
+
         public func set(time: Date) {
             let formatter = DateFormatter()
             formatter.dateFormat = "HH:mm"
@@ -100,25 +101,25 @@ class TaskCell: UITableViewCell {
             self.containerView.backgroundColor = .green
             self.containerView.translatesAutoresizingMaskIntoConstraints = false
             self.containerView.heightAnchor.constraint(equalToConstant: 20).isActive = true
-            self.containerView.widthAnchor.constraint(equalToConstant: viewWidth()).isActive = true
+            self.widthConstraint = self.containerView.widthAnchor.constraint(equalToConstant: viewWidth())
+            self.widthConstraint.isActive = true
         }
-        
+
         public func unset() {
-            self.containerView.removeFromSuperview()
             self.label.text = ""
             self.label.layoutIfNeeded()
+            self.widthConstraint = self.containerView.widthAnchor.constraint(equalToConstant: 0)
+            self.widthConstraint.isActive = true
+            self.containerView.removeFromSuperview()
         }
 
         public func viewWidth() -> CGFloat {
-            if self.alpha == 0 {
-                return 0
-            }
+//            print(self.label.frame.width, self.image.frame.width)
             return self.label.frame.width + self.image.frame.width + 2 + 5 // margin between and left
         }
     }
 
     private var alarmView = alarm(frame: CGRect(), labelText: "privet")
-
 
     private let dayLabel: UILabel = {
         let label = UILabel()
@@ -136,7 +137,7 @@ class TaskCell: UITableViewCell {
         self.titleLabel.text = task.mainText
         self.id = task.id
         self.priorityIcon.alpha = task.isPriority ? 0.9 : 0
-        
+
         if task.taskDate.isToday() { // TODO: make it switch
             self.dayLabel.text = "Today"
         } else if task.taskDate.isTomorrow() {
@@ -146,10 +147,10 @@ class TaskCell: UITableViewCell {
             formatter.dateFormat = "dd MMMM"
             self.dayLabel.text = formatter.string(from: task.taskDate)
         }
-        if task.isAlarmSet {
-            if let alarmDate = task.alarmDate {
-                alarmView.set(time: alarmDate)
-            }
+        if task.isAlarmSet, let alarmDate = task.alarmDate {
+            self.alarmView.set(time: alarmDate)
+        } else {
+            alarmView.unset()
         }
     }
 
@@ -175,7 +176,7 @@ class TaskCell: UITableViewCell {
         titleLabel.leadingAnchor.constraint(equalTo: checkbox.trailingAnchor, constant: 12).isActive = true
         titleLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -50).isActive = true
         titleLabel.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor).isActive = true
-        
+
         dayLabel.translatesAutoresizingMaskIntoConstraints = false
         dayLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
         dayLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor, constant: 0).isActive = true
@@ -207,7 +208,7 @@ class TaskCell: UITableViewCell {
         super.prepareForReuse()
         titleLabel.text = ""
         checkbox.image = UIImage(named: "square")
-        alarmView.unset()
+//        alarmView.unset()
     }
 
     override func awakeFromNib() {

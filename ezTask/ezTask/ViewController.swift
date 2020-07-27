@@ -47,7 +47,7 @@ struct Reminder {
     let id: String
 }
 
-class ViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource, TableViewCellDelegate {
+class ViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource, TableViewCellDelegate, UNUserNotificationCenterDelegate {
     // Var
 
     var lastOffsetWithSound: CGFloat = 0
@@ -200,7 +200,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     func checkboxTapped(cell: TaskCell) {
         if let indexPath = tasksTable.indexPath(for: cell) {
             if let id = cell.id {
-                setDone(id: id)
+                setDone(id: id.uuidString)
             }
             undoneTasks.remove(at: indexPath.row)
             tasksTable.deleteRows(at: [indexPath], with: .fade)
@@ -222,6 +222,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         fetchUndoneTasks()
+//        tasksTable.reloadData() // TODO:call every time view is on the screen
     }
 
     @objc
@@ -230,7 +231,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         generator.impactOccurred()
         let newVC = NewTaskVC()
         newVC.returnTask = { task in
-            print("-----RETURNED TASK-----\n", task, "\n", "-----RETURNED TASK-----\n\n")
+            print("-----RETURNED TASK-----\n", task)
             if task.mainText.isEmpty {
                 return
             }
@@ -243,41 +244,75 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
 
     func DidReceivedNewTask(task: TaskModel) {
         if task.isAlarmSet {
-            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound], completionHandler: { success, error in
-                if success {
-                    // schedule
-                } else if error != nil {
-                    print("error occured")
-                }
-            })
-            setupReminder()
+            setupReminder(task: task)
         }
         self.insertNewTask(task: task)
         let generator = UINotificationFeedbackGenerator()
         generator.notificationOccurred(.success)
     }
 
-    func setupReminder() {
+    func setupReminder(task: TaskModel) {
         let content = UNMutableNotificationContent()
-        content.title = "Hello world"
+        content.title = task.mainText
         content.sound = .default
-        content.body = "Whats upp my boiz"
-        content.badge = 1
         content.categoryIdentifier = "Category"
-
-        let targetDate = Date().addingTimeInterval(10)
-        let trigger = UNCalendarNotificationTrigger(dateMatching: Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: targetDate), repeats: false)
-        let request = UNNotificationRequest(identifier: "some_id", content: content, trigger: trigger)
-        UNUserNotificationCenter.current().add(request, withCompletionHandler: { error in
-            if error != nil {
-                print("Error with notifications")
-            } else {
-                print("Notification has been set")
-            }
-        })
-        let action = UNNotificationAction(identifier: "Complete", title: "Complete", options: .foreground)
-        let category = UNNotificationCategory(identifier: "Category", actions: [action], intentIdentifiers: [], options: [])
+        content.userInfo = ["id" : task.id.uuidString]
+        content.badge = 1 // TODO: fix
+        let targetDate = task.alarmDate!
+        scheduleNotification(targetDate: targetDate, content: content, id: task.id.uuidString)
+    }
+    
+    func scheduleNotification(targetDate: Date, content: UNMutableNotificationContent, id: String) {
+        UNUserNotificationCenter.current().delegate = self
+        let userInfo = content.userInfo
+        let id = userInfo["id"] as! String
+        removeNotificationsById(id: id)
+        let ids = [id + "_1", id + "_2", id + "_3"]
+        let targetDates = [targetDate, targetDate.addingTimeInterval(15 * 60), targetDate.addingTimeInterval(30 * 60)]
+        for i in 0..<ids.count {
+            let trigger = UNCalendarNotificationTrigger(dateMatching: Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: targetDates[i]), repeats: false) // TODO: remove seconds
+            let request = UNNotificationRequest(identifier: ids[i], content: content, trigger: trigger)
+            UNUserNotificationCenter.current().add(request, withCompletionHandler: { error in
+                if error != nil {
+                    print("Error with notifications")
+                }
+            })
+        }
+        let completeAction = UNNotificationAction(identifier: "Complete", title: "Complete", options: UNNotificationActionOptions(rawValue: 0))
+        let postpone15MinAction = UNNotificationAction(identifier: "Postpone15Minutes", title: "Postpone by 15 minutes", options: UNNotificationActionOptions(rawValue: 0))
+        let postpone30MinutesAction = UNNotificationAction(identifier: "Postpone30Minutes", title: "Postpone by 30 minutes", options: UNNotificationActionOptions(rawValue: 0))
+        let category = UNNotificationCategory(identifier: "Category", actions: [completeAction, postpone15MinAction, postpone30MinutesAction], intentIdentifiers: [], options: .customDismissAction)
         UNUserNotificationCenter.current().setNotificationCategories([category])
+    }
+
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        switch response.actionIdentifier {
+        case "Complete":
+            completeTaskFromNotification(notification: response.notification)
+        case "Postpone15Minutes":
+            postponeNotification(minutes: 15, notification: response.notification)
+        case "Postpone30Minutes":
+            postponeNotification(minutes: 30, notification: response.notification)
+        default:
+            print("Unknown action")
+        }
+        completionHandler()
+    }
+
+    func completeTaskFromNotification(notification: UNNotification) {
+        let userInfo = notification.request.content.userInfo
+        let id = userInfo["id"] as! String
+        setDone(id: id)
+    }
+    
+    func postponeNotification(minutes: Double, notification: UNNotification) {
+        scheduleNotification(targetDate: Date().addingTimeInterval(minutes * 60), content: notification.request.content.mutableCopy() as! UNMutableNotificationContent, id: notification.request.identifier)
+    }
+    
+    func removeNotificationsById(id: String) {
+        let ids = [id + "_1", id + "_2", id + "_3"]
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ids) // delete old
+        UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: ids)
     }
 
     @objc
@@ -454,13 +489,16 @@ extension ViewController {
         }
     }
 
-    func setDone(id: UUID) {
+    func setDone(id: String) {
+        // removing alarms
+        removeNotificationsById(id: id)
+        
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             return
         }
         let managedContext = appDelegate.persistentContainer.viewContext
         let fetchRequest = NSFetchRequest<TaskCoreModel>(entityName: "TaskCoreModel")
-        fetchRequest.predicate = NSPredicate(format: "id = %@", id.uuidString)
+        fetchRequest.predicate = NSPredicate(format: "id = %@", id)
         do {
             let res = try managedContext.fetch(fetchRequest)
             if !res.isEmpty {

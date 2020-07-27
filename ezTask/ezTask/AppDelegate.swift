@@ -26,7 +26,6 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         window.rootViewController = ViewController()
         window.makeKeyAndVisible()
         self.window = window
-        
     }
     
     lazy var persistentContainer: NSPersistentContainer = {
@@ -70,5 +69,9 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
                 fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
             }
         }
+    }
+    
+    func applicationWillResignActive(_ application: UIApplication) {
+        UIApplication.shared.applicationIconBadgeNumber = 0
     }
 }

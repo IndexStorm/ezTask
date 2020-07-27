@@ -220,7 +220,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
         let today = formatter.string(from: Date())
         verifyFiveMinutes()
         if formattedDate == today {
-            timePicker.minimumDate = Date().addingTimeInterval(1 * 60)
+            timePicker.minimumDate = Date().addingTimeInterval(2 * 60)
             timePicker.maximumDate = Date().endOfDay
             if timePicker.date > timePicker.minimumDate! {
                 timePickerCancelPressed()
