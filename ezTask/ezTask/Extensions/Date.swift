@@ -38,8 +38,18 @@ extension Date {
     public func isToday() -> Bool {
         return self.startOfDay == Date().startOfDay
     }
+    
+    public func addDays(add days: Int) -> Date {
+        return Calendar.current.date(byAdding: .day, value: days, to: noon)!
+    }
 
     public func isTomorrow() -> Bool {
         return self.startOfDay == Date().dayAfter.startOfDay
+    }
+    
+    public func dayNameOfWeek() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "EE"
+        return dateFormatter.string(from: self)
     }
 }

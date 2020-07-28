@@ -15,7 +15,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     // Var
 
     var lastOffsetWithSound: CGFloat = 0
-    var chosenDate: Int = 0
+    var chosenIndex: Int = 0
 
     // Views
 
@@ -34,8 +34,8 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
     let dateLabel: UILabel = {
         let label = UILabel()
-        label.text = "July 18, 2020"
-        label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
+        label.text = ""
+        label.font = UIFont.systemFont(ofSize: 22, weight: .bold)
         label.textColor = .white
         label.textAlignment = .left
 
@@ -44,8 +44,8 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
     let dayLabel: UILabel = {
         let label = UILabel()
-        label.text = "Today"
-        label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
+        label.text = ""
+        label.font = UIFont.systemFont(ofSize: 22, weight: .bold)
         label.textColor = .white
         label.textAlignment = .left
 
@@ -89,12 +89,16 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     private var daysCollectionView: UICollectionView?
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 60
+        return 365
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = daysCollectionView?.dequeueReusableCell(withReuseIdentifier: DayCell.identifier, for: indexPath) as! DayCell
-        cell.configure(name: "Mon", number: indexPath[1] + 1, busy: true, isChosen: indexPath[1] == chosenDate)
+
+        let date = Date().addDays(add: indexPath[1])
+        // TODO: keep busy days as a set
+
+        cell.configure(name: date.dayNameOfWeek(), number: date.day, busy: true, isChosen: indexPath[1] == chosenIndex)
         return cell
     }
 
@@ -102,12 +106,13 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         guard let cell = collectionView.cellForItem(at: indexPath) else {
             return
         }
-        let generator = UIImpactFeedbackGenerator(style: .medium)
-        generator.impactOccurred()
+        chosenIndex = indexPath[1]
+        updateTopLabels(date: Date().addDays(add: chosenIndex))
         cell.contentView.alpha = 1
-        chosenDate = indexPath[1]
         collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
         collectionView.reloadData()
+        let generator = UIImpactFeedbackGenerator(style: .medium)
+        generator.impactOccurred()
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -176,20 +181,31 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     private func insertNewTask(task: TaskModel) {
         save(model: task, completion: {
             fetchUndoneTasks()
+            tasksTable.insertRows(at: [IndexPath(row: 0, section: 0)], with: .top)
         })
-        tasksTable.insertRows(at: [IndexPath(row: 0, section: 0)], with: .top)
     }
+
+    // override
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setup()
+        updateTopLabels(date: Date().addDays(add: chosenIndex))
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        fetchUndoneTasks()
+        fetchUndoneTasks() // TODO: why it is here?
 //        tasksTable.reloadData() // TODO:call every time view is on the screen
     }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        UIView.animate(views: [dateLabel, dayLabel, calendarOrList], animations: [AnimationType.from(direction: .top, offset: 10.0)], initialAlpha: 0, finalAlpha: 1, duration: 0.5)
+        UIView.animate(views: tasksTable.visibleCells, animations: [AnimationType.from(direction: .top, offset: 10.0)], initialAlpha: 0, finalAlpha: 1, duration: 0.5)
+    }
+
+    // @objc
 
     @objc
     func newTask(_ sender: AnyObject) {
@@ -208,7 +224,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         })
     }
 
-    func DidReceivedNewTask(task: TaskModel) {
+    func DidReceivedNewTask(task: TaskModel) { // TODO: make global
         if task.isAlarmSet {
             setupReminder(task: task)
         }
@@ -222,7 +238,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         guard let myCollection = daysCollectionView else {
             return
         }
-        self.chosenDate = 0
+        self.chosenIndex = 0
         UIView.animate(withDuration: 1) {
             myCollection.setContentOffset(CGPoint.zero, animated: true)
         }
@@ -235,11 +251,20 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     @objc
     func calendarOrListPressed() {}
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        // TODO: fix animation
-        UIView.animate(views: [dateLabel, dayLabel, calendarOrList], animations: [AnimationType.from(direction: .top, offset: 10.0)], initialAlpha: 0, finalAlpha: 1, duration: 0.5)
-        UIView.animate(views: tasksTable.visibleCells, animations: [AnimationType.from(direction: .top, offset: 10.0)], initialAlpha: 0, finalAlpha: 1, duration: 0.5)
+    func updateTopLabels(date: Date) {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM d, yyyy"
+        let formattedDate = formatter.string(from: date)
+        dateLabel.text = formattedDate
+        if date.isToday() { // TODO: make it switch
+            dayLabel.text = "Today"
+        } else if date.isTomorrow() {
+            dayLabel.text = "Tomorrow"
+        } else {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "EEEE"
+            dayLabel.text = formatter.string(from: date)
+        }
     }
 
     func setup() {
@@ -263,7 +288,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         dateLabel.topAnchor.constraint(equalTo: topView.safeAreaLayoutGuide.topAnchor, constant: 10).isActive = true
         dateLabel.heightAnchor.constraint(equalToConstant: 30).isActive = true
         dateLabel.leadingAnchor.constraint(equalTo: topView.leadingAnchor, constant: 21).isActive = true
-        dateLabel.widthAnchor.constraint(equalToConstant: 200).isActive = true
+        dateLabel.widthAnchor.constraint(equalToConstant: 230).isActive = true // Test on different languages
 
         self.view.addSubview(dayLabel)
         dayLabel.translatesAutoresizingMaskIntoConstraints = false

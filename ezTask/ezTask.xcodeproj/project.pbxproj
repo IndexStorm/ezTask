@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		E60DFBD124C2121600043A76 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E60DFBD024C2121600043A76 /* AppDelegate.swift */; };
-		E60DFBD524C2121600043A76 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E60DFBD424C2121600043A76 /* ViewController.swift */; };
+		E60DFBD524C2121600043A76 /* MainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E60DFBD424C2121600043A76 /* MainVC.swift */; };
 		E60DFBDA24C2121B00043A76 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E60DFBD924C2121B00043A76 /* Assets.xcassets */; };
 		E60DFBDD24C2121B00043A76 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E60DFBDB24C2121B00043A76 /* LaunchScreen.storyboard */; };
 		E656C30224C771FF00FCF85E /* NewTaskVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E656C30124C771FF00FCF85E /* NewTaskVC.swift */; };
@@ -25,7 +25,7 @@
 /* Begin PBXFileReference section */
 		E60DFBCD24C2121600043A76 /* ezTask.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ezTask.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E60DFBD024C2121600043A76 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		E60DFBD424C2121600043A76 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		E60DFBD424C2121600043A76 /* MainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainVC.swift; sourceTree = "<group>"; };
 		E60DFBD924C2121B00043A76 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E60DFBDC24C2121B00043A76 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E60DFBDE24C2121B00043A76 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -71,17 +71,15 @@
 			isa = PBXGroup;
 			children = (
 				E60DFBD024C2121600043A76 /* AppDelegate.swift */,
-				E60DFBD424C2121600043A76 /* ViewController.swift */,
+				E60DFBD424C2121600043A76 /* MainVC.swift */,
 				E68E3F5024CF34FE00E7EA7F /* Structs */,
-				E68E3F4D24CF34AA00E7EA7F /* CoreData */,
+				E68E3F4D24CF34AA00E7EA7F /* Storage */,
 				E68E3F4324CF2FE700E7EA7F /* Notifications */,
-				E68450D324C8924F005D72A5 /* CoreDataModel.xcdatamodeld */,
 				E6D6EEEF24C37CE300AF82A3 /* TaskCell.swift */,
 				E6D6EEED24C2D94400AF82A3 /* DayCell.swift */,
 				E656C30124C771FF00FCF85E /* NewTaskVC.swift */,
 				E68E3F5324CF38D600E7EA7F /* Extensions */,
-				E60DFBD924C2121B00043A76 /* Assets.xcassets */,
-				E60DFBDB24C2121B00043A76 /* LaunchScreen.storyboard */,
+				E68E3F5624D0103E00E7EA7F /* Resources */,
 				E60DFBDE24C2121B00043A76 /* Info.plist */,
 			);
 			path = ezTask;
@@ -95,12 +93,13 @@
 			path = Notifications;
 			sourceTree = "<group>";
 		};
-		E68E3F4D24CF34AA00E7EA7F /* CoreData */ = {
+		E68E3F4D24CF34AA00E7EA7F /* Storage */ = {
 			isa = PBXGroup;
 			children = (
+				E68450D324C8924F005D72A5 /* CoreDataModel.xcdatamodeld */,
 				E68E3F4E24CF34BA00E7EA7F /* CoreData.swift */,
 			);
-			path = CoreData;
+			path = Storage;
 			sourceTree = "<group>";
 		};
 		E68E3F5024CF34FE00E7EA7F /* Structs */ = {
@@ -117,6 +116,15 @@
 				E68E3F5424CF38E900E7EA7F /* Date.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		E68E3F5624D0103E00E7EA7F /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				E60DFBD924C2121B00043A76 /* Assets.xcassets */,
+				E60DFBDB24C2121B00043A76 /* LaunchScreen.storyboard */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -200,7 +208,7 @@
 				E68E3F4524CF300300E7EA7F /* LocalNotifications.swift in Sources */,
 				E6D6EEF024C37CE300AF82A3 /* TaskCell.swift in Sources */,
 				E68E3F5224CF352600E7EA7F /* TaskModel.swift in Sources */,
-				E60DFBD524C2121600043A76 /* ViewController.swift in Sources */,
+				E60DFBD524C2121600043A76 /* MainVC.swift in Sources */,
 				E68E3F4F24CF34BA00E7EA7F /* CoreData.swift in Sources */,
 				E656C30224C771FF00FCF85E /* NewTaskVC.swift in Sources */,
 				E6D6EEEE24C2D94400AF82A3 /* DayCell.swift in Sources */,

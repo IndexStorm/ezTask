@@ -315,7 +315,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
     }
 
     func dismiss() {
-        // TODO: add dismiss cross button
+        // TODO: add dismiss cross button to the top of view
         self.dismiss(animated: true, completion: nil)
     }
 
@@ -414,4 +414,19 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
         }
         return true
     }
+
+    // TODO: placeholder. Now it saves with placeholder as a mainText
+//    func textViewDidBeginEditing(_ textView: UITextView) {
+//        if textView.alpha == 0.25 { // TODO: fix 0.25 using colors
+//            textView.text = nil
+//            textView.alpha = 1
+//        }
+//    }
+//
+//    func textViewDidEndEditing(_ textView: UITextView) {
+//        if textView.text.isEmpty {
+//            textView.text = "New task"
+//            textView.alpha = 0.25
+//        }
+//    }
 }
