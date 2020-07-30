@@ -16,6 +16,8 @@ class TaskCell: UITableViewCell {
     // Var
     var delegate: TableViewCellDelegate?
     public var id: UUID?
+    var alarmWidth: NSLayoutConstraint!
+    var alarmWidth2: NSLayoutConstraint!
 
     static let identifier = "TaskCell"
 
@@ -41,16 +43,18 @@ class TaskCell: UITableViewCell {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Finish the app"
-        label.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
+        label.font = UIFont.systemFont(ofSize: 17, weight: .medium)
+        label.lineBreakMode = .byWordWrapping
+        label.numberOfLines = 0
 
         return label
     }()
 
     class alarm: UIView {
         var containerView: UIView!
-        var widthConstraint: NSLayoutConstraint!
         var label: UILabel!
         var image: UIImageView!
+        var isVisible = false
 
         convenience init(frame: CGRect, labelText: String) {
             self.init(frame: frame)
@@ -91,6 +95,7 @@ class TaskCell: UITableViewCell {
         }
 
         public func set(time: Date) {
+            self.isVisible = true
             if time < Date() {
                 self.label.text = "overdue"
                 self.label.textColor = .systemRed
@@ -102,23 +107,29 @@ class TaskCell: UITableViewCell {
                 self.label.textColor = .systemYellow
                 self.image.tintColor = .systemYellow
             }
+            self.label.setNeedsLayout()
             self.label.layoutIfNeeded()
+
             self.addSubview(containerView)
             self.containerView.translatesAutoresizingMaskIntoConstraints = false
-            self.containerView.heightAnchor.constraint(equalToConstant: 20).isActive = true
-            self.widthConstraint = self.containerView.widthAnchor.constraint(equalToConstant: viewWidth())
-            self.widthConstraint.isActive = true
+            self.containerView.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
+            self.containerView.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
+            self.containerView.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
+            self.containerView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
         }
 
         public func unset() {
+            self.isVisible = false
             self.label.text = ""
+            self.label.setNeedsLayout()
             self.label.layoutIfNeeded()
-            self.widthConstraint = self.containerView.widthAnchor.constraint(equalToConstant: 0)
-            self.widthConstraint.isActive = true
             self.containerView.removeFromSuperview()
         }
 
         public func viewWidth() -> CGFloat {
+            if !self.isVisible {
+                return 0
+            }
             return self.label.frame.width + self.image.frame.width + 2 + 5 // margin between and left
         }
     }
@@ -151,46 +162,22 @@ class TaskCell: UITableViewCell {
             formatter.dateFormat = "dd MMMM"
             self.dayLabel.text = formatter.string(from: task.taskDate)
         }
-        
+
         if task.isAlarmSet, let alarmDate = task.alarmDate {
-            self.alarmView.set(time: alarmDate)
+            alarmView.set(time: alarmDate)
+            alarmWidth?.isActive = false
+            alarmWidth2?.isActive = false
+            alarmWidth2 = alarmView.widthAnchor.constraint(equalToConstant: alarmView.viewWidth())
+            alarmWidth2.isActive = true
         } else {
             alarmView.unset()
+            alarmWidth2?.isActive = false
+            alarmWidth?.isActive = true
         }
     }
 
     override func layoutSubviews() {
         super.layoutSubviews()
-
-        priorityIcon.translatesAutoresizingMaskIntoConstraints = false
-        priorityIcon.heightAnchor.constraint(equalToConstant: 10).isActive = true
-        priorityIcon.widthAnchor.constraint(equalToConstant: 10).isActive = true
-        priorityIcon.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 20).isActive = true
-        priorityIcon.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor).isActive = true
-
-        checkbox.translatesAutoresizingMaskIntoConstraints = false
-        checkbox.heightAnchor.constraint(equalToConstant: 22).isActive = true
-        checkbox.widthAnchor.constraint(equalToConstant: 22).isActive = true
-        checkbox.leadingAnchor.constraint(equalTo: priorityIcon.trailingAnchor, constant: 12).isActive = true
-        checkbox.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor).isActive = true
-        checkbox.isUserInteractionEnabled = true
-        checkbox.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(checkboxTapped)))
-
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
-        titleLabel.leadingAnchor.constraint(equalTo: checkbox.trailingAnchor, constant: 12).isActive = true
-        titleLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -50).isActive = true
-        titleLabel.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor).isActive = true
-
-        dayLabel.translatesAutoresizingMaskIntoConstraints = false
-        dayLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
-        dayLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor, constant: 0).isActive = true
-        dayLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor).isActive = true
-
-        alarmView.translatesAutoresizingMaskIntoConstraints = false
-        alarmView.leadingAnchor.constraint(equalTo: dayLabel.trailingAnchor, constant: 5).isActive = true
-        alarmView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor).isActive = true
-        alarmView.backgroundColor = .black
     }
 
     @objc
@@ -205,14 +192,47 @@ class TaskCell: UITableViewCell {
         self.contentView.addSubview(priorityIcon)
         self.contentView.addSubview(checkbox)
         self.contentView.addSubview(titleLabel)
-        self.contentView.addSubview(alarmView)
         self.contentView.addSubview(dayLabel)
+        self.contentView.addSubview(alarmView)
+
+        priorityIcon.translatesAutoresizingMaskIntoConstraints = false
+        priorityIcon.heightAnchor.constraint(equalToConstant: 10).isActive = true
+        priorityIcon.widthAnchor.constraint(equalToConstant: 10).isActive = true
+        priorityIcon.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 24).isActive = true
+        priorityIcon.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 16).isActive = true
+
+        checkbox.translatesAutoresizingMaskIntoConstraints = false
+        checkbox.heightAnchor.constraint(equalToConstant: 22).isActive = true
+        checkbox.widthAnchor.constraint(equalToConstant: 22).isActive = true
+        checkbox.leadingAnchor.constraint(equalTo: priorityIcon.trailingAnchor, constant: 10).isActive = true
+        checkbox.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 10).isActive = true
+        checkbox.isUserInteractionEnabled = true
+        checkbox.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(checkboxTapped)))
+
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.leadingAnchor.constraint(equalTo: checkbox.trailingAnchor, constant: 10).isActive = true
+        titleLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -50).isActive = true
+        titleLabel.topAnchor.constraint(equalTo: checkbox.topAnchor, constant: 0).isActive = true
+
+        dayLabel.translatesAutoresizingMaskIntoConstraints = false
+        dayLabel.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor).isActive = true
+        dayLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
+        dayLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor, constant: 0).isActive = true
+        dayLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor).isActive = true
+
+        alarmView.translatesAutoresizingMaskIntoConstraints = false
+        alarmView.leadingAnchor.constraint(equalTo: dayLabel.trailingAnchor, constant: 5).isActive = true
+        alarmView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor).isActive = true
+        alarmView.heightAnchor.constraint(equalToConstant: 20).isActive = true
+        alarmWidth = alarmView.widthAnchor.constraint(equalToConstant: 0)
+        alarmWidth.isActive = true
     }
 
     override func prepareForReuse() {
         super.prepareForReuse()
         titleLabel.text = ""
         checkbox.image = UIImage(named: "square")
+        alarmView.unset()
     }
 
     override func awakeFromNib() {

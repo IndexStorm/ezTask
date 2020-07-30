@@ -50,7 +50,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
 
     private let mainText: UITextView = {
         let text = UITextView()
-        text.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+        text.font = UIFont.systemFont(ofSize: 18, weight: .medium)
         text.isScrollEnabled = false
 
         return text

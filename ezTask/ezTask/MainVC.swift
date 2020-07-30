@@ -51,13 +51,25 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
         return label
     }()
+    
+    let menuBtn: UIImageView = {
+        let image = UIImageView()
+        image.image = UIImage(named: "menu")
+        image.contentMode = .scaleAspectFit
+        image.tintColor = .white
+        
+        return image
+    }()
 
     let backTodayBtn: UIButton = {
-        // TODO: add arrow icon
         let btn = UIButton(type: .system)
         btn.setTitle("Today", for: .normal)
         btn.backgroundColor = .white
         btn.tintColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
+        let image = UIImage(named: "left_arrow")
+        btn.setImage(image, for: .normal)
+        btn.imageView?.contentMode = .scaleAspectFit
+        btn.imageEdgeInsets = UIEdgeInsets(top: 7.5, left: -5, bottom: 7.5, right: 0)
         btn.layer.cornerRadius = 13
         btn.layer.shadowColor = UIColor.black.cgColor
         btn.layer.shadowOpacity = 0.3
@@ -94,11 +106,10 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = daysCollectionView?.dequeueReusableCell(withReuseIdentifier: DayCell.identifier, for: indexPath) as! DayCell
-
         let date = Date().addDays(add: indexPath[1])
         // TODO: keep busy days as a set
 
-        cell.configure(name: date.dayNameOfWeek(), number: date.day, busy: true, isChosen: indexPath[1] == chosenIndex)
+        cell.configure(name: date.dayNameOfWeek(), number: date.day, busy: checkDayIsBusy(date: date), isChosen: indexPath[1] == chosenIndex)
         return cell
     }
 
@@ -108,6 +119,9 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         }
         chosenIndex = indexPath[1]
         updateTopLabels(date: Date().addDays(add: chosenIndex))
+        getUndoneTasksForDay()
+        tasksTable.reloadData()
+        animateTable()
         cell.contentView.alpha = 1
         collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
         collectionView.reloadData()
@@ -144,22 +158,43 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     var refreshControl = UIRefreshControl()
 
     var undoneTasks: [NSManagedObject] = []
+    var undoneTasksForDay: [NSManagedObject] = []
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return undoneTasks.count
+        return undoneTasksForDay.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TaskCell", for: indexPath) as! TaskCell
-        let task = undoneTasks[undoneTasks.count - indexPath.row - 1] // TODO: fix by sorting
+        let task = undoneTasksForDay[undoneTasksForDay.count - indexPath.row - 1] // TODO: fix by sorting
         let model = TaskModel(task: task)
         cell.configure(task: model)
         cell.delegate = self
+        cell.layoutIfNeeded()
+        
         return cell
     }
 
+    func getUndoneTasksForDay() {
+        let date = Date().addDays(add: chosenIndex)
+        var res = [NSManagedObject]()
+        for task in undoneTasks {
+            let model = TaskModel(task: task)
+            if date.isToday(), model.taskDate.startOfDay <= date.startOfDay {
+                res.append(task)
+            } else if date.startOfDay == model.taskDate.startOfDay {
+                res.append(task)
+            }
+        }
+        undoneTasksForDay = res
+    }
+
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 60
+        return UITableView.automaticDimension
+    }
+    
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 60.0
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -171,8 +206,9 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
             if let id = cell.id {
                 setDone(id: id.uuidString)
             }
-            undoneTasks.remove(at: indexPath.row)
+            fetchUndoneTasks()
             tasksTable.deleteRows(at: [indexPath], with: .fade)
+            daysCollectionView?.reloadData()
             let generator = UIImpactFeedbackGenerator(style: .light)
             generator.impactOccurred()
         }
@@ -181,7 +217,10 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     private func insertNewTask(task: TaskModel) {
         save(model: task, completion: {
             fetchUndoneTasks()
-            tasksTable.insertRows(at: [IndexPath(row: 0, section: 0)], with: .top)
+            if task.taskDate.startOfDay == Date().addDays(add: chosenIndex).startOfDay { // on current page
+                tasksTable.insertRows(at: [IndexPath(row: 0, section: 0)], with: .top)
+            }
+            daysCollectionView?.reloadData()
         })
     }
 
@@ -202,6 +241,10 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         UIView.animate(views: [dateLabel, dayLabel, calendarOrList], animations: [AnimationType.from(direction: .top, offset: 10.0)], initialAlpha: 0, finalAlpha: 1, duration: 0.5)
+        animateTable()
+    }
+
+    func animateTable() {
         UIView.animate(views: tasksTable.visibleCells, animations: [AnimationType.from(direction: .top, offset: 10.0)], initialAlpha: 0, finalAlpha: 1, duration: 0.5)
     }
 
@@ -267,6 +310,19 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         }
     }
 
+    func checkDayIsBusy(date: Date) -> Bool { // TODO: move this function
+        for task in undoneTasks {
+            let model = TaskModel(task: task)
+            if model.taskDate.startOfDay == date.startOfDay {
+                return true
+            }
+            if date.isToday(), model.taskDate.startOfDay < date.startOfDay {
+                return true
+            }
+        }
+        return false
+    }
+
     func setup() {
         self.view.backgroundColor = .white
 
@@ -283,12 +339,19 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         topView.leadingAnchor.constraint(equalTo: topView.superview!.leadingAnchor, constant: 0).isActive = true
         topView.trailingAnchor.constraint(equalTo: topView.superview!.trailingAnchor, constant: 0).isActive = true
 
+        self.view.addSubview(menuBtn)
+        menuBtn.translatesAutoresizingMaskIntoConstraints = false
+        menuBtn.topAnchor.constraint(equalTo: topView.safeAreaLayoutGuide.topAnchor, constant: 0).isActive = true
+        menuBtn.heightAnchor.constraint(equalToConstant: 20).isActive = true
+        menuBtn.widthAnchor.constraint(equalToConstant: 20).isActive = true
+        menuBtn.leadingAnchor.constraint(equalTo: topView.leadingAnchor, constant: 21).isActive = true
+        
         self.view.addSubview(dateLabel)
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
-        dateLabel.topAnchor.constraint(equalTo: topView.safeAreaLayoutGuide.topAnchor, constant: 10).isActive = true
+        dateLabel.topAnchor.constraint(equalTo: menuBtn.bottomAnchor, constant: 0).isActive = true
         dateLabel.heightAnchor.constraint(equalToConstant: 30).isActive = true
         dateLabel.leadingAnchor.constraint(equalTo: topView.leadingAnchor, constant: 21).isActive = true
-        dateLabel.widthAnchor.constraint(equalToConstant: 230).isActive = true // Test on different languages
+        dateLabel.widthAnchor.constraint(equalToConstant: 230).isActive = true // TODO: Test on different languages
 
         self.view.addSubview(dayLabel)
         dayLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -303,10 +366,11 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
             return
         }
         myCollection.translatesAutoresizingMaskIntoConstraints = false
-        myCollection.heightAnchor.constraint(equalToConstant: 53).isActive = true
+        myCollection.heightAnchor.constraint(equalToConstant: 55).isActive = true
         myCollection.leadingAnchor.constraint(equalTo: topView.leadingAnchor, constant: 0).isActive = true
         myCollection.trailingAnchor.constraint(equalTo: topView.trailingAnchor, constant: 0).isActive = true
         myCollection.topAnchor.constraint(equalTo: dayLabel.bottomAnchor, constant: 16).isActive = true
+//        myCollection.backgroundColor = .red
 
         createTable()
 
@@ -318,6 +382,8 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         tasksTable.separatorStyle = .none
         tasksTable.contentInset.top = 10
         tasksTable.contentInset.bottom = 10
+        tasksTable.showsHorizontalScrollIndicator = false
+        tasksTable.showsVerticalScrollIndicator = false // TODO: make tasksTable not transparent
 
         let attributes = [NSAttributedString.Key.foregroundColor: UIColor.green, NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14)]
         refreshControl.attributedTitle = NSAttributedString(string: "Pull to add a new task", attributes: attributes)
@@ -328,7 +394,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
         self.view.addSubview(backTodayBtn)
         backTodayBtn.translatesAutoresizingMaskIntoConstraints = false
-        backTodayBtn.widthAnchor.constraint(equalToConstant: 70).isActive = true
+        backTodayBtn.widthAnchor.constraint(equalToConstant: 80).isActive = true
         backTodayBtn.heightAnchor.constraint(equalToConstant: 26).isActive = true
         backTodayBtn.centerYAnchor.constraint(equalTo: topView.bottomAnchor).isActive = true
         backTodayBtn.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 26).isActive = true
@@ -386,6 +452,7 @@ extension MainVC {
         fetchRequest.predicate = NSPredicate(format: "isDone = false")
         do {
             undoneTasks = try managedContext.fetch(fetchRequest)
+            getUndoneTasksForDay()
         } catch let error as NSError {
             print("Could not fetch. \(error), \(error.userInfo)")
         }
