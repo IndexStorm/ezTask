@@ -51,13 +51,13 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
         return label
     }()
-    
+
     let menuBtn: UIImageView = {
         let image = UIImageView()
         image.image = UIImage(named: "menu")
         image.contentMode = .scaleAspectFit
         image.tintColor = .white
-        
+
         return image
     }()
 
@@ -119,7 +119,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         }
         chosenIndex = indexPath[1]
         updateTopLabels(date: Date().addDays(add: chosenIndex))
-        getUndoneTasksForDay()
+        fetchTasks()
         tasksTable.reloadData()
         animateTable()
         cell.contentView.alpha = 1
@@ -160,18 +160,26 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     var undoneTasks: [NSManagedObject] = []
     var undoneTasksForDay: [NSManagedObject] = []
 
+    var doneTasks: [NSManagedObject] = []
+    var doneTasksForDay: [NSManagedObject] = []
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return undoneTasksForDay.count
+        return undoneTasksForDay.count + doneTasksForDay.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TaskCell", for: indexPath) as! TaskCell
-        let task = undoneTasksForDay[undoneTasksForDay.count - indexPath.row - 1] // TODO: fix by sorting
+        var task: NSManagedObject!
+        if indexPath.row < undoneTasksForDay.count {
+            task = undoneTasksForDay[undoneTasksForDay.count - indexPath.row - 1] // TODO: fix by sorting
+        } else {
+            task = doneTasksForDay[doneTasksForDay.count - indexPath.row + undoneTasksForDay.count - 1] // TODO: fix by sorting
+        }
         let model = TaskModel(task: task)
         cell.configure(task: model)
         cell.delegate = self
         cell.layoutIfNeeded()
-        
+
         return cell
     }
 
@@ -189,10 +197,22 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         undoneTasksForDay = res
     }
 
+    func getDoneTasksForDay() {
+        let date = Date().addDays(add: chosenIndex)
+        var res = [NSManagedObject]()
+        for task in doneTasks {
+            let model = TaskModel(task: task)
+            if date.startOfDay == model.taskDate.startOfDay {
+                res.append(task)
+            }
+        }
+        doneTasksForDay = res
+    }
+
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
-    
+
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60.0
     }
@@ -204,19 +224,22 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     func checkboxTapped(cell: TaskCell) {
         if let indexPath = tasksTable.indexPath(for: cell) {
             if let id = cell.id {
-                setDone(id: id.uuidString)
+                setDone(id: id.uuidString, completion: {
+                    fetchTasks()
+                    print(undoneTasksForDay.count, doneTasksForDay.count)
+                    tasksTable.moveRow(at: indexPath, to: IndexPath(row: undoneTasksForDay.count, section: 0))
+                    cell.alarmView.unset() // TODO: add method to mark as done
+                    daysCollectionView?.reloadData()
+                    let generator = UIImpactFeedbackGenerator(style: .light)
+                    generator.impactOccurred()
+                })
             }
-            fetchUndoneTasks()
-            tasksTable.deleteRows(at: [indexPath], with: .fade)
-            daysCollectionView?.reloadData()
-            let generator = UIImpactFeedbackGenerator(style: .light)
-            generator.impactOccurred()
         }
     }
 
     private func insertNewTask(task: TaskModel) {
         save(model: task, completion: {
-            fetchUndoneTasks()
+            fetchTasks()
             if task.taskDate.startOfDay == Date().addDays(add: chosenIndex).startOfDay { // on current page
                 tasksTable.insertRows(at: [IndexPath(row: 0, section: 0)], with: .top)
             }
@@ -234,7 +257,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        fetchUndoneTasks() // TODO: why it is here?
+        fetchTasks() // TODO: why it is here?
 //        tasksTable.reloadData() // TODO:call every time view is on the screen
     }
 
@@ -345,7 +368,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         menuBtn.heightAnchor.constraint(equalToConstant: 20).isActive = true
         menuBtn.widthAnchor.constraint(equalToConstant: 20).isActive = true
         menuBtn.leadingAnchor.constraint(equalTo: topView.leadingAnchor, constant: 21).isActive = true
-        
+
         self.view.addSubview(dateLabel)
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
         dateLabel.topAnchor.constraint(equalTo: menuBtn.bottomAnchor, constant: 0).isActive = true
@@ -443,16 +466,20 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 }
 
 extension MainVC {
-    func fetchUndoneTasks() {
+    func fetchTasks() {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             return
         }
         let managedContext = appDelegate.persistentContainer.viewContext
-        let fetchRequest = NSFetchRequest<TaskCoreModel>(entityName: "TaskCoreModel")
-        fetchRequest.predicate = NSPredicate(format: "isDone = false")
+        let fetchUndone = NSFetchRequest<TaskCoreModel>(entityName: "TaskCoreModel")
+        fetchUndone.predicate = NSPredicate(format: "isDone = false")
+        let fetchDone = NSFetchRequest<TaskCoreModel>(entityName: "TaskCoreModel")
+        fetchDone.predicate = NSPredicate(format: "isDone = true")
         do {
-            undoneTasks = try managedContext.fetch(fetchRequest)
+            undoneTasks = try managedContext.fetch(fetchUndone)
             getUndoneTasksForDay()
+            doneTasks = try managedContext.fetch(fetchDone)
+            getDoneTasksForDay()
         } catch let error as NSError {
             print("Could not fetch. \(error), \(error.userInfo)")
         }

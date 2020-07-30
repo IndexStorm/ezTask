@@ -50,23 +50,6 @@ class DayCell: UICollectionViewCell {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-//        dayName.translatesAutoresizingMaskIntoConstraints = false
-//        dayName.heightAnchor.constraint(equalToConstant: 20).isActive = true
-//        dayName.widthAnchor.constraint(equalToConstant: 40).isActive = true
-//        dayName.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
-//        dayName.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
-//
-//        dayNumber.translatesAutoresizingMaskIntoConstraints = false
-//        dayNumber.heightAnchor.constraint(equalToConstant: 29).isActive = true
-//        dayNumber.widthAnchor.constraint(equalToConstant: 28).isActive = true
-//        dayNumber.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
-//        dayNumber.topAnchor.constraint(equalTo: dayName.bottomAnchor).isActive = true
-//
-//        circleView.translatesAutoresizingMaskIntoConstraints = false
-//        circleView.heightAnchor.constraint(equalToConstant: 5).isActive = true
-//        circleView.widthAnchor.constraint(equalToConstant: 5).isActive = true
-//        circleView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
-//        circleView.topAnchor.constraint(equalTo: dayNumber.bottomAnchor).isActive = true
         
         dayName.translatesAutoresizingMaskIntoConstraints = false
         dayName.heightAnchor.constraint(equalToConstant: 20).isActive = true

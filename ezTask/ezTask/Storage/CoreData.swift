@@ -33,7 +33,7 @@ public func save(model: TaskModel, completion: () -> Void) {
     }
 }
 
-public func setDone(id: String) {
+public func setDone(id: String, completion: () -> Void) {
     // removing alarms
     removeNotificationsById(id: id)
     // TODO: keep alarmDate?
@@ -55,6 +55,7 @@ public func setDone(id: String) {
     }
     do {
         try managedContext.save()
+        completion()
     } catch {
         print("Failed to save updated")
     }

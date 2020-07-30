@@ -134,7 +134,7 @@ class TaskCell: UITableViewCell {
         }
     }
 
-    private var alarmView = alarm(frame: CGRect(), labelText: "privet")
+    public var alarmView = alarm(frame: CGRect(), labelText: "privet")
 
     private let dayLabel: UILabel = {
         let label = UILabel()
@@ -173,6 +173,12 @@ class TaskCell: UITableViewCell {
             alarmView.unset()
             alarmWidth2?.isActive = false
             alarmWidth?.isActive = true
+        }
+        
+        if task.isDone {
+            checkbox.image = UIImage(named: "square_filled")
+        } else {
+            checkbox.image = UIImage(named: "square")
         }
     }
 

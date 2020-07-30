@@ -65,7 +65,7 @@ func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive respo
 func completeTaskFromNotification(notification: UNNotification) {
     let userInfo = notification.request.content.userInfo
     let id = userInfo["id"] as! String
-    setDone(id: id)
+    setDone(id: id, completion: {})
 }
 
 func postponeNotification(minutes: Double, notification: UNNotification) {
