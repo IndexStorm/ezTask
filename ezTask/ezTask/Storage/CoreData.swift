@@ -24,7 +24,9 @@ public func save(model: TaskModel, completion: () -> Void) {
     task.setValue(model.isPriority, forKey: "isPriority")
     task.setValue(model.taskDate, forKey: "taskDate")
     task.setValue(model.isAlarmSet, forKey: "isAlarmSet")
-    task.setValue(model.alarmDate, forKey: "alarmDate") // TODO: check if nil value saves correctly
+    task.setValue(model.alarmDate, forKey: "alarmDate")
+    task.setValue(model.dateCompleted, forKey: "dateCompleted")
+    task.setValue(model.dateModified, forKey: "dateModified")
     do {
         try managedContext.save()
         completion()
@@ -49,6 +51,33 @@ public func setDone(id: String, completion: () -> Void) {
             res[0].setValue(true, forKey: "isDone")
             res[0].setValue(false, forKey: "isAlarmSet")
             res[0].setValue(nil, forKey: "alarmDate")
+            res[0].setValue(Date(), forKey: "dateCompleted")
+            res[0].setValue(Date(), forKey: "dateModified") // TODO: check if should change here
+        }
+    } catch let error as NSError {
+        print("Could not fetch. \(error), \(error.userInfo)")
+    }
+    do {
+        try managedContext.save()
+        completion()
+    } catch {
+        print("Failed to save updated")
+    }
+}
+
+public func setUndone(id: String, completion: () -> Void) {
+    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+        return
+    }
+    let managedContext = appDelegate.persistentContainer.viewContext
+    let fetchRequest = NSFetchRequest<TaskCoreModel>(entityName: "TaskCoreModel")
+    fetchRequest.predicate = NSPredicate(format: "id = %@", id)
+    do {
+        let res = try managedContext.fetch(fetchRequest)
+        if !res.isEmpty {
+            res[0].setValue(false, forKey: "isDone")
+            res[0].setValue(nil, forKey: "dateCompleted")
+            res[0].setValue(Date(), forKey: "dateModified")
         }
     } catch let error as NSError {
         print("Could not fetch. \(error), \(error.userInfo)")
@@ -100,11 +129,9 @@ public func update(id: String, newModel: TaskModel, completion: () -> Void) {
             res[0].setValue(newModel.isPriority, forKey: "isPriority")
             res[0].setValue(newModel.taskDate, forKey: "taskDate")
             res[0].setValue(newModel.isAlarmSet, forKey: "isAlarmSet")
-            if newModel.alarmDate != nil {
-                res[0].setValue(newModel.alarmDate, forKey: "alarmDate")
-            } else {
-                res[0].setValue(nil, forKey: "alarmDate")
-            }
+            res[0].setValue(newModel.alarmDate, forKey: "alarmDate") // TODO: check if works if nil
+            res[0].setValue(newModel.dateCompleted, forKey: "dateCompleted") // ^
+            res[0].setValue(Date(), forKey: "dateModified")
         }
     } catch let error as NSError {
         print("Could not fetch. \(error), \(error.userInfo)")

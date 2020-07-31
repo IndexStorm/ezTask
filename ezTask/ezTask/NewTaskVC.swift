@@ -12,7 +12,7 @@ import ViewAnimator
 
 class NewTaskVC: UIViewController, UITextViewDelegate {
     // Var
-    
+
     var isPriority: Bool = false
     var isAlarmSet: Bool = false
     public var returnTask: ((_ task: TaskModel) -> Void)?
@@ -82,7 +82,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
         formatter.dateStyle = .full
         formatter.timeStyle = .none
         field.text = formatter.string(from: Date())
-        field.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        field.font = UIFont.systemFont(ofSize: 17, weight: .medium)
         field.tintColor = .clear
 
         return field
@@ -103,7 +103,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
     private let timeTextField: UITextField = {
         let field = UITextField()
         field.placeholder = "Add Reminder"
-        field.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        field.font = UIFont.systemFont(ofSize: 17, weight: .medium)
         field.tintColor = .clear
 
         return field
@@ -143,7 +143,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
         datePicker.datePickerMode = .date
         datePicker.addTarget(self, action: #selector(datePickerChanged(picker:)), for: .valueChanged)
         datePicker.minimumDate = Date()
-        
+
         let formatter = DateFormatter()
         formatter.dateStyle = .full
         formatter.timeStyle = .none
@@ -175,7 +175,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
         loadModel()
         setTimePickerDate()
     }
-    
+
     private func loadModel() {
         guard let model = model else {
             return
@@ -337,7 +337,12 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        let task = TaskModel(id: model==nil ? UUID() : model!.id, mainText: mainText.text, isPriority: isPriority, isDone: model==nil ? false : model!.isDone, taskDate: datePicker.date, isAlarmSet: isAlarmSet, alarmDate: isAlarmSet ? timePicker.date : nil)
+
+        let id = model == nil ? UUID() : model!.id
+        let isDone = model == nil ? false : model!.isDone
+        let dateCompleted = isDone ? model!.dateCompleted : nil
+
+        let task = TaskModel(id: id, mainText: mainText.text, isPriority: isPriority, isDone: isDone, taskDate: datePicker.date, isAlarmSet: isAlarmSet, alarmDate: isAlarmSet ? timePicker.date : nil, dateCompleted: dateCompleted, dateModified: Date())
         // TODO: move up
         returnTask?(task)
     }
@@ -346,8 +351,8 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
         // TODO: add dismiss cross button to the top of view
         self.dismiss(animated: true, completion: nil)
     }
-    
-    func alertNotificationsDenied() {
+
+    func alertNotificationsDenied() { // TODO: finish this alert
         let alert = UIAlertController(title: "Alert", message: "Message", preferredStyle: UIAlertController.Style.alert)
         alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
         self.present(alert, animated: true, completion: nil)
@@ -395,36 +400,36 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
 
         self.view.addSubview(dateImage)
         dateImage.translatesAutoresizingMaskIntoConstraints = false
-        dateImage.heightAnchor.constraint(equalToConstant: 20).isActive = true
-        dateImage.widthAnchor.constraint(equalToConstant: 20).isActive = true
+        dateImage.heightAnchor.constraint(equalToConstant: 22).isActive = true
+        dateImage.widthAnchor.constraint(equalToConstant: 22).isActive = true
         dateImage.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 25).isActive = true
         dateImage.topAnchor.constraint(equalTo: separator.bottomAnchor, constant: 35).isActive = true
 
         self.view.addSubview(dateTextField)
         dateTextField.translatesAutoresizingMaskIntoConstraints = false
-        dateTextField.heightAnchor.constraint(equalToConstant: 20).isActive = true
+        dateTextField.heightAnchor.constraint(equalToConstant: 22).isActive = true
         dateTextField.leadingAnchor.constraint(equalTo: dateImage.trailingAnchor, constant: 12).isActive = true
         dateTextField.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 25).isActive = true
-        dateTextField.topAnchor.constraint(equalTo: separator.bottomAnchor, constant: 35).isActive = true
+        dateTextField.topAnchor.constraint(equalTo: separator.bottomAnchor, constant: 36).isActive = true
 
         self.view.addSubview(timeImage)
         timeImage.translatesAutoresizingMaskIntoConstraints = false
-        timeImage.heightAnchor.constraint(equalToConstant: 20).isActive = true
-        timeImage.widthAnchor.constraint(equalToConstant: 20).isActive = true
+        timeImage.heightAnchor.constraint(equalToConstant: 22).isActive = true
+        timeImage.widthAnchor.constraint(equalToConstant: 22).isActive = true
         timeImage.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 25).isActive = true
         timeImage.topAnchor.constraint(equalTo: dateTextField.bottomAnchor, constant: 20).isActive = true
 
         self.view.addSubview(timeTextField)
         timeTextField.translatesAutoresizingMaskIntoConstraints = false
-        timeTextField.heightAnchor.constraint(equalToConstant: 20).isActive = true
+        timeTextField.heightAnchor.constraint(equalToConstant: 22).isActive = true
         timeTextField.widthAnchor.constraint(equalToConstant: 200).isActive = true
         timeTextField.leadingAnchor.constraint(equalTo: timeImage.trailingAnchor, constant: 12).isActive = true
         timeTextField.topAnchor.constraint(equalTo: dateTextField.bottomAnchor, constant: 20).isActive = true
 
         self.view.addSubview(priorityImage)
         priorityImage.translatesAutoresizingMaskIntoConstraints = false
-        priorityImage.heightAnchor.constraint(equalToConstant: 20).isActive = true
-        priorityImage.widthAnchor.constraint(equalToConstant: 20).isActive = true
+        priorityImage.heightAnchor.constraint(equalToConstant: 22).isActive = true
+        priorityImage.widthAnchor.constraint(equalToConstant: 22).isActive = true
         priorityImage.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 25).isActive = true
         priorityImage.topAnchor.constraint(equalTo: timeTextField.bottomAnchor, constant: 20).isActive = true
         priorityImage.isUserInteractionEnabled = true
@@ -432,7 +437,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
 
         self.view.addSubview(priorityLabel)
         priorityLabel.translatesAutoresizingMaskIntoConstraints = false
-        priorityLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
+        priorityLabel.heightAnchor.constraint(equalToConstant: 22).isActive = true
         priorityLabel.widthAnchor.constraint(equalToConstant: 100).isActive = true
         priorityLabel.leadingAnchor.constraint(equalTo: priorityImage.trailingAnchor, constant: 12).isActive = true
         priorityLabel.topAnchor.constraint(equalTo: timeTextField.bottomAnchor, constant: 20).isActive = true

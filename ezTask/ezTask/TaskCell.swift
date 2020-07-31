@@ -176,7 +176,7 @@ class TaskCell: UITableViewCell {
             alarmWidth2?.isActive = false
             alarmWidth?.isActive = true
         }
-        
+
         if task.isDone {
             checkbox.image = UIImage(named: "square_filled")
             self.contentView.alpha = 0.35
@@ -185,15 +185,20 @@ class TaskCell: UITableViewCell {
             self.contentView.alpha = 1
         }
     }
-    
+
     public func setCellDone() {
+        checkbox.image = UIImage(named: "square_filled")
         self.alarmView.unset()
         self.contentView.alpha = 0.35
     }
 
+    public func setCellUndone() {
+        checkbox.image = UIImage(named: "square")
+        self.contentView.alpha = 1
+    }
+
     @objc
     func checkboxTapped() {
-        checkbox.image = UIImage(named: "square_filled")
         delegate?.checkboxTapped(cell: self)
     }
 

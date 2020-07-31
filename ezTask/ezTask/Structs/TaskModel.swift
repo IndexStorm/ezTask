@@ -6,10 +6,10 @@
 //  Copyright © 2020 Mike Ovyan. All rights reserved.
 //
 
-import Foundation
 import CoreData
+import Foundation
 
-public struct TaskModel: Equatable {
+public struct TaskModel: Equatable, Comparable {
     let id: UUID
     let mainText: String
     let isPriority: Bool
@@ -17,6 +17,8 @@ public struct TaskModel: Equatable {
     let taskDate: Date
     let isAlarmSet: Bool
     let alarmDate: Date?
+    let dateCompleted: Date?
+    let dateModified: Date
 
     init(task: NSManagedObject) {
         self.id = task.value(forKey: "id") as! UUID
@@ -26,9 +28,11 @@ public struct TaskModel: Equatable {
         self.taskDate = task.value(forKey: "taskDate") as! Date
         self.isAlarmSet = task.value(forKey: "isAlarmSet") as! Bool
         self.alarmDate = task.value(forKey: "alarmDate") as? Date
+        self.dateCompleted = task.value(forKey: "dateCompleted") as? Date
+        self.dateModified = task.value(forKey: "dateModified") as! Date
     }
 
-    init(id: UUID, mainText: String, isPriority: Bool, isDone: Bool, taskDate: Date, isAlarmSet: Bool, alarmDate: Date?) {
+    init(id: UUID, mainText: String, isPriority: Bool, isDone: Bool, taskDate: Date, isAlarmSet: Bool, alarmDate: Date?, dateCompleted: Date?, dateModified: Date) {
         self.id = id
         self.mainText = mainText
         self.isPriority = isPriority
@@ -36,9 +40,43 @@ public struct TaskModel: Equatable {
         self.taskDate = taskDate
         self.isAlarmSet = isAlarmSet
         self.alarmDate = alarmDate
+        self.dateCompleted = dateCompleted
+        self.dateModified = dateModified
     }
-    
-    public static func == (a: TaskModel, b: TaskModel) -> Bool {
-        return a.id == b.id && a.isDone == b.isDone && a.isPriority == b.isPriority && a.taskDate == b.taskDate && a.isAlarmSet == b.isAlarmSet && a.alarmDate == b.alarmDate
+
+    public static func == (lhs: TaskModel, rhs: TaskModel) -> Bool {
+        return lhs.id == rhs.id && lhs.mainText == rhs.mainText && lhs.isDone == rhs.isDone && lhs.isPriority == rhs.isPriority && lhs.taskDate == rhs.taskDate && lhs.isAlarmSet == rhs.isAlarmSet && lhs.alarmDate == rhs.alarmDate && lhs.dateCompleted == rhs.dateCompleted
+    }
+
+    public static func < (lhs: TaskModel, rhs: TaskModel) -> Bool {
+        if !lhs.isDone, !rhs.isDone {
+            if lhs.isPriority == rhs.isPriority {
+                if lhs.isAlarmSet == rhs.isAlarmSet {
+                    if lhs.isAlarmSet {
+                        return lhs.alarmDate! < rhs.alarmDate!
+                    }
+                    return lhs.dateModified > rhs.dateModified
+                }
+                return lhs.isAlarmSet
+            }
+            return lhs.isPriority
+        }
+        if lhs.isDone == rhs.isDone {
+            if lhs.isPriority == rhs.isPriority {
+                return lhs.dateCompleted! > rhs.dateCompleted!
+            }
+            return lhs.isPriority
+        }
+        return !lhs.isDone
+    }
+}
+
+extension Array where Element == TaskModel {
+    public func numberOfUndoneTasks() -> Int {
+        return self.filter { !$0.isDone }.count
+    }
+
+    public func firstIndexById(id: String) -> Int {
+        return self.firstIndex(where: { $0.id.uuidString == id }) ?? 0
     }
 }
