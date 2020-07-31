@@ -9,7 +9,7 @@
 import Foundation
 import CoreData
 
-public struct TaskModel {
+public struct TaskModel: Equatable {
     let id: UUID
     let mainText: String
     let isPriority: Bool
@@ -36,5 +36,9 @@ public struct TaskModel {
         self.taskDate = taskDate
         self.isAlarmSet = isAlarmSet
         self.alarmDate = alarmDate
+    }
+    
+    public static func == (a: TaskModel, b: TaskModel) -> Bool {
+        return a.id == b.id && a.isDone == b.isDone && a.isPriority == b.isPriority && a.taskDate == b.taskDate && a.isAlarmSet == b.isAlarmSet && a.alarmDate == b.alarmDate
     }
 }

@@ -17,6 +17,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
     var isAlarmSet: Bool = false
     public var returnTask: ((_ task: TaskModel) -> Void)?
     public var model: TaskModel?
+    public var chosenDate: Date = Date()
 
     // Views
 
@@ -142,6 +143,12 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
         datePicker.datePickerMode = .date
         datePicker.addTarget(self, action: #selector(datePickerChanged(picker:)), for: .valueChanged)
         datePicker.minimumDate = Date()
+        
+        let formatter = DateFormatter()
+        formatter.dateStyle = .full
+        formatter.timeStyle = .none
+        dateTextField.text = formatter.string(from: chosenDate)
+        datePicker.date = chosenDate
     }
 
     func createTimePicker() {
@@ -192,7 +199,6 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
             timeImage.alpha = 0.9
             isAlarmSet = true
         }
-        
     }
 
     @objc
@@ -250,7 +256,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
         if formattedDate == today {
             timePicker.minimumDate = Date().addingTimeInterval(2 * 60)
             timePicker.maximumDate = Date().endOfDay
-            if timePicker.date > timePicker.minimumDate! {
+            if timePicker.date < timePicker.minimumDate! {
                 verifyFiveMinutes()
                 timeTextField.text = ""
                 timeImage.tintColor = .black
@@ -331,7 +337,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        let task = TaskModel(id: model==nil ? UUID() : model!.id, mainText: mainText.text, isPriority: isPriority, isDone: false, taskDate: datePicker.date, isAlarmSet: isAlarmSet, alarmDate: isAlarmSet ? timePicker.date : nil)
+        let task = TaskModel(id: model==nil ? UUID() : model!.id, mainText: mainText.text, isPriority: isPriority, isDone: model==nil ? false : model!.isDone, taskDate: datePicker.date, isAlarmSet: isAlarmSet, alarmDate: isAlarmSet ? timePicker.date : nil)
         // TODO: move up
         returnTask?(task)
     }

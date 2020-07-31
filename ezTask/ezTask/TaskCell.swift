@@ -179,13 +179,16 @@ class TaskCell: UITableViewCell {
         
         if task.isDone {
             checkbox.image = UIImage(named: "square_filled")
+            self.contentView.alpha = 0.35
         } else {
             checkbox.image = UIImage(named: "square")
+            self.contentView.alpha = 1
         }
     }
-
-    override func layoutSubviews() {
-        super.layoutSubviews()
+    
+    public func setCellDone() {
+        self.alarmView.unset()
+        self.contentView.alpha = 0.35
     }
 
     @objc
@@ -241,6 +244,7 @@ class TaskCell: UITableViewCell {
         titleLabel.text = ""
         checkbox.image = UIImage(named: "square")
         alarmView.unset()
+        self.contentView.alpha = 1
     }
 
     override func awakeFromNib() {

@@ -234,26 +234,45 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
                 })
                 return
             }
-//            self.DidReceivedNewTask(task: task)
-            
-            //update core data
-            //reload (maybe at row)
-            //removeNotificationsById
+            if cell.model != task {
+                self.didReceivedUpdatedTask(task: task)
+                tableView.reloadRows(at: [indexPath], with: .automatic)
+            }
         }
         self.present(newVC, animated: true, completion: nil)
+    }
+    
+    func didReceivedUpdatedTask(task: TaskModel) {
+        update(id: task.id.uuidString, newModel: task, completion: {
+            removeNotificationsById(id: task.id.uuidString)
+            if task.isAlarmSet {
+                setupReminder(task: task)
+            }
+            fetchTasks()
+            let generator = UINotificationFeedbackGenerator()
+            generator.notificationOccurred(.success)
+        })
     }
 
     func checkboxTapped(cell: TaskCell) {
         if let indexPath = tasksTable.indexPath(for: cell) {
-            if let id = cell.id {
-                setDone(id: id.uuidString, completion: {
-                    fetchTasks()
-                    tasksTable.moveRow(at: indexPath, to: IndexPath(row: undoneTasksForDay.count, section: 0))
-                    cell.alarmView.unset() // TODO: add method to mark as done
-                    daysCollectionView?.reloadData()
-                    let generator = UIImpactFeedbackGenerator(style: .light)
-                    generator.impactOccurred()
-                })
+            if let id = cell.id, let isDone = cell.model?.isDone { // reload
+                if !isDone {
+                    setDone(id: id.uuidString, completion: {
+                        fetchTasks()
+                        let generator = UIImpactFeedbackGenerator(style: .light)
+                        generator.impactOccurred()
+                        daysCollectionView?.reloadData()
+                        tasksTable.performBatchUpdates({
+                            tasksTable.moveRow(at: indexPath, to: IndexPath(row: undoneTasksForDay.count, section: 0))
+                            cell.setCellDone()
+                        }, completion: { (finished: Bool) in
+                            self.tasksTable.reloadData()
+                        })
+                    })
+                } else {
+                    // TODO: setUndone
+                }
             }
         }
     }
@@ -285,7 +304,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        UIView.animate(views: [dateLabel, dayLabel, calendarOrList], animations: [AnimationType.from(direction: .top, offset: 10.0)], initialAlpha: 0, finalAlpha: 1, duration: 0.5)
+        UIView.animate(views: [menuBtn, dateLabel, dayLabel, calendarOrList], animations: [AnimationType.from(direction: .top, offset: 10.0)], initialAlpha: 0, finalAlpha: 1, duration: 0.5)
         animateTable()
     }
 
@@ -300,19 +319,20 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         let generator = UIImpactFeedbackGenerator(style: .medium)
         generator.impactOccurred()
         let newVC = NewTaskVC()
+        newVC.chosenDate = Date().addDays(add: chosenIndex).startOfDay
         newVC.returnTask = { task in
             print("-----RETURNED TASK-----\n", task)
             if task.mainText.isEmpty {
                 return
             }
-            self.DidReceivedNewTask(task: task)
+            self.didReceivedNewTask(task: task)
         }
         self.present(newVC, animated: true, completion: {
             self.refreshControl.endRefreshing()
         })
     }
 
-    func DidReceivedNewTask(task: TaskModel) { // TODO: make global
+    func didReceivedNewTask(task: TaskModel) { // TODO: make global
         if task.isAlarmSet {
             setupReminder(task: task)
         }
@@ -393,7 +413,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
         self.view.addSubview(dateLabel)
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
-        dateLabel.topAnchor.constraint(equalTo: menuBtn.bottomAnchor, constant: 0).isActive = true
+        dateLabel.topAnchor.constraint(equalTo: menuBtn.bottomAnchor, constant: 4).isActive = true
         dateLabel.heightAnchor.constraint(equalToConstant: 30).isActive = true
         dateLabel.leadingAnchor.constraint(equalTo: topView.leadingAnchor, constant: 21).isActive = true
         dateLabel.widthAnchor.constraint(equalToConstant: 230).isActive = true // TODO: Test on different languages
@@ -411,10 +431,10 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
             return
         }
         myCollection.translatesAutoresizingMaskIntoConstraints = false
-        myCollection.heightAnchor.constraint(equalToConstant: 55).isActive = true
+        myCollection.heightAnchor.constraint(equalToConstant: 54).isActive = true
         myCollection.leadingAnchor.constraint(equalTo: topView.leadingAnchor, constant: 0).isActive = true
         myCollection.trailingAnchor.constraint(equalTo: topView.trailingAnchor, constant: 0).isActive = true
-        myCollection.topAnchor.constraint(equalTo: dayLabel.bottomAnchor, constant: 16).isActive = true
+        myCollection.topAnchor.constraint(equalTo: dayLabel.bottomAnchor, constant: 10).isActive = true
 
         createTable()
 
@@ -454,7 +474,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     func createCollection() {
         let layout = SnappingCollectionViewLayout()
         layout.scrollDirection = .horizontal
-        layout.itemSize = CGSize(width: 40, height: 53)
+        layout.itemSize = CGSize(width: 40, height: 54)
         layout.sectionInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         layout.minimumLineSpacing = 12
 

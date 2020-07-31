@@ -84,3 +84,35 @@ public func deleteTask(id: String, completion: () -> Void) {
         print("Failed to save updated")
     }
 }
+
+public func update(id: String, newModel: TaskModel, completion: () -> Void) {
+    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+        return
+    }
+    let managedContext = appDelegate.persistentContainer.viewContext
+    let fetchRequest = NSFetchRequest<TaskCoreModel>(entityName: "TaskCoreModel")
+    fetchRequest.predicate = NSPredicate(format: "id = %@", id)
+    do {
+        let res = try managedContext.fetch(fetchRequest)
+        if !res.isEmpty {
+            res[0].setValue(newModel.mainText, forKey: "mainText")
+            res[0].setValue(newModel.isDone, forKey: "isDone")
+            res[0].setValue(newModel.isPriority, forKey: "isPriority")
+            res[0].setValue(newModel.taskDate, forKey: "taskDate")
+            res[0].setValue(newModel.isAlarmSet, forKey: "isAlarmSet")
+            if newModel.alarmDate != nil {
+                res[0].setValue(newModel.alarmDate, forKey: "alarmDate")
+            } else {
+                res[0].setValue(nil, forKey: "alarmDate")
+            }
+        }
+    } catch let error as NSError {
+        print("Could not fetch. \(error), \(error.userInfo)")
+    }
+    do {
+        try managedContext.save()
+        completion()
+    } catch {
+        print("Failed to save updated")
+    }
+}
