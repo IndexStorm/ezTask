@@ -16,6 +16,7 @@ class TaskCell: UITableViewCell {
     // Var
     var delegate: TableViewCellDelegate?
     public var id: UUID?
+    public var model: TaskModel?
     var alarmWidth: NSLayoutConstraint!
     var alarmWidth2: NSLayoutConstraint!
 
@@ -149,6 +150,7 @@ class TaskCell: UITableViewCell {
     }()
 
     public func configure(task: TaskModel) {
+        self.model = task
         self.titleLabel.text = task.mainText
         self.id = task.id
         self.priorityIcon.alpha = task.isPriority ? 0.9 : 0
@@ -221,7 +223,7 @@ class TaskCell: UITableViewCell {
         titleLabel.topAnchor.constraint(equalTo: checkbox.topAnchor, constant: 0).isActive = true
 
         dayLabel.translatesAutoresizingMaskIntoConstraints = false
-        dayLabel.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor).isActive = true
+        dayLabel.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -5).isActive = true
         dayLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
         dayLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor, constant: 0).isActive = true
         dayLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor).isActive = true

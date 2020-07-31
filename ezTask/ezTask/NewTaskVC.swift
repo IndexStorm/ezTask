@@ -12,10 +12,11 @@ import ViewAnimator
 
 class NewTaskVC: UIViewController, UITextViewDelegate {
     // Var
-    var notificationsStatus: UNAuthorizationStatus = .notDetermined
+    
     var isPriority: Bool = false
     var isAlarmSet: Bool = false
     public var returnTask: ((_ task: TaskModel) -> Void)?
+    public var model: TaskModel?
 
     // Views
 
@@ -164,7 +165,34 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
         checkNotifications()
         createDatePicker()
         createTimePicker()
+        loadModel()
         setTimePickerDate()
+    }
+    
+    private func loadModel() {
+        guard let model = model else {
+            return
+        }
+        mainText.resignFirstResponder()
+        mainText.text = model.mainText
+        isPriority = model.isPriority
+        priorityImage.image = UIImage(named: isPriority ? "square_filled" : "square")
+        datePicker.date = model.taskDate
+        let formatter = DateFormatter()
+        formatter.dateStyle = .full
+        formatter.timeStyle = .none
+        dateTextField.text = formatter.string(from: datePicker.date)
+        if model.isAlarmSet {
+            timePicker.date = model.alarmDate!
+            let formatter = DateFormatter()
+            formatter.dateStyle = .none
+            formatter.timeStyle = .short
+            timeTextField.text = formatter.string(from: timePicker.date)
+            timeImage.tintColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
+            timeImage.alpha = 0.9
+            isAlarmSet = true
+        }
+        
     }
 
     @objc
@@ -223,7 +251,13 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
             timePicker.minimumDate = Date().addingTimeInterval(2 * 60)
             timePicker.maximumDate = Date().endOfDay
             if timePicker.date > timePicker.minimumDate! {
-                timePickerCancelPressed()
+                verifyFiveMinutes()
+                timeTextField.text = ""
+                timeImage.tintColor = .black
+                timeImage.alpha = 0.3
+                let generator = UIImpactFeedbackGenerator(style: .light)
+                generator.impactOccurred()
+                isAlarmSet = false
             }
         } else {
             timePicker.minimumDate = datePicker.date.startOfDay
@@ -271,17 +305,21 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
     }
 
     func checkIfAllowedNotifications(picker: UIDatePicker) {
-        if self.notificationsStatus == .authorized {
+        if notificationsStatus == .authorized {
             return
         }
-        if self.notificationsStatus == .notDetermined {
+        if notificationsStatus == .denied {
+            timePickerCancelPressed()
+            alertNotificationsDenied()
+        }
+        if notificationsStatus == .notDetermined {
             UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound], completionHandler: { success, error in
                 if success {
-                    self.checkNotifications()
+                    checkNotifications()
                 } else if error != nil {
                     print("error occured")
                 } else if error == nil {
-                    self.checkNotifications()
+                    checkNotifications()
                     DispatchQueue.main.async {
                         self.timePickerCancelPressed()
                         self.alertNotificationsDenied()
@@ -289,27 +327,11 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
                 }
             })
         }
-        if self.notificationsStatus == .denied {
-            timePickerCancelPressed()
-            alertNotificationsDenied()
-        }
-    }
-
-    func checkNotifications() {
-        UNUserNotificationCenter.current().getNotificationSettings { settings in
-            self.notificationsStatus = settings.authorizationStatus
-        }
-    }
-
-    func alertNotificationsDenied() {
-        let alert = UIAlertController(title: "Alert", message: "Message", preferredStyle: UIAlertController.Style.alert)
-        alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
-        self.present(alert, animated: true, completion: nil)
     }
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        let task = TaskModel(id: UUID(), mainText: mainText.text, isPriority: isPriority, isDone: false, taskDate: datePicker.date, isAlarmSet: isAlarmSet, alarmDate: isAlarmSet ? timePicker.date : nil)
+        let task = TaskModel(id: model==nil ? UUID() : model!.id, mainText: mainText.text, isPriority: isPriority, isDone: false, taskDate: datePicker.date, isAlarmSet: isAlarmSet, alarmDate: isAlarmSet ? timePicker.date : nil)
         // TODO: move up
         returnTask?(task)
     }
@@ -317,6 +339,12 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
     func dismiss() {
         // TODO: add dismiss cross button to the top of view
         self.dismiss(animated: true, completion: nil)
+    }
+    
+    func alertNotificationsDenied() {
+        let alert = UIAlertController(title: "Alert", message: "Message", preferredStyle: UIAlertController.Style.alert)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
     }
 
     func setup() {

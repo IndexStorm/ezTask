@@ -60,3 +60,27 @@ public func setDone(id: String, completion: () -> Void) {
         print("Failed to save updated")
     }
 }
+
+public func deleteTask(id: String, completion: () -> Void) {
+    removeNotificationsById(id: id)
+    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+        return
+    }
+    let managedContext = appDelegate.persistentContainer.viewContext
+    let fetchRequest = NSFetchRequest<TaskCoreModel>(entityName: "TaskCoreModel")
+    fetchRequest.predicate = NSPredicate(format: "id = %@", id)
+    do {
+        let res = try managedContext.fetch(fetchRequest)
+        if !res.isEmpty {
+            managedContext.delete(res[0])
+        }
+    } catch let error as NSError {
+        print("Could not fetch. \(error), \(error.userInfo)")
+    }
+    do {
+        try managedContext.save()
+        completion()
+    } catch {
+        print("Failed to save updated")
+    }
+}

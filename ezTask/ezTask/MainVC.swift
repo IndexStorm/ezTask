@@ -219,6 +219,28 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        let cell = tableView.cellForRow(at: indexPath) as! TaskCell
+        let generator = UIImpactFeedbackGenerator(style: .medium)
+        generator.impactOccurred()
+        let newVC = NewTaskVC()
+        newVC.model = cell.model
+        newVC.returnTask = { task in
+            if task.mainText == "" {
+                deleteTask(id: task.id.uuidString, completion: {
+                    // TODO: add animation
+                    // maybe remove at row
+                    self.fetchTasks()
+                    self.tasksTable.reloadData()
+                })
+                return
+            }
+//            self.DidReceivedNewTask(task: task)
+            
+            //update core data
+            //reload (maybe at row)
+            //removeNotificationsById
+        }
+        self.present(newVC, animated: true, completion: nil)
     }
 
     func checkboxTapped(cell: TaskCell) {
@@ -226,7 +248,6 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
             if let id = cell.id {
                 setDone(id: id.uuidString, completion: {
                     fetchTasks()
-                    print(undoneTasksForDay.count, doneTasksForDay.count)
                     tasksTable.moveRow(at: indexPath, to: IndexPath(row: undoneTasksForDay.count, section: 0))
                     cell.alarmView.unset() // TODO: add method to mark as done
                     daysCollectionView?.reloadData()

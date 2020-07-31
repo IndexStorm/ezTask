@@ -9,6 +9,8 @@
 import Foundation
 import UserNotifications
 
+var notificationsStatus: UNAuthorizationStatus = .notDetermined
+
 public func removeNotificationsById(id: String) {
     let ids = [id + "_1", id + "_2", id + "_3"]
     UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ids) // delete old
@@ -56,4 +58,10 @@ func completeTaskFromNotification(notification: UNNotification) {
 
 func postponeNotification(minutes: Double, notification: UNNotification) {
     scheduleNotification(targetDate: Date().addingTimeInterval(minutes * 60), content: notification.request.content.mutableCopy() as! UNMutableNotificationContent, id: notification.request.identifier)
+}
+
+func checkNotifications() {
+    UNUserNotificationCenter.current().getNotificationSettings { settings in
+        notificationsStatus = settings.authorizationStatus
+    }
 }
