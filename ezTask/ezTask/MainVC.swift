@@ -253,12 +253,13 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         super.viewDidLoad()
         setup()
         updateTopLabels(date: Date().addDays(add: chosenIndex))
+        NotificationCenter.default.addObserver(self,
+        selector: #selector(handleAppDidBecomeActiveNotification(notification:)),
+        name: UIApplication.didBecomeActiveNotification, object: nil)
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        fetchTasks() // TODO: why it is here?
-//        tasksTable.reloadData() // TODO:call every time view is on the screen
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -393,7 +394,6 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         myCollection.leadingAnchor.constraint(equalTo: topView.leadingAnchor, constant: 0).isActive = true
         myCollection.trailingAnchor.constraint(equalTo: topView.trailingAnchor, constant: 0).isActive = true
         myCollection.topAnchor.constraint(equalTo: dayLabel.bottomAnchor, constant: 16).isActive = true
-//        myCollection.backgroundColor = .red
 
         createTable()
 
@@ -454,6 +454,16 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         tasksTable.register(TaskCell.self, forCellReuseIdentifier: TaskCell.identifier)
         tasksTable.dataSource = self
         tasksTable.delegate = self
+    }
+    
+    @objc func handleAppDidBecomeActiveNotification(notification: Notification) {
+        fetchTasks()
+        tasksTable.reloadData()
+        daysCollectionView?.reloadData()
+    }
+    
+    deinit {
+       NotificationCenter.default.removeObserver(self)
     }
 
     override func viewDidLayoutSubviews() {

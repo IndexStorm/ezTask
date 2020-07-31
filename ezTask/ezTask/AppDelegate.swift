@@ -75,4 +75,18 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationC
     func applicationWillResignActive(_ application: UIApplication) {
         UIApplication.shared.applicationIconBadgeNumber = 0
     }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        switch response.actionIdentifier {
+        case "Complete":
+            completeTaskFromNotification(notification: response.notification)
+        case "Postpone15Minutes":
+            postponeNotification(minutes: 15, notification: response.notification)
+        case "Postpone30Minutes":
+            postponeNotification(minutes: 30, notification: response.notification)
+        default:
+            print("Unknown action")
+        }
+        completionHandler()
+    }
 }

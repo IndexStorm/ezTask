@@ -42,24 +42,10 @@ func scheduleNotification(targetDate: Date, content: UNMutableNotificationConten
             })
     }
     let completeAction = UNNotificationAction(identifier: "Complete", title: "Complete", options: UNNotificationActionOptions(rawValue: 0))
-    let postpone15MinAction = UNNotificationAction(identifier: "Postpone15Minutes", title: "Postpone by 15 minutes", options: UNNotificationActionOptions(rawValue: 0))
-    let postpone30MinutesAction = UNNotificationAction(identifier: "Postpone30Minutes", title: "Postpone by 30 minutes", options: UNNotificationActionOptions(rawValue: 0))
+    let postpone15MinAction = UNNotificationAction(identifier: "Postpone15Minutes", title: "Remind in 15 minutes", options: UNNotificationActionOptions(rawValue: 0))
+    let postpone30MinutesAction = UNNotificationAction(identifier: "Postpone30Minutes", title: "Remind in 30 minutes", options: UNNotificationActionOptions(rawValue: 0))
     let category = UNNotificationCategory(identifier: "Category", actions: [completeAction, postpone15MinAction, postpone30MinutesAction], intentIdentifiers: [], options: .customDismissAction)
     UNUserNotificationCenter.current().setNotificationCategories([category])
-}
-
-func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-    switch response.actionIdentifier {
-    case "Complete":
-        completeTaskFromNotification(notification: response.notification)
-    case "Postpone15Minutes":
-        postponeNotification(minutes: 15, notification: response.notification)
-    case "Postpone30Minutes":
-        postponeNotification(minutes: 30, notification: response.notification)
-    default:
-        print("Unknown action")
-    }
-    completionHandler()
 }
 
 func completeTaskFromNotification(notification: UNNotification) {
