@@ -71,10 +71,8 @@
 			isa = PBXGroup;
 			children = (
 				E60DFBD024C2121600043A76 /* AppDelegate.swift */,
-				E60DFBD424C2121600043A76 /* MainVC.swift */,
-				E6D6EEEF24C37CE300AF82A3 /* TaskCell.swift */,
-				E6D6EEED24C2D94400AF82A3 /* DayCell.swift */,
-				E656C30124C771FF00FCF85E /* NewTaskVC.swift */,
+				E62D4E1424D5F2DB00062758 /* MainVC */,
+				E62D4E1524D5F2EE00062758 /* NewTaskVC */,
 				E68E3F5024CF34FE00E7EA7F /* Structs */,
 				E68E3F4D24CF34AA00E7EA7F /* Storage */,
 				E68E3F4324CF2FE700E7EA7F /* Notifications */,
@@ -83,6 +81,24 @@
 				E60DFBDE24C2121B00043A76 /* Info.plist */,
 			);
 			path = ezTask;
+			sourceTree = "<group>";
+		};
+		E62D4E1424D5F2DB00062758 /* MainVC */ = {
+			isa = PBXGroup;
+			children = (
+				E60DFBD424C2121600043A76 /* MainVC.swift */,
+				E6D6EEEF24C37CE300AF82A3 /* TaskCell.swift */,
+				E6D6EEED24C2D94400AF82A3 /* DayCell.swift */,
+			);
+			path = MainVC;
+			sourceTree = "<group>";
+		};
+		E62D4E1524D5F2EE00062758 /* NewTaskVC */ = {
+			isa = PBXGroup;
+			children = (
+				E656C30124C771FF00FCF85E /* NewTaskVC.swift */,
+			);
+			path = NewTaskVC;
 			sourceTree = "<group>";
 		};
 		E68E3F4324CF2FE700E7EA7F /* Notifications */ = {

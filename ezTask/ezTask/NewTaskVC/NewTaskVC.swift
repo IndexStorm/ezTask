@@ -10,7 +10,7 @@ import UIKit
 import UserNotifications
 import ViewAnimator
 
-class NewTaskVC: UIViewController, UITextViewDelegate {
+class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
     // Var
 
     var isPriority: Bool = false
@@ -57,6 +57,37 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
 
         return text
     }()
+
+    private let addSubtaskView: UIView = {
+        let view = UIView()
+
+        let image = UIImageView()
+        image.image = UIImage(named: "add_circle")
+        image.contentMode = .scaleAspectFit
+        image.tintColor = .black
+        view.addSubview(image)
+        image.translatesAutoresizingMaskIntoConstraints = false
+        image.heightAnchor.constraint(equalToConstant: 25).isActive = true
+        image.widthAnchor.constraint(equalToConstant: 25).isActive = true
+        image.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        image.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0).isActive = true
+
+        let label = UILabel()
+        label.text = "Add Subtask"
+        label.font = UIFont.systemFont(ofSize: 16, weight: .regular)
+        view.addSubview(label)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.sizeToFit()
+        label.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        label.leadingAnchor.constraint(equalTo: image.trailingAnchor, constant: 8).isActive = true
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        view.alpha = 0.5
+
+        return view
+    }()
+
+    private var subtaskStackView: UIStackView!
 
     private let separator: UIView = {
         let view = UIView()
@@ -168,6 +199,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        createStack()
         setup()
         checkNotifications()
         createDatePicker()
@@ -199,6 +231,119 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
             timeImage.alpha = 0.9
             isAlarmSet = true
         }
+    }
+
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        addSubtaskWithResponder(callerView: textField.superview!)
+        return true
+    }
+
+    func addSubtaskWithResponder(callerView: UIView) {
+        let view = generateNewSubtask(shouldRespond: true)
+        subtaskStackView.insertArrangedSubview(view, at: subtaskStackView.arrangedSubviews.firstIndex(of: callerView)! + 1)
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
+    }
+
+    func generateNewSubtask(shouldRespond: Bool) -> UIView { // TODO: add delete button
+        let view = UIView()
+
+        let circle = UIImageView()
+        circle.image = UIImage(named: "circle")
+        circle.contentMode = .scaleAspectFit
+        circle.tintColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
+        view.addSubview(circle)
+        circle.translatesAutoresizingMaskIntoConstraints = false
+        circle.heightAnchor.constraint(equalToConstant: 25).isActive = true
+        circle.widthAnchor.constraint(equalToConstant: 25).isActive = true
+        circle.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        circle.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0).isActive = true
+        circle.isUserInteractionEnabled = true
+        circle.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(circleTapped(_:))))
+
+        let textField = UITextField()
+        textField.placeholder = "New Subtask"
+        textField.font = UIFont.systemFont(ofSize: 16, weight: .regular) // TODO: change to medium
+        textField.returnKeyType = .done
+        textField.delegate = self
+        view.addSubview(textField)
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.heightAnchor.constraint(equalTo: view.heightAnchor).isActive = true
+        textField.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        textField.leadingAnchor.constraint(equalTo: circle.trailingAnchor, constant: 8).isActive = true
+        textField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
+
+        let image = UIImageView()
+        image.image = UIImage(named: "close")
+        image.contentMode = .scaleAspectFit
+        image.tintColor = .lightGray
+        image.alpha = 1
+        view.addSubview(image)
+        image.translatesAutoresizingMaskIntoConstraints = false
+        image.heightAnchor.constraint(equalToConstant: 14).isActive = true
+        image.widthAnchor.constraint(equalToConstant: 14).isActive = true
+        image.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        image.leadingAnchor.constraint(equalTo: textField.trailingAnchor, constant: 5).isActive = true
+        image.isUserInteractionEnabled = true
+        image.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(subtaskTapped(_:))))
+
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.heightAnchor.constraint(equalToConstant: 30).isActive = true
+
+        if shouldRespond {
+            textField.becomeFirstResponder()
+        }
+
+        return view
+    }
+
+    private func createStack() {
+        addSubtaskView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(addSubtaskTapped)))
+
+        subtaskStackView = UIStackView(arrangedSubviews: [addSubtaskView])
+        subtaskStackView.axis = .vertical
+        subtaskStackView.alignment = .fill
+        subtaskStackView.distribution = .equalSpacing
+        subtaskStackView.spacing = 5
+        subtaskStackView.backgroundColor = .red
+    }
+
+    @objc
+    func addSubtaskTapped() {
+        let view = generateNewSubtask(shouldRespond: false)
+        subtaskStackView.insertArrangedSubview(view, at: subtaskStackView.arrangedSubviews.count - 1)
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
+    }
+
+    @objc
+    func subtaskTapped(_ sender: UIGestureRecognizer) {
+        guard let view = sender.view?.superview else {
+            return
+        }
+        subtaskStackView.removeArrangedSubview(view) // TODO: check if this one works fine
+        view.removeFromSuperview()
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
+    }
+
+    @objc
+    func circleTapped(_ sender: UIGestureRecognizer) {
+        guard let view = sender.view?.superview else {
+            return
+        }
+        guard let image = sender.view as? UIImageView else {
+            return
+        }
+        if view.alpha == 1 {
+            view.alpha = 0.35
+            image.image = UIImage(named: "circle_filled")
+        } else {
+            view.alpha = 1
+            image.image = UIImage(named: "circle")
+        }
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
     }
 
     @objc
@@ -268,6 +413,15 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
         } else {
             timePicker.minimumDate = datePicker.date.startOfDay
             timePicker.maximumDate = datePicker.date.endOfDay
+            if Date() > timePicker.maximumDate! {
+                verifyFiveMinutes()
+                timeTextField.text = ""
+                timeImage.tintColor = .black
+                timeImage.alpha = 0.3
+                let generator = UIImpactFeedbackGenerator(style: .light)
+                generator.impactOccurred()
+                isAlarmSet = false
+            }
         }
     }
 
@@ -338,13 +492,31 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
 
+        let dataFromSubtasks = getStringFromSubtasks() // TODO: save this to CoreData
+
         let id = model == nil ? UUID() : model!.id
         let isDone = model == nil ? false : model!.isDone
         let dateCompleted = isDone ? model!.dateCompleted : nil
 
         let task = TaskModel(id: id, mainText: mainText.text, isPriority: isPriority, isDone: isDone, taskDate: datePicker.date, isAlarmSet: isAlarmSet, alarmDate: isAlarmSet ? timePicker.date : nil, dateCompleted: dateCompleted, dateModified: Date())
-        // TODO: move up
         returnTask?(task)
+    }
+
+    func getStringFromSubtasks() -> String {
+        var res = ""
+        for subtask in subtaskStackView.arrangedSubviews {
+            for subview in subtask.subviews as [UIView] {
+                if let textField = subview as? UITextField {
+                    if let text = textField.text {
+                        if text != "" {
+                            res += (subtask.alpha == 1 ? "undone" : "done") + "\n" + text + "\n"
+                        }
+                    }
+                    break
+                }
+            }
+        }
+        return res
     }
 
     func dismiss() {
@@ -391,12 +563,18 @@ class NewTaskVC: UIViewController, UITextViewDelegate {
         mainText.returnKeyType = .done
         mainText.delegate = self
 
+        self.view.addSubview(subtaskStackView)
+        subtaskStackView.translatesAutoresizingMaskIntoConstraints = false
+        subtaskStackView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 25).isActive = true
+        subtaskStackView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -25).isActive = true
+        subtaskStackView.topAnchor.constraint(equalTo: mainText.bottomAnchor, constant: 5).isActive = true
+
         self.view.addSubview(separator)
         separator.translatesAutoresizingMaskIntoConstraints = false
         separator.heightAnchor.constraint(equalToConstant: 1).isActive = true
         separator.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 25).isActive = true
         separator.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -25).isActive = true
-        separator.topAnchor.constraint(equalTo: mainText.bottomAnchor, constant: 20).isActive = true
+        separator.topAnchor.constraint(equalTo: subtaskStackView.bottomAnchor, constant: 20).isActive = true
 
         self.view.addSubview(dateImage)
         dateImage.translatesAutoresizingMaskIntoConstraints = false
