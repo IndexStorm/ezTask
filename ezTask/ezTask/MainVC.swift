@@ -217,6 +217,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
             if cell.model != task {
                 self.didReceivedUpdatedTask(task: task)
                 self.fetchTasks()
+                cell.configure(task: task)
                 self.tasksTable.performBatchUpdates({
                     let row = self.allTasksForDay.firstIndexById(id: task.id.uuidString)
                     tableView.moveRow(at: indexPath, to: IndexPath(row: row, section: 0))
