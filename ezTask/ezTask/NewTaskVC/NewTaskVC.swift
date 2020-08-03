@@ -156,7 +156,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
 
         return field
     }()
-    
+
     private let deleteAlarmImage: UIImageView = {
         let image = UIImageView()
         image.image = UIImage(named: "close")
@@ -396,7 +396,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         let generator = UIImpactFeedbackGenerator(style: .light)
         generator.impactOccurred()
     }
-    
+
     @objc
     func deleteAlarmTapped() {
         deleteAlarmImage.alpha = 0
@@ -701,7 +701,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         timeTextField.widthAnchor.constraint(equalToConstant: 120).isActive = true
         timeTextField.leadingAnchor.constraint(equalTo: timeImage.trailingAnchor, constant: 12).isActive = true
         timeTextField.topAnchor.constraint(equalTo: dateTextField.bottomAnchor, constant: 20).isActive = true
-        
+
         self.containerView.addSubview(deleteAlarmImage)
         deleteAlarmImage.translatesAutoresizingMaskIntoConstraints = false
         deleteAlarmImage.heightAnchor.constraint(equalToConstant: 14).isActive = true
