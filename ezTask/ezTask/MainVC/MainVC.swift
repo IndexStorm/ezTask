@@ -162,7 +162,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
     private let quote: UILabel = {
         let label = UILabel()
-        label.text = "“The Way Get Started Is To Quit Talking And Begin Doing.”"
+        label.text = "“The Way To Get Started Is To Quit Talking And Begin Doing.”"
         label.font = UIFont.systemFont(ofSize: 18, weight: .bold)
         label.textAlignment = .center
         label.lineBreakMode = .byWordWrapping
