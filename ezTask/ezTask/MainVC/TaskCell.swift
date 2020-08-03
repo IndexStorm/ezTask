@@ -44,7 +44,7 @@ class TaskCell: UITableViewCell {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Finish the app"
-        label.font = UIFont.systemFont(ofSize: 17, weight: .medium)
+        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         label.lineBreakMode = .byWordWrapping
         label.numberOfLines = 0
 
@@ -141,8 +141,7 @@ class TaskCell: UITableViewCell {
         let label = UILabel()
         label.text = "Today"
         label.font = UIFont.systemFont(ofSize: 14, weight: .regular)
-        label.textColor = .black
-        label.alpha = 0.4
+        label.textColor = .systemGray2
         label.lineBreakMode = .byWordWrapping
         label.numberOfLines = 0
 
@@ -215,13 +214,13 @@ class TaskCell: UITableViewCell {
         priorityIcon.heightAnchor.constraint(equalToConstant: 10).isActive = true
         priorityIcon.widthAnchor.constraint(equalToConstant: 10).isActive = true
         priorityIcon.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 24).isActive = true
-        priorityIcon.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 16).isActive = true
+        priorityIcon.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 11).isActive = true
 
         checkbox.translatesAutoresizingMaskIntoConstraints = false
         checkbox.heightAnchor.constraint(equalToConstant: 22).isActive = true
         checkbox.widthAnchor.constraint(equalToConstant: 22).isActive = true
         checkbox.leadingAnchor.constraint(equalTo: priorityIcon.trailingAnchor, constant: 10).isActive = true
-        checkbox.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 10).isActive = true
+        checkbox.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 5).isActive = true
         checkbox.isUserInteractionEnabled = true
         checkbox.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(checkboxTapped)))
 

@@ -55,10 +55,13 @@ public struct TaskModel: Equatable, Comparable {
         if !lhs.isDone, !rhs.isDone {
             if lhs.isPriority == rhs.isPriority {
                 if lhs.isAlarmSet == rhs.isAlarmSet {
-                    if lhs.isAlarmSet {
-                        return lhs.alarmDate! < rhs.alarmDate!
+                    if lhs.isAlarmSet == false {
+                        if lhs.taskDate.startOfDay == rhs.taskDate.startOfDay {
+                            return lhs.dateModified > rhs.dateModified
+                        }
+                        return lhs.taskDate.startOfDay > rhs.taskDate.startOfDay
                     }
-                    return lhs.dateModified > rhs.dateModified
+                    return lhs.alarmDate! < rhs.alarmDate!
                 }
                 return lhs.isAlarmSet
             }

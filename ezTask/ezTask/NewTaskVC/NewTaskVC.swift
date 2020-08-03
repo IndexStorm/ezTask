@@ -42,8 +42,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         let image = UIImageView()
         image.image = UIImage(named: "swipe_down")
         image.contentMode = .scaleAspectFit
-        image.tintColor = .black
-        image.alpha = 0.2
+        image.tintColor = .systemGray2
 
         return image
     }()
@@ -61,8 +60,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         let label = UILabel()
         label.text = "What are you planning?"
         label.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
-        label.textColor = .black
-        label.alpha = 0.25
+        label.textColor = .systemGray2
 
         return label
     }()
@@ -81,7 +79,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         let image = UIImageView()
         image.image = UIImage(named: "add_circle")
         image.contentMode = .scaleAspectFit
-        image.tintColor = .black
+        image.tintColor = .systemGray
         view.addSubview(image)
         image.translatesAutoresizingMaskIntoConstraints = false
         image.heightAnchor.constraint(equalToConstant: 25).isActive = true
@@ -92,6 +90,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         let label = UILabel()
         label.text = "Add Subtask"
         label.font = UIFont.systemFont(ofSize: 16, weight: .regular)
+        label.textColor = .systemGray
         view.addSubview(label)
         label.translatesAutoresizingMaskIntoConstraints = false
         label.sizeToFit()
@@ -99,7 +98,6 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         label.leadingAnchor.constraint(equalTo: image.trailingAnchor, constant: 8).isActive = true
         view.translatesAutoresizingMaskIntoConstraints = false
         view.heightAnchor.constraint(equalToConstant: 30).isActive = true
-        view.alpha = 0.5
 
         return view
     }()
@@ -108,8 +106,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
 
     private let separator: UIView = {
         let view = UIView()
-        view.backgroundColor = .black
-        view.alpha = 0.1
+        view.backgroundColor = .systemGray5
 
         return view
     }()
@@ -119,7 +116,6 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         image.image = UIImage(named: "calendar")
         image.contentMode = .scaleAspectFit
         image.tintColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
-        image.alpha = 0.9
 
         return image
     }()
@@ -142,8 +138,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         let image = UIImageView()
         image.image = UIImage(named: "alarm")
         image.contentMode = .scaleAspectFit
-        image.tintColor = .black
-        image.alpha = 0.3
+        image.tintColor = .systemGray2
 
         return image
     }()
@@ -161,7 +156,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         let image = UIImageView()
         image.image = UIImage(named: "close")
         image.contentMode = .scaleAspectFit
-        image.tintColor = .lightGray
+        image.tintColor = .systemGray4
         image.alpha = 0
 
         return image
@@ -173,7 +168,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         let image = UIImageView()
         image.image = UIImage(named: "square")
         image.contentMode = .scaleAspectFit
-        image.tintColor = #colorLiteral(red: 0.8509803922, green: 0.2196078431, blue: 0.1607843137, alpha: 1)
+        image.tintColor = .systemRed
         image.alpha = 0.9
 
         return image
@@ -183,7 +178,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         let label = UILabel()
         label.text = "High Priority"
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        label.textColor = #colorLiteral(red: 0.8509803922, green: 0.2196078431, blue: 0.1607843137, alpha: 1)
+        label.textColor = .systemRed
         label.alpha = 0.9
 
         return label
@@ -248,7 +243,6 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
             formatter.timeStyle = .short
             timeTextField.text = formatter.string(from: timePicker.date)
             timeImage.tintColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
-            timeImage.alpha = 0.9
             isAlarmSet = true
             deleteAlarmImage.alpha = 1
         }
@@ -310,7 +304,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         let image = UIImageView()
         image.image = UIImage(named: "close")
         image.contentMode = .scaleAspectFit
-        image.tintColor = .lightGray
+        image.tintColor = .systemGray4
         image.alpha = 1
         view.addSubview(image)
         image.translatesAutoresizingMaskIntoConstraints = false
@@ -402,8 +396,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         deleteAlarmImage.alpha = 0
         verifyFiveMinutes()
         timeTextField.text = ""
-        timeImage.tintColor = .black
-        timeImage.alpha = 0.3
+        timeImage.tintColor = .systemGray2
         let generator = UIImpactFeedbackGenerator(style: .light)
         generator.impactOccurred()
         isAlarmSet = false
@@ -454,8 +447,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
             if timePicker.date < timePicker.minimumDate! {
                 verifyFiveMinutes()
                 timeTextField.text = ""
-                timeImage.tintColor = .black
-                timeImage.alpha = 0.3
+                timeImage.tintColor = .systemGray2
                 let generator = UIImpactFeedbackGenerator(style: .light)
                 generator.impactOccurred()
                 isAlarmSet = false
@@ -467,8 +459,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
             if Date() > timePicker.maximumDate! {
                 verifyFiveMinutes()
                 timeTextField.text = ""
-                timeImage.tintColor = .black
-                timeImage.alpha = 0.3
+                timeImage.tintColor = .systemGray2
                 let generator = UIImpactFeedbackGenerator(style: .light)
                 generator.impactOccurred()
                 isAlarmSet = false
@@ -490,8 +481,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         verifyFiveMinutes()
         timeTextField.text = ""
         self.view.endEditing(true)
-        timeImage.tintColor = .black
-        timeImage.alpha = 0.3
+        timeImage.tintColor = .systemGray2
         let generator = UIImpactFeedbackGenerator(style: .light)
         generator.impactOccurred()
         isAlarmSet = false
@@ -506,7 +496,6 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         formatter.timeStyle = .short
         timeTextField.text = formatter.string(from: picker.date)
         timeImage.tintColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
-        timeImage.alpha = 0.9
         isAlarmSet = true
         deleteAlarmImage.alpha = 1
         checkIfAllowedNotifications(picker: picker)
@@ -616,14 +605,12 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
     }
 
     func setup() {
-        self.view.backgroundColor = .white
+        self.view.backgroundColor = .systemBackground
 
         self.view.addSubview(scrollView)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
         scrollView.widthAnchor.constraint(equalToConstant: self.view.frame.width).isActive = true
-//        scrollView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
-//        scrollView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
         scrollView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
 
         self.scrollView.addSubview(containerView)

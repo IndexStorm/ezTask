@@ -6,6 +6,7 @@
 //  Copyright © 2020 Mike Ovyan. All rights reserved.
 //
 
+import AVFoundation
 import CoreData
 import UIKit
 import UserNotifications
@@ -16,6 +17,10 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
     var lastOffsetWithSound: CGFloat = 0
     var chosenIndex: Int = 0
+    let pullSound = URL(fileURLWithPath: Bundle.main.path(forResource: "sound-pull", ofType: "mp3")!)
+    let doneSound = URL(fileURLWithPath: Bundle.main.path(forResource: "sound-done", ofType: "mp3")!)
+    let deleteSound = URL(fileURLWithPath: Bundle.main.path(forResource: "sound-pop", ofType: "mp3")!)
+    var audioPlayer = AVAudioPlayer()
 
     // Views
 
@@ -96,6 +101,87 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         return btn
     }()
 
+    class GlassView: UIView {
+        let liquidView = UIView() // is going to be animated from bottom to top
+        let shapeView = UIImageView() // is going to mask everything with alpha mask
+
+        override init(frame: CGRect) {
+            super.init(frame: frame)
+            setup()
+        }
+
+        required init?(coder aDecoder: NSCoder) {
+            super.init(coder: aDecoder)
+            setup()
+        }
+
+        func setup() {
+            self.backgroundColor = UIColor.lightGray
+            self.liquidView.backgroundColor = .systemYellow
+
+            self.shapeView.contentMode = .scaleAspectFit
+            self.shapeView.image = UIImage(named: "bulb")
+
+            self.addSubview(liquidView)
+            self.mask = shapeView
+
+            layoutIfNeeded()
+            reset()
+        }
+
+        override func layoutSubviews() {
+            super.layoutSubviews()
+
+            liquidView.frame = self.bounds
+            shapeView.frame = self.bounds
+        }
+
+        func reset() {
+            liquidView.frame.origin.y = bounds.height
+        }
+
+        func animate() {
+            reset()
+            UIView.animate(withDuration: 1) {
+                self.liquidView.frame.origin.y = 0
+            }
+        }
+
+        func update(offset: CGFloat) {
+            self.liquidView.frame.origin.y = (1 - offset / 130) * bounds.height
+        }
+    }
+
+    private let rocket: UIImageView = { // TODO: unite in one view
+        let image = UIImageView()
+        image.image = UIImage(named: "rocket") // TODO: check if light or dark theme
+        image.contentMode = .scaleAspectFit
+
+        return image
+    }()
+
+    private let quote: UILabel = {
+        let label = UILabel()
+        label.text = "“The Way Get Started Is To Quit Talking And Begin Doing.”"
+        label.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        label.textAlignment = .center
+        label.lineBreakMode = .byWordWrapping
+        label.numberOfLines = 0
+
+        return label
+    }()
+
+    private let author: UILabel = {
+        let label = UILabel()
+        label.text = "– Walt Disney"
+        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        label.textAlignment = .center
+        label.lineBreakMode = .byWordWrapping
+        label.numberOfLines = 0
+
+        return label
+    }()
+
     // CollectionView
 
     private var daysCollectionView: UICollectionView?
@@ -114,22 +200,25 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let cell = collectionView.cellForItem(at: indexPath) else {
-            return
-        }
         chosenIndex = indexPath[1]
         updateTopLabels(date: Date().addDays(add: chosenIndex))
         fetchTasks()
-        tasksTable.reloadData()
-        animateTable()
-        cell.contentView.alpha = 1
         collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
         collectionView.reloadData()
+        tasksTable.reloadData()
+        animateTable()
         let generator = UIImpactFeedbackGenerator(style: .medium)
         generator.impactOccurred()
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        // tableview
+        if scrollView == tasksTable {
+            let contentOffset = scrollView.contentOffset.y
+            animatedView.update(offset: -1 * contentOffset)
+        }
+
+        // collection
         if let flowLayout = ((scrollView as? UICollectionView)?.collectionViewLayout as? UICollectionViewFlowLayout) {
             let lineHeight = flowLayout.itemSize.width + flowLayout.minimumInteritemSpacing
             let offset = scrollView.contentOffset.x
@@ -187,12 +276,49 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         allTasksForDay = res
     }
 
+    func checkIfDayEmpty() {
+        if allTasksForDay.isEmpty {
+            tasksTable.backgroundColor = .clear
+            animatePlaceholder()
+        } else {
+            tasksTable.backgroundColor = .systemBackground
+        }
+    }
+
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
 
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60.0
+    }
+
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            let cell = tableView.cellForRow(at: indexPath) as! TaskCell
+            if let model = cell.model {
+                deleteTask(id: model.id.uuidString, completion: {
+                    do {
+                        audioPlayer = try AVAudioPlayer(contentsOf: deleteSound)
+                        audioPlayer.play()
+                    } catch {
+                        // couldn't load file :(
+                    }
+                    self.tasksTable.performBatchUpdates({
+                        self.fetchTasks()
+                        self.tasksTable.deleteRows(at: [indexPath], with: .automatic)
+                    }, completion: { (_: Bool) in
+                        self.tasksTable.reloadData()
+                    })
+                    let generator = UINotificationFeedbackGenerator()
+                    generator.notificationOccurred(.warning)
+            })
+            }
+        }
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -205,12 +331,20 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         newVC.returnTask = { task in
             if task.mainText == "" {
                 deleteTask(id: task.id.uuidString, completion: {
+                    do {
+                        self.audioPlayer = try AVAudioPlayer(contentsOf: self.deleteSound)
+                        self.audioPlayer.play()
+                    } catch {
+                        // couldn't load file :(
+                    }
+                    self.tasksTable.performBatchUpdates({
+                        self.fetchTasks()
+                        self.tasksTable.deleteRows(at: [indexPath], with: .automatic)
+                    }, completion: { (_: Bool) in
+                        self.tasksTable.reloadData()
+                    })
                     let generator = UINotificationFeedbackGenerator()
                     generator.notificationOccurred(.warning)
-                    // TODO: add animation
-                    // maybe remove at row
-                    self.fetchTasks()
-                    self.tasksTable.reloadData()
                 })
                 return
             }
@@ -222,9 +356,9 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
                     return
                 }
                 self.tasksTable.performBatchUpdates({
-                        cell.configure(task: task)
-                        let row = self.allTasksForDay.firstIndexById(id: task.id.uuidString)
-                        tableView.moveRow(at: indexPath, to: IndexPath(row: row, section: 0))
+                    cell.configure(task: task)
+                    let row = self.allTasksForDay.firstIndexById(id: task.id.uuidString)
+                    tableView.moveRow(at: indexPath, to: IndexPath(row: row, section: 0))
                 }, completion: { (_: Bool) in
                     self.tasksTable.reloadData()
                 })
@@ -249,6 +383,12 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
             if let id = cell.id, let isDone = cell.model?.isDone, let task = cell.model { // reload
                 if !isDone {
                     setDone(id: id.uuidString, completion: {
+                        do {
+                            audioPlayer = try AVAudioPlayer(contentsOf: doneSound)
+                            audioPlayer.play()
+                        } catch {
+                            // couldn't load file :(
+                        }
                         fetchTasks()
                         let generator = UIImpactFeedbackGenerator(style: .light)
                         generator.impactOccurred()
@@ -263,6 +403,12 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
                     })
                 } else {
                     setUndone(id: id.uuidString, completion: {
+                        do {
+                            audioPlayer = try AVAudioPlayer(contentsOf: doneSound)
+                            audioPlayer.play()
+                        } catch {
+                            // couldn't load file :(
+                        }
                         fetchTasks()
                         let generator = UIImpactFeedbackGenerator(style: .light)
                         generator.impactOccurred()
@@ -295,15 +441,10 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
     override func viewDidLoad() {
         super.viewDidLoad()
-//        fetchTasks()
         setup()
         updateTopLabels(date: Date().addDays(add: chosenIndex))
         NotificationCenter.default.addObserver(self, selector: #selector(handleAppDidBecomeActiveNotification(notification:)),
                                                name: UIApplication.didBecomeActiveNotification, object: nil)
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -314,6 +455,10 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
     func animateTable() {
         UIView.animate(views: tasksTable.visibleCells, animations: [AnimationType.from(direction: .top, offset: 10.0)], initialAlpha: 0, finalAlpha: 1, duration: 0.5)
+    }
+
+    func animatePlaceholder() {
+        UIView.animate(views: [rocket, quote, author], animations: [AnimationType.from(direction: .top, offset: 20.0)], initialAlpha: 0, finalAlpha: 1, duration: 1)
     }
 
     // @objc
@@ -330,6 +475,12 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
                 return
             }
             self.didReceivedNewTask(task: task)
+        }
+        do {
+            audioPlayer = try AVAudioPlayer(contentsOf: pullSound)
+            audioPlayer.play()
+        } catch {
+            // couldn't load file :(
         }
         self.present(newVC, animated: true, completion: {
             self.refreshControl.endRefreshing()
@@ -358,6 +509,10 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
             self.backTodayBtn.alpha = 0
         }
         myCollection.reloadData()
+        updateTopLabels(date: Date().addDays(add: chosenIndex))
+        fetchTasks()
+        tasksTable.reloadData()
+        animateTable()
     }
 
     @objc
@@ -391,13 +546,18 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         return false
     }
 
+    lazy var animatedView = GlassView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 60))
+
     func setup() {
-        self.view.backgroundColor = .white
+        self.view.backgroundColor = .systemBackground
 
         let safeAreaView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: UIApplication.shared.statusBarFrame.maxY + 1))
         safeAreaView.backgroundColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
         safeAreaView.layer.zPosition = 1_000
         self.view.addSubview(safeAreaView)
+        self.view.addSubview(rocket)
+        self.view.addSubview(quote)
+        self.view.addSubview(author)
         self.view.addSubview(tasksTable)
 
         self.view.addSubview(topView)
@@ -439,6 +599,24 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         myCollection.trailingAnchor.constraint(equalTo: topView.trailingAnchor, constant: 0).isActive = true
         myCollection.topAnchor.constraint(equalTo: dayLabel.bottomAnchor, constant: 10).isActive = true
 
+        rocket.translatesAutoresizingMaskIntoConstraints = false
+        rocket.heightAnchor.constraint(equalToConstant: 280).isActive = true
+        rocket.widthAnchor.constraint(equalToConstant: 280).isActive = true
+        rocket.topAnchor.constraint(equalTo: topView.bottomAnchor, constant: 80).isActive = true
+        rocket.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+
+        quote.translatesAutoresizingMaskIntoConstraints = false
+        quote.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 50).isActive = true
+        quote.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -50).isActive = true
+        quote.topAnchor.constraint(equalTo: rocket.bottomAnchor, constant: 10).isActive = true
+        quote.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+
+        author.translatesAutoresizingMaskIntoConstraints = false
+        author.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 50).isActive = true
+        author.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -50).isActive = true
+        author.topAnchor.constraint(equalTo: quote.bottomAnchor, constant: 5).isActive = true
+        author.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+
         createTable()
 
         tasksTable.translatesAutoresizingMaskIntoConstraints = false
@@ -451,12 +629,12 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         tasksTable.contentInset.bottom = 10
         tasksTable.showsHorizontalScrollIndicator = false
         tasksTable.showsVerticalScrollIndicator = false // TODO: make tasksTable not transparent
-
-        let attributes = [NSAttributedString.Key.foregroundColor: UIColor.green, NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14)]
-        refreshControl.attributedTitle = NSAttributedString(string: "Pull to add a new task", attributes: attributes)
+        tasksTable.backgroundColor = .systemBackground
+        
         refreshControl.addTarget(self, action: #selector(self.newTask(_:)), for: .valueChanged)
-        refreshControl.tintColor = .green
+        refreshControl.tintColor = .clear
         refreshControl.layer.zPosition = -1
+        refreshControl.addSubview(animatedView)
         tasksTable.refreshControl = refreshControl
 
         self.view.addSubview(backTodayBtn)
@@ -546,6 +724,7 @@ extension MainVC {
             allTasks.sort()
             getAllTasksForDay()
             allTasksForDay.sort()
+            checkIfDayEmpty()
         } catch let error as NSError {
             print("Could not fetch. \(error), \(error.userInfo)")
         }
