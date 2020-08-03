@@ -9,9 +9,10 @@
         <attribute name="isDone" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="isPriority" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="mainText" optional="YES" attributeType="String"/>
+        <attribute name="subtasks" optional="YES" attributeType="String"/>
         <attribute name="taskDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
     </entity>
     <elements>
-        <element name="TaskCoreModel" positionX="-63" positionY="-18" width="128" height="178"/>
+        <element name="TaskCoreModel" positionX="-63" positionY="-18" width="128" height="193"/>
     </elements>
 </model>

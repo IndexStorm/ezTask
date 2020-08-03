@@ -18,8 +18,25 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
     public var returnTask: ((_ task: TaskModel) -> Void)?
     public var model: TaskModel?
     public var chosenDate: Date = Date()
+    var isShowingKeyboard: Bool = false
 
     // Views
+
+    private lazy var scrollView: UIScrollView = {
+        let scroll = UIScrollView()
+        scroll.autoresizingMask = .flexibleHeight
+        scroll.bounces = true
+        scroll.showsVerticalScrollIndicator = false
+        scroll.frame = self.view.bounds
+
+        return scroll
+    }()
+
+    private let containerView: UIView = {
+        let view = UIView()
+
+        return view
+    }()
 
     private let swipeArrow: UIImageView = {
         let image = UIImageView()
@@ -50,7 +67,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         return label
     }()
 
-    private let mainText: UITextView = {
+    private let mainTextView: UITextView = {
         let text = UITextView()
         text.font = UIFont.systemFont(ofSize: 18, weight: .medium)
         text.isScrollEnabled = false
@@ -197,23 +214,12 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         timePicker.addTarget(self, action: #selector(timePickerChanged(picker:)), for: .valueChanged)
     }
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        createStack()
-        setup()
-        checkNotifications()
-        createDatePicker()
-        createTimePicker()
-        loadModel()
-        setTimePickerDate()
-    }
-
     private func loadModel() {
         guard let model = model else {
             return
         }
-        mainText.resignFirstResponder()
-        mainText.text = model.mainText
+        mainTextView.resignFirstResponder()
+        mainTextView.text = model.mainText
         isPriority = model.isPriority
         priorityImage.image = UIImage(named: isPriority ? "square_filled" : "square")
         datePicker.date = model.taskDate
@@ -231,6 +237,20 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
             timeImage.alpha = 0.9
             isAlarmSet = true
         }
+
+        if let subtasksString = model.subtasks {
+            loadSubtasks(str: subtasksString)
+        }
+    }
+
+    func loadSubtasks(str: String) {
+        var data = str.components(separatedBy: "\n")
+        data.removeLast()
+        for var i in stride(from: 0, to: data.count, by: 2) {
+            let view = generateNewSubtask(shouldRespond: false, isPreloaded: true, isDoneSubtask: data[i] == "done", text: data[i + 1])
+            subtaskStackView.insertArrangedSubview(view, at: subtaskStackView.arrangedSubviews.count - 1)
+            i += 1
+        }
     }
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -245,7 +265,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         generator.impactOccurred()
     }
 
-    func generateNewSubtask(shouldRespond: Bool) -> UIView { // TODO: add delete button
+    func generateNewSubtask(shouldRespond: Bool, isPreloaded: Bool = false, isDoneSubtask: Bool = false, text: String = "") -> UIView {
         let view = UIView()
 
         let circle = UIImageView()
@@ -293,19 +313,23 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         if shouldRespond {
             textField.becomeFirstResponder()
         }
-
+        if isPreloaded {
+            if isDoneSubtask {
+                view.alpha = 0.35
+                circle.image = UIImage(named: "circle_filled")
+            }
+            textField.text = text
+        }
         return view
     }
 
     private func createStack() {
         addSubtaskView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(addSubtaskTapped)))
-
         subtaskStackView = UIStackView(arrangedSubviews: [addSubtaskView])
         subtaskStackView.axis = .vertical
         subtaskStackView.alignment = .fill
         subtaskStackView.distribution = .equalSpacing
         subtaskStackView.spacing = 5
-        subtaskStackView.backgroundColor = .red
     }
 
     @objc
@@ -321,7 +345,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         guard let view = sender.view?.superview else {
             return
         }
-        subtaskStackView.removeArrangedSubview(view) // TODO: check if this one works fine
+        subtaskStackView.removeArrangedSubview(view)
         view.removeFromSuperview()
         let generator = UIImpactFeedbackGenerator(style: .light)
         generator.impactOccurred()
@@ -489,20 +513,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         }
     }
 
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-
-        let dataFromSubtasks = getStringFromSubtasks() // TODO: save this to CoreData
-
-        let id = model == nil ? UUID() : model!.id
-        let isDone = model == nil ? false : model!.isDone
-        let dateCompleted = isDone ? model!.dateCompleted : nil
-
-        let task = TaskModel(id: id, mainText: mainText.text, isPriority: isPriority, isDone: isDone, taskDate: datePicker.date, isAlarmSet: isAlarmSet, alarmDate: isAlarmSet ? timePicker.date : nil, dateCompleted: dateCompleted, dateModified: Date())
-        returnTask?(task)
-    }
-
-    func getStringFromSubtasks() -> String {
+    func getStringFromSubtasks() -> String? {
         var res = ""
         for subtask in subtaskStackView.arrangedSubviews {
             for subview in subtask.subviews as [UIView] {
@@ -516,7 +527,8 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
                 }
             }
         }
-        return res
+
+        return res == "" ? nil : res
     }
 
     func dismiss() {
@@ -530,95 +542,150 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         self.present(alert, animated: true, completion: nil)
     }
 
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+
+        let dataFromSubtasks = getStringFromSubtasks()
+        let id = model == nil ? UUID() : model!.id
+        let isDone = model == nil ? false : model!.isDone
+        let dateCompleted = isDone ? model!.dateCompleted : nil
+        if dataFromSubtasks != nil, mainTextView.text == "" {
+            mainTextView.text = "Empty task"
+        }
+
+        let task = TaskModel(id: id, mainText: mainTextView.text, subtasks: dataFromSubtasks, isPriority: isPriority, isDone: isDone, taskDate: datePicker.date, isAlarmSet: isAlarmSet, alarmDate: isAlarmSet ? timePicker.date : nil, dateCompleted: dateCompleted, dateModified: Date())
+        returnTask?(task)
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillDisappear), name: UIResponder.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillAppear), name: UIResponder.keyboardWillShowNotification, object: nil)
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        createStack()
+        setup()
+        checkNotifications()
+        createDatePicker()
+        createTimePicker()
+        loadModel()
+        setTimePickerDate()
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        scrollView.contentSize = {
+            if isShowingKeyboard {
+                return CGSize(width: self.view.frame.width, height: containerView.frame.height + 400)
+            } else {
+                return CGSize(width: self.view.frame.width, height: containerView.frame.height + 200)
+            }
+        }()
+    }
+
     func setup() {
         self.view.backgroundColor = .white
 
-        self.view.addSubview(swipeArrow)
+        self.view.addSubview(scrollView)
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
+        scrollView.widthAnchor.constraint(equalToConstant: self.view.frame.width).isActive = true
+        scrollView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+
+        self.scrollView.addSubview(containerView)
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        containerView.widthAnchor.constraint(equalTo: scrollView.widthAnchor).isActive = true
+        containerView.topAnchor.constraint(equalTo: self.scrollView.topAnchor).isActive = true
+
+        self.containerView.addSubview(swipeArrow)
         swipeArrow.translatesAutoresizingMaskIntoConstraints = false
         swipeArrow.heightAnchor.constraint(equalToConstant: 10).isActive = true
         swipeArrow.widthAnchor.constraint(equalToConstant: 140).isActive = true
-        swipeArrow.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        swipeArrow.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 15).isActive = true
+        swipeArrow.centerXAnchor.constraint(equalTo: self.containerView.centerXAnchor).isActive = true
+        swipeArrow.topAnchor.constraint(equalTo: self.containerView.topAnchor, constant: 15).isActive = true
 
-        self.view.addSubview(topLabel)
+        self.containerView.addSubview(topLabel)
         topLabel.translatesAutoresizingMaskIntoConstraints = false
         topLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
         topLabel.widthAnchor.constraint(equalToConstant: 140).isActive = true
-        topLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        topLabel.centerXAnchor.constraint(equalTo: self.containerView.centerXAnchor).isActive = true
         topLabel.topAnchor.constraint(equalTo: swipeArrow.bottomAnchor, constant: 15).isActive = true
 
-        self.view.addSubview(planning)
+        self.containerView.addSubview(planning)
         planning.translatesAutoresizingMaskIntoConstraints = false
         planning.heightAnchor.constraint(equalToConstant: 17).isActive = true
-        planning.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 25).isActive = true
-        planning.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -25).isActive = true
+        planning.leadingAnchor.constraint(equalTo: self.containerView.leadingAnchor, constant: 25).isActive = true
+        planning.trailingAnchor.constraint(equalTo: self.containerView.trailingAnchor, constant: -25).isActive = true
         planning.topAnchor.constraint(equalTo: topLabel.bottomAnchor, constant: 30).isActive = true
 
-        self.view.addSubview(mainText)
-        mainText.translatesAutoresizingMaskIntoConstraints = false
-        mainText.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 21).isActive = true
-        mainText.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -50).isActive = true
-        mainText.topAnchor.constraint(equalTo: planning.bottomAnchor, constant: 10).isActive = true
-        mainText.becomeFirstResponder()
-        mainText.returnKeyType = .done
-        mainText.delegate = self
+        self.containerView.addSubview(mainTextView)
+        mainTextView.translatesAutoresizingMaskIntoConstraints = false
+        mainTextView.leadingAnchor.constraint(equalTo: self.containerView.leadingAnchor, constant: 21).isActive = true
+        mainTextView.trailingAnchor.constraint(equalTo: self.containerView.trailingAnchor, constant: -50).isActive = true
+        mainTextView.topAnchor.constraint(equalTo: planning.bottomAnchor, constant: 10).isActive = true
+        mainTextView.becomeFirstResponder()
+        mainTextView.returnKeyType = .done
+        mainTextView.delegate = self
 
-        self.view.addSubview(subtaskStackView)
+        self.containerView.addSubview(subtaskStackView)
         subtaskStackView.translatesAutoresizingMaskIntoConstraints = false
-        subtaskStackView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 25).isActive = true
-        subtaskStackView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -25).isActive = true
-        subtaskStackView.topAnchor.constraint(equalTo: mainText.bottomAnchor, constant: 5).isActive = true
+        subtaskStackView.leadingAnchor.constraint(equalTo: self.containerView.leadingAnchor, constant: 25).isActive = true
+        subtaskStackView.trailingAnchor.constraint(equalTo: self.containerView.trailingAnchor, constant: -25).isActive = true
+        subtaskStackView.topAnchor.constraint(equalTo: mainTextView.bottomAnchor, constant: 5).isActive = true
 
-        self.view.addSubview(separator)
+        self.containerView.addSubview(separator)
         separator.translatesAutoresizingMaskIntoConstraints = false
         separator.heightAnchor.constraint(equalToConstant: 1).isActive = true
-        separator.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 25).isActive = true
-        separator.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -25).isActive = true
+        separator.leadingAnchor.constraint(equalTo: self.containerView.leadingAnchor, constant: 25).isActive = true
+        separator.trailingAnchor.constraint(equalTo: self.containerView.trailingAnchor, constant: -25).isActive = true
         separator.topAnchor.constraint(equalTo: subtaskStackView.bottomAnchor, constant: 20).isActive = true
 
-        self.view.addSubview(dateImage)
+        self.containerView.addSubview(dateImage)
         dateImage.translatesAutoresizingMaskIntoConstraints = false
         dateImage.heightAnchor.constraint(equalToConstant: 22).isActive = true
         dateImage.widthAnchor.constraint(equalToConstant: 22).isActive = true
-        dateImage.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 25).isActive = true
+        dateImage.leadingAnchor.constraint(equalTo: self.containerView.leadingAnchor, constant: 25).isActive = true
         dateImage.topAnchor.constraint(equalTo: separator.bottomAnchor, constant: 35).isActive = true
 
-        self.view.addSubview(dateTextField)
+        self.containerView.addSubview(dateTextField)
         dateTextField.translatesAutoresizingMaskIntoConstraints = false
         dateTextField.heightAnchor.constraint(equalToConstant: 22).isActive = true
         dateTextField.leadingAnchor.constraint(equalTo: dateImage.trailingAnchor, constant: 12).isActive = true
-        dateTextField.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 25).isActive = true
+        dateTextField.trailingAnchor.constraint(equalTo: self.containerView.trailingAnchor, constant: 25).isActive = true
         dateTextField.topAnchor.constraint(equalTo: separator.bottomAnchor, constant: 36).isActive = true
 
-        self.view.addSubview(timeImage)
+        self.containerView.addSubview(timeImage)
         timeImage.translatesAutoresizingMaskIntoConstraints = false
         timeImage.heightAnchor.constraint(equalToConstant: 22).isActive = true
         timeImage.widthAnchor.constraint(equalToConstant: 22).isActive = true
-        timeImage.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 25).isActive = true
+        timeImage.leadingAnchor.constraint(equalTo: self.containerView.leadingAnchor, constant: 25).isActive = true
         timeImage.topAnchor.constraint(equalTo: dateTextField.bottomAnchor, constant: 20).isActive = true
 
-        self.view.addSubview(timeTextField)
+        self.containerView.addSubview(timeTextField)
         timeTextField.translatesAutoresizingMaskIntoConstraints = false
         timeTextField.heightAnchor.constraint(equalToConstant: 22).isActive = true
         timeTextField.widthAnchor.constraint(equalToConstant: 200).isActive = true
         timeTextField.leadingAnchor.constraint(equalTo: timeImage.trailingAnchor, constant: 12).isActive = true
         timeTextField.topAnchor.constraint(equalTo: dateTextField.bottomAnchor, constant: 20).isActive = true
 
-        self.view.addSubview(priorityImage)
+        self.containerView.addSubview(priorityImage)
         priorityImage.translatesAutoresizingMaskIntoConstraints = false
         priorityImage.heightAnchor.constraint(equalToConstant: 22).isActive = true
         priorityImage.widthAnchor.constraint(equalToConstant: 22).isActive = true
-        priorityImage.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 25).isActive = true
+        priorityImage.leadingAnchor.constraint(equalTo: self.containerView.leadingAnchor, constant: 25).isActive = true
         priorityImage.topAnchor.constraint(equalTo: timeTextField.bottomAnchor, constant: 20).isActive = true
         priorityImage.isUserInteractionEnabled = true
         priorityImage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(priorityTapped)))
 
-        self.view.addSubview(priorityLabel)
+        self.containerView.addSubview(priorityLabel)
         priorityLabel.translatesAutoresizingMaskIntoConstraints = false
         priorityLabel.heightAnchor.constraint(equalToConstant: 22).isActive = true
         priorityLabel.widthAnchor.constraint(equalToConstant: 100).isActive = true
         priorityLabel.leadingAnchor.constraint(equalTo: priorityImage.trailingAnchor, constant: 12).isActive = true
         priorityLabel.topAnchor.constraint(equalTo: timeTextField.bottomAnchor, constant: 20).isActive = true
+        priorityLabel.bottomAnchor.constraint(equalTo: self.containerView.bottomAnchor).isActive = true
         priorityLabel.isUserInteractionEnabled = true
         priorityLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(priorityTapped)))
     }
@@ -626,10 +693,22 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         if text == "\n" {
             textView.resignFirstResponder()
-            dismiss()
+//            dismiss() // TODO: don't hide
             return false
         }
         return true
+    }
+
+    @objc
+    func keyboardWillAppear() {
+        isShowingKeyboard = true
+        self.viewDidLayoutSubviews()
+    }
+
+    @objc
+    func keyboardWillDisappear() {
+        isShowingKeyboard = false
+        self.viewDidLayoutSubviews()
     }
 
     // TODO: placeholder. Now it saves with placeholder as a mainText

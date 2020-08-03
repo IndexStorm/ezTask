@@ -20,6 +20,7 @@ public func save(model: TaskModel, completion: () -> Void) {
     let task = NSManagedObject(entity: entity, insertInto: managedContext)
     task.setValue(model.id, forKey: "id")
     task.setValue(model.mainText, forKeyPath: "mainText")
+    task.setValue(model.subtasks, forKeyPath: "subtasks")
     task.setValue(model.isDone, forKeyPath: "isDone")
     task.setValue(model.isPriority, forKey: "isPriority")
     task.setValue(model.taskDate, forKey: "taskDate")
@@ -125,6 +126,7 @@ public func update(id: String, newModel: TaskModel, completion: () -> Void) {
         let res = try managedContext.fetch(fetchRequest)
         if !res.isEmpty {
             res[0].setValue(newModel.mainText, forKey: "mainText")
+            res[0].setValue(newModel.subtasks, forKey: "subtasks")
             res[0].setValue(newModel.isDone, forKey: "isDone")
             res[0].setValue(newModel.isPriority, forKey: "isPriority")
             res[0].setValue(newModel.taskDate, forKey: "taskDate")
