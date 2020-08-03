@@ -217,10 +217,14 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
             if cell.model != task {
                 self.didReceivedUpdatedTask(task: task)
                 self.fetchTasks()
-                cell.configure(task: task)
+                if task.taskDate.startOfDay != Date().addDays(add: self.chosenIndex).startOfDay {
+                    self.tasksTable.reloadData()
+                    return
+                }
                 self.tasksTable.performBatchUpdates({
-                    let row = self.allTasksForDay.firstIndexById(id: task.id.uuidString)
-                    tableView.moveRow(at: indexPath, to: IndexPath(row: row, section: 0))
+                        cell.configure(task: task)
+                        let row = self.allTasksForDay.firstIndexById(id: task.id.uuidString)
+                        tableView.moveRow(at: indexPath, to: IndexPath(row: row, section: 0))
                 }, completion: { (_: Bool) in
                     self.tasksTable.reloadData()
                 })

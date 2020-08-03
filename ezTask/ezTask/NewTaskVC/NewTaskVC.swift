@@ -156,6 +156,16 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
 
         return field
     }()
+    
+    private let deleteAlarmImage: UIImageView = {
+        let image = UIImageView()
+        image.image = UIImage(named: "close")
+        image.contentMode = .scaleAspectFit
+        image.tintColor = .lightGray
+        image.alpha = 0
+
+        return image
+    }()
 
     private let timePicker = UIDatePicker()
 
@@ -222,7 +232,11 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         mainTextView.text = model.mainText
         isPriority = model.isPriority
         priorityImage.image = UIImage(named: isPriority ? "square_filled" : "square")
-        datePicker.date = model.taskDate
+        if model.taskDate.startOfDay < Date().startOfDay {
+            datePicker.date = Date() // TODO: support old dates
+        } else {
+            datePicker.date = model.taskDate
+        }
         let formatter = DateFormatter()
         formatter.dateStyle = .full
         formatter.timeStyle = .none
@@ -236,8 +250,8 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
             timeImage.tintColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
             timeImage.alpha = 0.9
             isAlarmSet = true
+            deleteAlarmImage.alpha = 1
         }
-
         if let subtasksString = model.subtasks {
             loadSubtasks(str: subtasksString)
         }
@@ -382,6 +396,18 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         let generator = UIImpactFeedbackGenerator(style: .light)
         generator.impactOccurred()
     }
+    
+    @objc
+    func deleteAlarmTapped() {
+        deleteAlarmImage.alpha = 0
+        verifyFiveMinutes()
+        timeTextField.text = ""
+        timeImage.tintColor = .black
+        timeImage.alpha = 0.3
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
+        isAlarmSet = false
+    }
 
     @objc
     func datePickerDonePressed() {
@@ -433,6 +459,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
                 let generator = UIImpactFeedbackGenerator(style: .light)
                 generator.impactOccurred()
                 isAlarmSet = false
+                deleteAlarmImage.alpha = 0
             }
         } else {
             timePicker.minimumDate = datePicker.date.startOfDay
@@ -445,6 +472,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
                 let generator = UIImpactFeedbackGenerator(style: .light)
                 generator.impactOccurred()
                 isAlarmSet = false
+                deleteAlarmImage.alpha = 0
             }
         }
     }
@@ -467,6 +495,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         let generator = UIImpactFeedbackGenerator(style: .light)
         generator.impactOccurred()
         isAlarmSet = false
+        deleteAlarmImage.alpha = 0
     }
 
     @objc
@@ -479,6 +508,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         timeImage.tintColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
         timeImage.alpha = 0.9
         isAlarmSet = true
+        deleteAlarmImage.alpha = 1
         checkIfAllowedNotifications(picker: picker)
     }
 
@@ -544,6 +574,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+        NotificationCenter.default.removeObserver(self)
 
         let dataFromSubtasks = getStringFromSubtasks()
         let id = model == nil ? UUID() : model!.id
@@ -552,7 +583,6 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         if dataFromSubtasks != nil, mainTextView.text == "" {
             mainTextView.text = "Empty task"
         }
-
         let task = TaskModel(id: id, mainText: mainTextView.text, subtasks: dataFromSubtasks, isPriority: isPriority, isDone: isDone, taskDate: datePicker.date, isAlarmSet: isAlarmSet, alarmDate: isAlarmSet ? timePicker.date : nil, dateCompleted: dateCompleted, dateModified: Date())
         returnTask?(task)
     }
@@ -576,11 +606,11 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        scrollView.contentSize = {
+        scrollView.contentSize.height = {
             if isShowingKeyboard {
-                return CGSize(width: self.view.frame.width, height: containerView.frame.height + 400)
+                return containerView.frame.height + 400
             } else {
-                return CGSize(width: self.view.frame.width, height: containerView.frame.height + 200)
+                return containerView.frame.height + 200
             }
         }()
     }
@@ -592,6 +622,8 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
         scrollView.widthAnchor.constraint(equalToConstant: self.view.frame.width).isActive = true
+//        scrollView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
+//        scrollView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
         scrollView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
 
         self.scrollView.addSubview(containerView)
@@ -666,9 +698,18 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         self.containerView.addSubview(timeTextField)
         timeTextField.translatesAutoresizingMaskIntoConstraints = false
         timeTextField.heightAnchor.constraint(equalToConstant: 22).isActive = true
-        timeTextField.widthAnchor.constraint(equalToConstant: 200).isActive = true
+        timeTextField.widthAnchor.constraint(equalToConstant: 120).isActive = true
         timeTextField.leadingAnchor.constraint(equalTo: timeImage.trailingAnchor, constant: 12).isActive = true
         timeTextField.topAnchor.constraint(equalTo: dateTextField.bottomAnchor, constant: 20).isActive = true
+        
+        self.containerView.addSubview(deleteAlarmImage)
+        deleteAlarmImage.translatesAutoresizingMaskIntoConstraints = false
+        deleteAlarmImage.heightAnchor.constraint(equalToConstant: 14).isActive = true
+        deleteAlarmImage.widthAnchor.constraint(equalToConstant: 14).isActive = true
+        deleteAlarmImage.centerYAnchor.constraint(equalTo: timeTextField.centerYAnchor).isActive = true
+        deleteAlarmImage.trailingAnchor.constraint(equalTo: self.containerView.trailingAnchor, constant: -25).isActive = true
+        deleteAlarmImage.isUserInteractionEnabled = true
+        deleteAlarmImage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(deleteAlarmTapped)))
 
         self.containerView.addSubview(priorityImage)
         priorityImage.translatesAutoresizingMaskIntoConstraints = false

@@ -50,7 +50,7 @@ class DayCell: UICollectionViewCell {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        
+
         dayName.translatesAutoresizingMaskIntoConstraints = false
         dayName.heightAnchor.constraint(equalToConstant: 20).isActive = true
         dayName.widthAnchor.constraint(equalToConstant: 40).isActive = true
