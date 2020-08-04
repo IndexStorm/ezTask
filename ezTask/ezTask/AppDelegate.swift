@@ -29,7 +29,14 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationC
 
     private func setupWindow() {
         let window = UIWindow(frame: UIScreen.main.bounds)
-        window.rootViewController = MainVC()
+        let navigationController = UINavigationController()
+        navigationController.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
+        navigationController.navigationBar.shadowImage = UIImage()
+        navigationController.navigationBar.isTranslucent = true
+        navigationController.view.backgroundColor = UIColor.clear
+        let mainViewController = MainVC()
+        navigationController.viewControllers = [mainViewController]
+        window.rootViewController = navigationController
         window.makeKeyAndVisible()
         self.window = window
     }

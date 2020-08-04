@@ -11,6 +11,7 @@
 		E60DFBD524C2121600043A76 /* MainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E60DFBD424C2121600043A76 /* MainVC.swift */; };
 		E60DFBDA24C2121B00043A76 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E60DFBD924C2121B00043A76 /* Assets.xcassets */; };
 		E60DFBDD24C2121B00043A76 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E60DFBDB24C2121B00043A76 /* LaunchScreen.storyboard */; };
+		E64EFD2324D9AD4900CC3208 /* MenuVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E64EFD2224D9AD4900CC3208 /* MenuVC.swift */; };
 		E656C30224C771FF00FCF85E /* NewTaskVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E656C30124C771FF00FCF85E /* NewTaskVC.swift */; };
 		E68450D224C84632005D72A5 /* ViewAnimator in Frameworks */ = {isa = PBXBuildFile; productRef = E68450D124C84632005D72A5 /* ViewAnimator */; };
 		E68450D524C8924F005D72A5 /* CoreDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E68450D324C8924F005D72A5 /* CoreDataModel.xcdatamodeld */; };
@@ -25,6 +26,7 @@
 		E6A5CB9F24D829EA0036F45B /* sound-push.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = E6A5CB9B24D829EA0036F45B /* sound-push.mp3 */; };
 		E6D6EEEE24C2D94400AF82A3 /* DayCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D6EEED24C2D94400AF82A3 /* DayCell.swift */; };
 		E6D6EEF024C37CE300AF82A3 /* TaskCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D6EEEF24C37CE300AF82A3 /* TaskCell.swift */; };
+		E6F95BA824D9A7FD0092DBF0 /* SideMenu in Frameworks */ = {isa = PBXBuildFile; productRef = E6F95BA724D9A7FD0092DBF0 /* SideMenu */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +36,7 @@
 		E60DFBD924C2121B00043A76 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E60DFBDC24C2121B00043A76 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E60DFBDE24C2121B00043A76 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E64EFD2224D9AD4900CC3208 /* MenuVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuVC.swift; sourceTree = "<group>"; };
 		E656C30124C771FF00FCF85E /* NewTaskVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTaskVC.swift; sourceTree = "<group>"; };
 		E68450D424C8924F005D72A5 /* TaskDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TaskDataModel.xcdatamodel; sourceTree = "<group>"; };
 		E68E3F4424CF300300E7EA7F /* LocalNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotifications.swift; sourceTree = "<group>"; };
@@ -54,6 +57,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E6F95BA824D9A7FD0092DBF0 /* SideMenu in Frameworks */,
 				E68450D224C84632005D72A5 /* ViewAnimator in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -81,6 +85,7 @@
 			isa = PBXGroup;
 			children = (
 				E60DFBD024C2121600043A76 /* AppDelegate.swift */,
+				E64EFD2124D9AD3200CC3208 /* Menu */,
 				E62D4E1424D5F2DB00062758 /* MainVC */,
 				E62D4E1524D5F2EE00062758 /* NewTaskVC */,
 				E68E3F5024CF34FE00E7EA7F /* Structs */,
@@ -109,6 +114,14 @@
 				E656C30124C771FF00FCF85E /* NewTaskVC.swift */,
 			);
 			path = NewTaskVC;
+			sourceTree = "<group>";
+		};
+		E64EFD2124D9AD3200CC3208 /* Menu */ = {
+			isa = PBXGroup;
+			children = (
+				E64EFD2224D9AD4900CC3208 /* MenuVC.swift */,
+			);
+			path = Menu;
 			sourceTree = "<group>";
 		};
 		E68E3F4324CF2FE700E7EA7F /* Notifications */ = {
@@ -184,6 +197,7 @@
 			name = ezTask;
 			packageProductDependencies = (
 				E68450D124C84632005D72A5 /* ViewAnimator */,
+				E6F95BA724D9A7FD0092DBF0 /* SideMenu */,
 			);
 			productName = ezTask;
 			productReference = E60DFBCD24C2121600043A76 /* ezTask.app */;
@@ -215,6 +229,7 @@
 			mainGroup = E60DFBC424C2121600043A76;
 			packageReferences = (
 				E68450D024C84632005D72A5 /* XCRemoteSwiftPackageReference "ViewAnimator" */,
+				E6F95BA624D9A7FD0092DBF0 /* XCRemoteSwiftPackageReference "SideMenu" */,
 			);
 			productRefGroup = E60DFBCE24C2121600043A76 /* Products */;
 			projectDirPath = "";
@@ -251,6 +266,7 @@
 				E68E3F4524CF300300E7EA7F /* LocalNotifications.swift in Sources */,
 				E6A5CB9624D81F320036F45B /* UIApplication.swift in Sources */,
 				E6D6EEF024C37CE300AF82A3 /* TaskCell.swift in Sources */,
+				E64EFD2324D9AD4900CC3208 /* MenuVC.swift in Sources */,
 				E68E3F5224CF352600E7EA7F /* TaskModel.swift in Sources */,
 				E60DFBD524C2121600043A76 /* MainVC.swift in Sources */,
 				E68E3F4F24CF34BA00E7EA7F /* CoreData.swift in Sources */,
@@ -393,7 +409,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = S77KJ672M8;
 				INFOPLIST_FILE = ezTask/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -413,7 +429,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = S77KJ672M8;
 				INFOPLIST_FILE = ezTask/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -460,6 +476,14 @@
 				minimumVersion = 2.7.0;
 			};
 		};
+		E6F95BA624D9A7FD0092DBF0 /* XCRemoteSwiftPackageReference "SideMenu" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/jonkykong/SideMenu";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.4.8;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -467,6 +491,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = E68450D024C84632005D72A5 /* XCRemoteSwiftPackageReference "ViewAnimator" */;
 			productName = ViewAnimator;
+		};
+		E6F95BA724D9A7FD0092DBF0 /* SideMenu */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E6F95BA624D9A7FD0092DBF0 /* XCRemoteSwiftPackageReference "SideMenu" */;
+			productName = SideMenu;
 		};
 /* End XCSwiftPackageProductDependency section */
 

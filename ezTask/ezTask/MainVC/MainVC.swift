@@ -8,6 +8,7 @@
 
 import AVFoundation
 import CoreData
+import SideMenu
 import UIKit
 import UserNotifications
 import ViewAnimator
@@ -624,13 +625,29 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
     // override
 
+    
+    private var sideMenu: SideMenuNavigationController!
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        var settings = SideMenuSettings()
+        settings.statusBarEndAlpha = 0
+        settings.menuWidth = UIScreen.main.bounds.width * 0.5
+        sideMenu = SideMenuNavigationController(rootViewController: MenuVC(with: ["Home", "Info", "Settings"]), settings: settings)
+        sideMenu.leftSide = true
+        SideMenuManager.default.leftMenuNavigationController = sideMenu
+//        SideMenuManager.default.addPanGestureToPresent(toView: view)
+        SideMenuManager.default.addScreenEdgePanGesturesToPresent(toView: view)
+
         isList = UserDefaults.standard.bool(forKey: "isList")
         setup()
         updateTopLabels(date: Date().addDays(add: chosenIndex))
         NotificationCenter.default.addObserver(self, selector: #selector(handleAppDidBecomeActiveNotification(notification:)),
                                                name: UIApplication.didBecomeActiveNotification, object: nil)
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: animated)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -655,6 +672,12 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
     @objc
     func newTask(_ sender: AnyObject) {
+        do {
+            audioPlayer = try AVAudioPlayer(contentsOf: pullSound)
+            audioPlayer.play()
+        } catch {
+            // couldn't load file :(
+        }
         let generator = UIImpactFeedbackGenerator(style: .medium)
         generator.impactOccurred()
         let newVC = NewTaskVC()
@@ -675,12 +698,6 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     func didReceivedNewTask(task: TaskModel) { // TODO: make global
         if task.isAlarmSet {
             setupReminder(task: task)
-        }
-        do {
-            audioPlayer = try AVAudioPlayer(contentsOf: pullSound)
-            audioPlayer.play()
-        } catch {
-            // couldn't load file :(
         }
         self.insertNewTask(task: task)
         let generator = UINotificationFeedbackGenerator()

@@ -451,7 +451,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
                 isAlarmSet = false
                 deleteAlarmImage.alpha = 0
             }
-            timePicker.minimumDate = Date()
+            timePicker.minimumDate = Date().addingTimeInterval(2 * 60)
         }
     }
 

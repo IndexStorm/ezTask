@@ -2,6 +2,15 @@
   "object": {
     "pins": [
       {
+        "package": "SideMenu",
+        "repositoryURL": "https://github.com/jonkykong/SideMenu",
+        "state": {
+          "branch": null,
+          "revision": "138103093176154f84ae9a2a63e58b9ae78bc6d7",
+          "version": "6.4.8"
+        }
+      },
+      {
         "package": "ViewAnimator",
         "repositoryURL": "https://github.com/marcosgriselli/ViewAnimator",
         "state": {
