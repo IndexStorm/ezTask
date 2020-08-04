@@ -42,7 +42,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         let image = UIImageView()
         image.image = UIImage(named: "swipe_down")
         image.contentMode = .scaleAspectFit
-        image.tintColor = .systemGray2
+        image.tintColor = .systemGray3
 
         return image
     }()
@@ -436,15 +436,13 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
     }
 
     func setTimePickerDate() {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy MM dd"
-        let formattedDate = formatter.string(from: datePicker.date)
-        let today = formatter.string(from: Date())
+        let chosenTime = timePicker.date
+        timePicker.minimumDate = datePicker.date.startOfDay
+        timePicker.maximumDate = datePicker.date.endOfDay
+        timePicker.date = timePicker.minimumDate!.addingTimeInterval(TimeInterval(chosenTime.hour * 60 * 60 + chosenTime.minute * 60))
         verifyFiveMinutes()
-        if formattedDate == today {
-            timePicker.minimumDate = Date().addingTimeInterval(2 * 60)
-            timePicker.maximumDate = Date().endOfDay
-            if timePicker.date < timePicker.minimumDate! {
+        if datePicker.date.isToday() {
+            if timePicker.date < Date().addingTimeInterval(2 * 60) {
                 verifyFiveMinutes()
                 timeTextField.text = ""
                 timeImage.tintColor = .systemGray2
@@ -453,18 +451,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
                 isAlarmSet = false
                 deleteAlarmImage.alpha = 0
             }
-        } else {
-            timePicker.minimumDate = datePicker.date.startOfDay
-            timePicker.maximumDate = datePicker.date.endOfDay
-            if Date() > timePicker.maximumDate! {
-                verifyFiveMinutes()
-                timeTextField.text = ""
-                timeImage.tintColor = .systemGray2
-                let generator = UIImpactFeedbackGenerator(style: .light)
-                generator.impactOccurred()
-                isAlarmSet = false
-                deleteAlarmImage.alpha = 0
-            }
+            timePicker.minimumDate = Date()
         }
     }
 

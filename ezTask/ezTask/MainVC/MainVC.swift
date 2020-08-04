@@ -17,17 +17,18 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
     var lastOffsetWithSound: CGFloat = 0
     var chosenIndex: Int = 0
-    let pullSound = URL(fileURLWithPath: Bundle.main.path(forResource: "sound-pull", ofType: "mp3")!)
+    let pullSound = URL(fileURLWithPath: Bundle.main.path(forResource: "sound-pull", ofType: "mp3")!) // TODO: move to class
     let doneSound = URL(fileURLWithPath: Bundle.main.path(forResource: "sound-done", ofType: "mp3")!)
     let deleteSound = URL(fileURLWithPath: Bundle.main.path(forResource: "sound-pop", ofType: "mp3")!)
     var audioPlayer = AVAudioPlayer()
+    var isList: Bool = false
 
     // Views
 
     let topView: UIView = {
         let view = UIView()
         view.backgroundColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
-        view.layer.cornerRadius = 25
+        view.layer.cornerRadius = 20
         view.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
         view.layer.shadowColor = UIColor.black.cgColor
         view.layer.shadowOpacity = 0.25
@@ -116,7 +117,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         }
 
         func setup() {
-            self.backgroundColor = UIColor.lightGray
+            self.backgroundColor = .systemGray5
             self.liquidView.backgroundColor = .systemYellow
 
             self.shapeView.contentMode = .scaleAspectFit
@@ -154,7 +155,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
     private let rocket: UIImageView = { // TODO: unite in one view
         let image = UIImageView()
-        image.image = UIImage(named: "rocket") // TODO: check if light or dark theme
+        image.image = UIImage(named: "rocket")
         image.contentMode = .scaleAspectFit
 
         return image
@@ -182,9 +183,56 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         return label
     }()
 
+    private lazy var headerForListToday: UIView = {
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 50))
+        view.backgroundColor = .systemBackground
+        let label = UILabel()
+        label.text = "Today"
+        label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
+        label.textAlignment = .left
+        view.addSubview(label)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.sizeToFit()
+        label.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        label.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 32).isActive = true
+
+        return view
+    }()
+
+    private lazy var headerForListTommorow: UIView = {
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 50))
+        let label = UILabel()
+        label.text = "Tomorrow"
+        label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
+        label.textAlignment = .left
+        view.addSubview(label)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.sizeToFit()
+        label.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        label.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 32).isActive = true
+
+        return view
+    }()
+
+    private lazy var headerForListLater: UIView = {
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 50))
+        let label = UILabel()
+        label.text = "Later"
+        label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
+        label.textAlignment = .left
+        view.addSubview(label)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.sizeToFit()
+        label.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        label.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 32).isActive = true
+
+        return view
+    }()
+
     // CollectionView
 
     private var daysCollectionView: UICollectionView?
+    private var topViewHeight: NSLayoutConstraint!
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 365
@@ -193,7 +241,6 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = daysCollectionView?.dequeueReusableCell(withReuseIdentifier: DayCell.identifier, for: indexPath) as! DayCell
         let date = Date().addDays(add: indexPath[1])
-        // TODO: keep busy days as a set
 
         cell.configure(name: date.dayNameOfWeek(), number: date.day, busy: checkDayIsBusy(date: date), isChosen: indexPath[1] == chosenIndex)
         return cell
@@ -216,6 +263,11 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         if scrollView == tasksTable {
             let contentOffset = scrollView.contentOffset.y
             animatedView.update(offset: -1 * contentOffset)
+        }
+
+        if scrollView == listTable {
+            let contentOffset = scrollView.contentOffset.y
+            animatedView1.update(offset: -1 * contentOffset)
         }
 
         // collection
@@ -243,24 +295,93 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     // TableView
 
     private let tasksTable = UITableView()
+    private let listTable = UITableView(frame: .zero, style: .grouped)
 
     var refreshControl = UIRefreshControl()
+    var refreshControlList = UIRefreshControl()
 
     var allTasks: [TaskModel] = []
     var allTasksForDay: [TaskModel] = []
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return allTasksForDay.count
+        if tableView == listTable {
+            switch section {
+            case 0:
+                return allTasks.tasksForToday().count
+            case 1:
+                return allTasks.tasksForTommorow().count
+            case 2:
+                return allTasks.tasksForLater().count
+            default:
+                return 0
+            }
+        } else {
+            return allTasksForDay.count
+        }
+    }
+
+    func numberOfSections(in tableView: UITableView) -> Int {
+        if tableView == listTable {
+            return 3
+        } else {
+            return 1
+        }
+    }
+
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        if tableView == listTable {
+            return 50
+        } else {
+            return 0
+        }
+    }
+
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        if tableView == listTable {
+            switch section {
+            case 0:
+                return headerForListToday
+            case 1:
+                return headerForListTommorow
+            case 2:
+                return headerForListLater
+            default:
+                return nil
+            }
+        } else {
+            return nil
+        }
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "TaskCell", for: indexPath) as! TaskCell
-        let task = allTasksForDay[indexPath.row]
-        cell.configure(task: task)
-        cell.delegate = self
-        cell.layoutIfNeeded()
+        if tableView == tasksTable {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "TaskCell", for: indexPath) as! TaskCell
+            let task = allTasksForDay[indexPath.row]
+            cell.configure(task: task)
+            cell.delegate = self
+//            cell.layoutIfNeeded() // TODO: check if it breaks anything
 
-        return cell
+            return cell
+        } else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "TaskCell", for: indexPath) as! TaskCell
+            var data = [TaskModel]()
+            switch indexPath.section {
+            case 0:
+                data = allTasks.tasksForToday()
+            case 1:
+                data = allTasks.tasksForTommorow()
+            case 2:
+                data = allTasks.tasksForLater()
+            default:
+                data = allTasks.tasksForToday()
+            }
+            let task = data[indexPath.row]
+            cell.configure(task: task)
+            cell.delegate = self
+//            cell.layoutIfNeeded() // TODO: check if it breaks anything
+
+            return cell
+        }
     }
 
     func getAllTasksForDay() {
@@ -308,12 +429,20 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
                     } catch {
                         // couldn't load file :(
                     }
-                    self.tasksTable.performBatchUpdates({
-                        self.fetchTasks()
-                        self.tasksTable.deleteRows(at: [indexPath], with: .automatic)
-                    }, completion: { (_: Bool) in
-                        self.tasksTable.reloadData()
-                    })
+                    self.fetchTasks()
+                    if self.isList {
+                        self.listTable.performBatchUpdates({
+                            self.listTable.deleteRows(at: [indexPath], with: .automatic)
+                        }, completion: { (_: Bool) in
+                            self.listTable.reloadData()
+                        })
+                    } else {
+                        self.tasksTable.performBatchUpdates({
+                            self.tasksTable.deleteRows(at: [indexPath], with: .automatic)
+                        }, completion: { (_: Bool) in
+                            self.tasksTable.reloadData()
+                        })
+                    }
                     let generator = UINotificationFeedbackGenerator()
                     generator.notificationOccurred(.warning)
             })
@@ -337,12 +466,20 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
                     } catch {
                         // couldn't load file :(
                     }
-                    self.tasksTable.performBatchUpdates({
-                        self.fetchTasks()
-                        self.tasksTable.deleteRows(at: [indexPath], with: .automatic)
-                    }, completion: { (_: Bool) in
-                        self.tasksTable.reloadData()
+                    self.fetchTasks()
+                    if self.isList {
+                        self.listTable.performBatchUpdates({
+                            self.listTable.deleteRows(at: [indexPath], with: .automatic)
+                        }, completion: { (_: Bool) in
+                            self.listTable.reloadData()
+                        })
+                    } else {
+                        self.tasksTable.performBatchUpdates({
+                            self.tasksTable.deleteRows(at: [indexPath], with: .automatic)
+                        }, completion: { (_: Bool) in
+                            self.tasksTable.reloadData()
                     })
+                    }
                     let generator = UINotificationFeedbackGenerator()
                     generator.notificationOccurred(.warning)
                 })
@@ -351,17 +488,28 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
             if cell.model != task {
                 self.didReceivedUpdatedTask(task: task)
                 self.fetchTasks()
-                if task.taskDate.startOfDay != Date().addDays(add: self.chosenIndex).startOfDay {
-                    self.tasksTable.reloadData()
-                    return
+                if self.isList {
+                    let (row, section) = self.getRowAndSectionOfTask(task: task)
+                    self.listTable.performBatchUpdates({
+                        cell.configure(task: task)
+                        tableView.moveRow(at: indexPath, to: IndexPath(row: row, section: section))
+                    }, completion: { (_: Bool) in
+                        self.listTable.reloadData()
+                    })
+                } else {
+                    if task.taskDate.startOfDay != Date().addDays(add: self.chosenIndex).startOfDay {
+                        self.tasksTable.reloadData()
+                        return
+                    }
+                    self.tasksTable.performBatchUpdates({
+                        cell.configure(task: task)
+                        if let row = self.allTasksForDay.firstIndexById(id: task.id.uuidString) {
+                            tableView.moveRow(at: indexPath, to: IndexPath(row: row, section: 0))
+                        }
+                    }, completion: { (_: Bool) in
+                        self.tasksTable.reloadData()
+                    })
                 }
-                self.tasksTable.performBatchUpdates({
-                    cell.configure(task: task)
-                    let row = self.allTasksForDay.firstIndexById(id: task.id.uuidString)
-                    tableView.moveRow(at: indexPath, to: IndexPath(row: row, section: 0))
-                }, completion: { (_: Bool) in
-                    self.tasksTable.reloadData()
-                })
             }
         }
         self.present(newVC, animated: true, completion: nil)
@@ -378,48 +526,79 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         })
     }
 
+    func getRowAndSectionOfTask(task: TaskModel) -> (Int, Int) {
+        if let row = self.allTasks.tasksForToday().firstIndexById(id: task.id.uuidString) {
+            return (row, 0)
+        } else if let row = self.allTasks.tasksForTommorow().firstIndexById(id: task.id.uuidString) {
+            return (row, 1)
+        } else if let row = self.allTasks.tasksForLater().firstIndexById(id: task.id.uuidString) {
+            return (row, 2)
+        }
+        return (-1, -1)
+    }
+
     func checkboxTapped(cell: TaskCell) {
-        if let indexPath = tasksTable.indexPath(for: cell) {
+        var indexPath: IndexPath?
+        if isList {
+            indexPath = listTable.indexPath(for: cell)
+        } else {
+            indexPath = tasksTable.indexPath(for: cell)
+        }
+        if indexPath != nil {
             if let id = cell.id, let isDone = cell.model?.isDone, let task = cell.model { // reload
+                let generator = UIImpactFeedbackGenerator(style: .light)
+                generator.impactOccurred()
+                do {
+                    audioPlayer = try AVAudioPlayer(contentsOf: doneSound)
+                    audioPlayer.play()
+                } catch {
+                    // couldn't load file :(
+                }
                 if !isDone {
                     setDone(id: id.uuidString, completion: {
-                        do {
-                            audioPlayer = try AVAudioPlayer(contentsOf: doneSound)
-                            audioPlayer.play()
-                        } catch {
-                            // couldn't load file :(
-                        }
                         fetchTasks()
-                        let generator = UIImpactFeedbackGenerator(style: .light)
-                        generator.impactOccurred()
-                        daysCollectionView?.reloadData()
-                        tasksTable.performBatchUpdates({
-                            cell.setCellDone()
-                            let row = self.allTasksForDay.firstIndexById(id: task.id.uuidString)
-                            tasksTable.moveRow(at: indexPath, to: IndexPath(row: row, section: 0))
-                        }, completion: { (_: Bool) in
-                            self.tasksTable.reloadData()
-                        })
+                        if isList {
+                            let (row, section) = getRowAndSectionOfTask(task: task)
+                            listTable.performBatchUpdates({
+                                cell.setCellDone()
+                                listTable.moveRow(at: indexPath!, to: IndexPath(row: row, section: section))
+                            }, completion: { (_: Bool) in
+                                self.listTable.reloadData()
+                            })
+                        } else {
+                            daysCollectionView?.reloadData()
+                            tasksTable.performBatchUpdates({
+                                cell.setCellDone()
+                                if let row = self.allTasksForDay.firstIndexById(id: task.id.uuidString) {
+                                    tasksTable.moveRow(at: indexPath!, to: IndexPath(row: row, section: 0))
+                                }
+                            }, completion: { (_: Bool) in
+                                self.tasksTable.reloadData()
+                            })
+                        }
                     })
                 } else {
                     setUndone(id: id.uuidString, completion: {
-                        do {
-                            audioPlayer = try AVAudioPlayer(contentsOf: doneSound)
-                            audioPlayer.play()
-                        } catch {
-                            // couldn't load file :(
-                        }
                         fetchTasks()
-                        let generator = UIImpactFeedbackGenerator(style: .light)
-                        generator.impactOccurred()
-                        daysCollectionView?.reloadData()
-                        tasksTable.performBatchUpdates({
-                            cell.setCellUndone()
-                            let row = self.allTasksForDay.firstIndexById(id: task.id.uuidString)
-                            tasksTable.moveRow(at: indexPath, to: IndexPath(row: row, section: 0))
-                        }, completion: { (_: Bool) in
-                            self.tasksTable.reloadData()
-                        })
+                        if isList {
+                            let (row, section) = getRowAndSectionOfTask(task: task)
+                            listTable.performBatchUpdates({
+                                cell.setCellUndone()
+                                listTable.moveRow(at: indexPath!, to: IndexPath(row: row, section: section))
+                            }, completion: { (_: Bool) in
+                                self.listTable.reloadData()
+                            })
+                        } else {
+                            daysCollectionView?.reloadData()
+                            tasksTable.performBatchUpdates({
+                                cell.setCellUndone()
+                                if let row = self.allTasksForDay.firstIndexById(id: task.id.uuidString) {
+                                    tasksTable.moveRow(at: indexPath!, to: IndexPath(row: row, section: 0))
+                                }
+                            }, completion: { (_: Bool) in
+                                self.tasksTable.reloadData()
+                            })
+                        }
                     })
                 }
             }
@@ -429,11 +608,17 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     private func insertNewTask(task: TaskModel) {
         save(model: task, completion: {
             fetchTasks()
-            if task.taskDate.startOfDay == Date().addDays(add: chosenIndex).startOfDay { // on current page
-                let row = self.allTasksForDay.firstIndexById(id: task.id.uuidString)
-                tasksTable.insertRows(at: [IndexPath(row: row, section: 0)], with: row == 0 ? .top : .left)
+            if isList {
+                let (row, section) = getRowAndSectionOfTask(task: task)
+                listTable.insertRows(at: [IndexPath(row: row, section: section)], with: row == 0 ? .top : .left)
+            } else {
+                if task.taskDate.startOfDay == Date().addDays(add: chosenIndex).startOfDay { // on current page
+                    if let row = self.allTasksForDay.firstIndexById(id: task.id.uuidString) {
+                        tasksTable.insertRows(at: [IndexPath(row: row, section: 0)], with: row == 0 ? .top : .left)
+                    }
+                }
+                daysCollectionView?.reloadData()
             }
-            daysCollectionView?.reloadData()
         })
     }
 
@@ -441,6 +626,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        isList = UserDefaults.standard.bool(forKey: "isList")
         setup()
         updateTopLabels(date: Date().addDays(add: chosenIndex))
         NotificationCenter.default.addObserver(self, selector: #selector(handleAppDidBecomeActiveNotification(notification:)),
@@ -454,7 +640,11 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     }
 
     func animateTable() {
-        UIView.animate(views: tasksTable.visibleCells, animations: [AnimationType.from(direction: .top, offset: 10.0)], initialAlpha: 0, finalAlpha: 1, duration: 0.5)
+        if isList {
+            UIView.animate(views: listTable.visibleCells, animations: [AnimationType.from(direction: .top, offset: 10.0)], initialAlpha: 0, finalAlpha: 1, duration: 0.5)
+        } else {
+            UIView.animate(views: tasksTable.visibleCells, animations: [AnimationType.from(direction: .top, offset: 10.0)], initialAlpha: 0, finalAlpha: 1, duration: 0.5)
+        }
     }
 
     func animatePlaceholder() {
@@ -476,20 +666,21 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
             }
             self.didReceivedNewTask(task: task)
         }
-        do {
-            audioPlayer = try AVAudioPlayer(contentsOf: pullSound)
-            audioPlayer.play()
-        } catch {
-            // couldn't load file :(
-        }
         self.present(newVC, animated: true, completion: {
             self.refreshControl.endRefreshing()
+            self.refreshControlList.endRefreshing()
         })
     }
 
     func didReceivedNewTask(task: TaskModel) { // TODO: make global
         if task.isAlarmSet {
             setupReminder(task: task)
+        }
+        do {
+            audioPlayer = try AVAudioPlayer(contentsOf: pullSound)
+            audioPlayer.play()
+        } catch {
+            // couldn't load file :(
         }
         self.insertNewTask(task: task)
         let generator = UINotificationFeedbackGenerator()
@@ -516,14 +707,70 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     }
 
     @objc
-    func calendarOrListPressed() {}
+    func calendarOrListPressed() {
+        if !isList {
+            placeholder(show: false) // TODO: save to core
+            calendarOrList.setTitle("Calendar", for: .normal)
+            self.tasksTable.alpha = 0
+            isList = true
+            UserDefaults.standard.set(isList, forKey: "isList")
+            chosenIndex = 0
+            updateTopLabels(date: Date().addDays(add: chosenIndex))
+            fetchTasks()
+            listTable.reloadData()
+            self.calendarOrList.alpha = 0
+            UIView.animate(withDuration: 0.2, animations: {
+                self.daysCollectionView?.alpha = 0
+            }, completion: { _ in
+                UIView.animate(withDuration: 0.4, animations: {
+                    self.listTable.alpha = 1
+                    self.animateTable()
+                    self.topViewHeight.constant = 100
+                    self.view.layoutIfNeeded()
+                }, completion: { _ in
+                    UIView.animate(withDuration: 0.2, animations: {
+                        self.calendarOrList.alpha = 1
+                    }, completion: nil)
+                })
+            })
+        } else {
+            calendarOrList.setTitle("List", for: .normal)
+            self.calendarOrList.alpha = 0
+            isList = false
+            UserDefaults.standard.set(isList, forKey: "isList")
+            listTable.alpha = 0
+            backTodayPressed()
+            UIView.animate(withDuration: 0.4, animations: {
+                self.topViewHeight.constant = 164
+                self.view.layoutIfNeeded()
+                self.tasksTable.alpha = 1
+            }, completion: { _ in
+                UIView.animate(withDuration: 0.2, animations: {
+                    self.daysCollectionView?.alpha = 1
+                }, completion: { _ in
+                    UIView.animate(withDuration: 0.2, animations: {
+                        self.placeholder(show: true) // TODO: save to core
+                        self.calendarOrList.alpha = 1
+                    }, completion: nil)
+                })
+            })
+        }
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
+    }
+
+    func placeholder(show: Bool) {
+        self.rocket.alpha = show ? 1 : 0
+        self.quote.alpha = show ? 1 : 0
+        self.author.alpha = show ? 1 : 0
+    }
 
     func updateTopLabels(date: Date) {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMMM d, yyyy"
         let formattedDate = formatter.string(from: date)
         dateLabel.text = formattedDate
-        if date.isToday() { // TODO: make it switch
+        if date.isToday() {
             dayLabel.text = "Today"
         } else if date.isTomorrow() {
             dayLabel.text = "Tomorrow"
@@ -534,7 +781,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         }
     }
 
-    func checkDayIsBusy(date: Date) -> Bool { // TODO: move this function
+    func checkDayIsBusy(date: Date) -> Bool {
         for task in allTasks {
             if task.taskDate.startOfDay == date.startOfDay {
                 return true
@@ -547,6 +794,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     }
 
     lazy var animatedView = GlassView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 60))
+    lazy var animatedView1 = GlassView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 60))
 
     func setup() {
         self.view.backgroundColor = .systemBackground
@@ -558,12 +806,18 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         self.view.addSubview(rocket)
         self.view.addSubview(quote)
         self.view.addSubview(author)
+        placeholder(show: !isList)
+        self.view.addSubview(listTable)
         self.view.addSubview(tasksTable)
 
         self.view.addSubview(topView)
         topView.translatesAutoresizingMaskIntoConstraints = false
         topView.topAnchor.constraint(equalTo: topView.superview!.safeAreaLayoutGuide.topAnchor).isActive = true
-        topView.heightAnchor.constraint(equalToConstant: 170).isActive = true
+        topViewHeight = topView.heightAnchor.constraint(equalToConstant: 164)
+        topViewHeight.isActive = true
+        if isList {
+            topViewHeight.constant = 100
+        }
         topView.leadingAnchor.constraint(equalTo: topView.superview!.leadingAnchor, constant: 0).isActive = true
         topView.trailingAnchor.constraint(equalTo: topView.superview!.trailingAnchor, constant: 0).isActive = true
 
@@ -598,6 +852,9 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         myCollection.leadingAnchor.constraint(equalTo: topView.leadingAnchor, constant: 0).isActive = true
         myCollection.trailingAnchor.constraint(equalTo: topView.trailingAnchor, constant: 0).isActive = true
         myCollection.topAnchor.constraint(equalTo: dayLabel.bottomAnchor, constant: 10).isActive = true
+        if isList {
+            myCollection.alpha = 0
+        }
 
         rocket.translatesAutoresizingMaskIntoConstraints = false
         rocket.heightAnchor.constraint(equalToConstant: 280).isActive = true
@@ -628,14 +885,32 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         tasksTable.contentInset.top = 10
         tasksTable.contentInset.bottom = 10
         tasksTable.showsHorizontalScrollIndicator = false
-        tasksTable.showsVerticalScrollIndicator = false // TODO: make tasksTable not transparent
+        tasksTable.showsVerticalScrollIndicator = false
         tasksTable.backgroundColor = .systemBackground
-        
+
+        listTable.translatesAutoresizingMaskIntoConstraints = false
+        listTable.topAnchor.constraint(equalTo: topView.bottomAnchor, constant: 0).isActive = true
+        listTable.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 0).isActive = true
+        listTable.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 0).isActive = true
+        listTable.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 0).isActive = true
+        listTable.separatorStyle = .none
+        listTable.contentInset.top = 10
+        listTable.contentInset.bottom = 10
+        listTable.showsHorizontalScrollIndicator = false
+        listTable.showsVerticalScrollIndicator = false
+        listTable.backgroundColor = .systemBackground
+
         refreshControl.addTarget(self, action: #selector(self.newTask(_:)), for: .valueChanged)
         refreshControl.tintColor = .clear
         refreshControl.layer.zPosition = -1
         refreshControl.addSubview(animatedView)
         tasksTable.refreshControl = refreshControl
+
+        refreshControlList.addTarget(self, action: #selector(self.newTask(_:)), for: .valueChanged)
+        refreshControlList.tintColor = .clear
+        refreshControlList.layer.zPosition = -1
+        refreshControlList.addSubview(animatedView1)
+        listTable.refreshControl = refreshControlList
 
         self.view.addSubview(backTodayBtn)
         backTodayBtn.translatesAutoresizingMaskIntoConstraints = false
@@ -664,7 +939,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         daysCollectionView?.showsHorizontalScrollIndicator = false
         daysCollectionView?.delegate = self
         daysCollectionView?.dataSource = self
-        daysCollectionView?.backgroundColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
+        daysCollectionView?.backgroundColor = .clear
         daysCollectionView?.decelerationRate = UIScrollView.DecelerationRate.fast
         guard let myCollection = daysCollectionView else {
             return
@@ -673,19 +948,40 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     }
 
     func createTable() {
+        if isList {
+            tasksTable.alpha = 0
+        } else {
+            listTable.alpha = 0
+        }
+
         tasksTable.register(TaskCell.self, forCellReuseIdentifier: TaskCell.identifier)
         tasksTable.dataSource = self
         tasksTable.delegate = self
+
+        listTable.register(TaskCell.self, forCellReuseIdentifier: TaskCell.identifier)
+        listTable.dataSource = self
+        listTable.delegate = self
+        listTable.tableFooterView = UIView(frame: CGRect.zero)
+        listTable.sectionFooterHeight = 0.0
     }
 
-    @objc func handleAppDidBecomeActiveNotification(notification: Notification) {
+    @objc func handleAppDidBecomeActiveNotification(notification: Notification) { // TODO: add list
         if allTasks.isEmpty {
             fetchTasks()
+            if isList {
+                listTable.reloadData()
+                animateTable()
+                return
+            }
             tasksTable.reloadData()
             daysCollectionView?.reloadData()
             animateTable()
         } else {
             fetchTasks()
+            if isList {
+                listTable.reloadData()
+                return
+            }
             tasksTable.reloadData()
             daysCollectionView?.reloadData()
         }
@@ -714,8 +1010,6 @@ extension MainVC {
         fetchUndone.predicate = NSPredicate(format: "isDone = false")
         let fetchDone = NSFetchRequest<TaskCoreModel>(entityName: "TaskCoreModel")
         fetchDone.predicate = NSPredicate(format: "isDone = true")
-
-        // TODO: fix ^
         let fetchAll = NSFetchRequest<TaskCoreModel>(entityName: "TaskCoreModel")
 
         do {

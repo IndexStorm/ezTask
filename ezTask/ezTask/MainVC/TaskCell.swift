@@ -203,6 +203,7 @@ class TaskCell: UITableViewCell {
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        self.backgroundColor = .systemBackground
 
         self.contentView.addSubview(priorityIcon)
         self.contentView.addSubview(checkbox)
