@@ -28,6 +28,12 @@ extension Date {
         return Calendar.current.date(bySettingHour: 12, minute: 0, second: 0, of: self)!
     }
 
+    var endOfWeek: Date {
+        let gregorian = Calendar(identifier: .gregorian)
+        let sunday = gregorian.date(from: gregorian.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self))!
+        return gregorian.date(byAdding: .day, value: 7, to: sunday)! // TODO: check if this is nil
+    }
+
     var second: Int { return Calendar.current.component(.second, from: self) }
     var minute: Int { return Calendar.current.component(.minute, from: self) }
     var hour: Int { return Calendar.current.component(.hour, from: self) }
@@ -38,7 +44,7 @@ extension Date {
     public func isToday() -> Bool {
         return self.startOfDay == Date().startOfDay
     }
-    
+
     public func addDays(add days: Int) -> Date {
         return Calendar.current.date(byAdding: .day, value: days, to: noon)!
     }
@@ -46,7 +52,7 @@ extension Date {
     public func isTomorrow() -> Bool {
         return self.startOfDay == Date().dayAfter.startOfDay
     }
-    
+
     public func dayNameOfWeek() -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "EE"

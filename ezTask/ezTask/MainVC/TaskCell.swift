@@ -18,7 +18,7 @@ class TaskCell: UITableViewCell {
     public var id: UUID?
     public var model: TaskModel?
     var alarmWidth: NSLayoutConstraint!
-    var alarmWidth2: NSLayoutConstraint!
+    var subtaskWidth: NSLayoutConstraint!
 
     static let identifier = "TaskCell"
 
@@ -141,11 +141,20 @@ class TaskCell: UITableViewCell {
         let label = UILabel()
         label.text = "Today"
         label.font = UIFont.systemFont(ofSize: 14, weight: .regular)
-        label.textColor = .systemGray2
+        label.textColor = .systemGray
         label.lineBreakMode = .byWordWrapping
         label.numberOfLines = 0
 
         return label
+    }()
+
+    private let subtasksIcon: UIImageView = {
+        let image = UIImageView()
+        image.image = UIImage(named: "list")
+        image.contentMode = .scaleAspectFit
+        image.tintColor = .systemGray
+
+        return image
     }()
 
     public func configure(task: TaskModel) {
@@ -166,14 +175,10 @@ class TaskCell: UITableViewCell {
 
         if task.isAlarmSet, let alarmDate = task.alarmDate {
             alarmView.set(time: alarmDate)
-            alarmWidth?.isActive = false
-            alarmWidth2?.isActive = false
-            alarmWidth2 = alarmView.widthAnchor.constraint(equalToConstant: alarmView.viewWidth())
-            alarmWidth2.isActive = true
+            alarmWidth.constant = alarmView.viewWidth()
         } else {
             alarmView.unset()
-            alarmWidth2?.isActive = false
-            alarmWidth?.isActive = true
+            alarmWidth.constant = 0
         }
 
         if task.isDone {
@@ -182,6 +187,12 @@ class TaskCell: UITableViewCell {
         } else {
             checkbox.image = UIImage(named: "square")
             self.contentView.alpha = 1
+        }
+
+        if task.subtasks != nil {
+            subtaskWidth.constant = 10
+        } else {
+            subtaskWidth.constant = 0
         }
     }
 
@@ -203,13 +214,14 @@ class TaskCell: UITableViewCell {
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.backgroundColor = .systemBackground
+        self.backgroundColor = .tertiarySystemBackground
 
         self.contentView.addSubview(priorityIcon)
         self.contentView.addSubview(checkbox)
         self.contentView.addSubview(titleLabel)
         self.contentView.addSubview(dayLabel)
         self.contentView.addSubview(alarmView)
+        self.contentView.addSubview(subtasksIcon)
 
         priorityIcon.translatesAutoresizingMaskIntoConstraints = false
         priorityIcon.heightAnchor.constraint(equalToConstant: 10).isActive = true
@@ -242,6 +254,13 @@ class TaskCell: UITableViewCell {
         alarmView.heightAnchor.constraint(equalToConstant: 20).isActive = true
         alarmWidth = alarmView.widthAnchor.constraint(equalToConstant: 0)
         alarmWidth.isActive = true
+
+        subtasksIcon.translatesAutoresizingMaskIntoConstraints = false
+        subtasksIcon.bottomAnchor.constraint(equalTo: dayLabel.bottomAnchor, constant: -4).isActive = true
+        subtasksIcon.heightAnchor.constraint(equalToConstant: 10).isActive = true
+        subtasksIcon.leadingAnchor.constraint(equalTo: alarmView.trailingAnchor, constant: 3).isActive = true
+        subtaskWidth = subtasksIcon.widthAnchor.constraint(equalToConstant: 0)
+        subtaskWidth.isActive = true
     }
 
     override func prepareForReuse() {

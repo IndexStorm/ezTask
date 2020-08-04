@@ -56,13 +56,13 @@ public struct TaskModel: Equatable, Comparable {
             if lhs.isPriority == rhs.isPriority {
                 if lhs.isAlarmSet == rhs.isAlarmSet {
                     if lhs.isAlarmSet == false {
-                        if lhs.taskDate.startOfDay == rhs.taskDate.startOfDay {
+                        if lhs.taskDate.startOfDay == rhs.taskDate.startOfDay { // TODO: verify sorting
                             return lhs.dateModified > rhs.dateModified
                         }
-                        if lhs.taskDate.startOfDay < rhs.taskDate.startOfDay && rhs.taskDate.isToday() {
+                        if lhs.taskDate.startOfDay < rhs.taskDate.startOfDay, rhs.taskDate.isToday() {
                             return false
                         }
-                        if lhs.taskDate.startOfDay > rhs.taskDate.startOfDay && lhs.taskDate.isToday() {
+                        if lhs.taskDate.startOfDay > rhs.taskDate.startOfDay, lhs.taskDate.isToday() {
                             return true
                         }
                         return lhs.taskDate.startOfDay < rhs.taskDate.startOfDay
@@ -100,13 +100,19 @@ extension Array where Element == TaskModel {
 
     public func tasksForTommorow() -> [TaskModel] {
         return self.filter {
-            ($0.taskDate >= Date().dayAfter.startOfDay) && ($0.taskDate < Date().dayAfter.dayAfter.startOfDay)
+            ($0.taskDate > Date().endOfDay) && ($0.taskDate < Date().dayAfter.dayAfter.startOfDay)
+        }.sorted()
+    }
+
+    public func tasksForThisWeek() -> [TaskModel] {
+        return self.filter {
+            ($0.taskDate > Date().dayAfter.endOfDay) && ($0.taskDate <= Date().endOfWeek.endOfDay)
         }.sorted()
     }
 
     public func tasksForLater() -> [TaskModel] {
         return self.filter {
-            ($0.taskDate >= Date().dayAfter.dayAfter.startOfDay)
+            ($0.taskDate > Date().endOfWeek.endOfDay)
         }.sorted()
     }
 }

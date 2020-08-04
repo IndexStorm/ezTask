@@ -6,9 +6,10 @@
 //  Copyright © 2020 Mike Ovyan. All rights reserved.
 //
 
-import CoreData
-import UIKit
 import AVFoundation
+import CoreData
+import SideMenu
+import UIKit
 
 @UIApplicationMain
 final class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
@@ -19,7 +20,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationC
         setupWindow()
         do {
             try AVAudioSession.sharedInstance().setCategory(.ambient, mode: .default, options: AVAudioSession.CategoryOptions.mixWithOthers)
-        } catch let error {
+        } catch {
             print(error.localizedDescription)
         }
         return true
@@ -30,10 +31,6 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationC
     private func setupWindow() {
         let window = UIWindow(frame: UIScreen.main.bounds)
         let navigationController = UINavigationController()
-        navigationController.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
-        navigationController.navigationBar.shadowImage = UIImage()
-        navigationController.navigationBar.isTranslucent = true
-        navigationController.view.backgroundColor = UIColor.clear
         let mainViewController = MainVC()
         navigationController.viewControllers = [mainViewController]
         window.rootViewController = navigationController

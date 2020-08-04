@@ -13,7 +13,7 @@ import UIKit
 import UserNotifications
 import ViewAnimator
 
-class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource, TableViewCellDelegate, UNUserNotificationCenterDelegate {
+class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource, TableViewCellDelegate, UNUserNotificationCenterDelegate, MenuVCDelegate {
     // Var
 
     var lastOffsetWithSound: CGFloat = 0
@@ -88,14 +88,19 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         return btn
     }()
 
-    let calendarOrList: UIButton = {
+    lazy var calendarOrList: UIButton = {
         let btn = UIButton(type: .system)
-        btn.setTitle("List", for: .normal)
+        btn.titleLabel?.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+        if !self.isList {
+            btn.setTitle("List", for: .normal)
+        } else {
+            btn.setTitle("Schedule", for: .normal)
+        }
         btn.backgroundColor = .white
         btn.tintColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
         btn.layer.cornerRadius = 13
         btn.layer.shadowColor = UIColor.black.cgColor
-        btn.layer.shadowOpacity = 0.2
+        btn.layer.shadowOpacity = 0.3
         btn.layer.shadowOffset = CGSize(width: 0, height: 4)
         btn.layer.shadowRadius = 5
         btn.addTarget(self, action: #selector(calendarOrListPressed), for: .touchUpInside)
@@ -185,8 +190,8 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     }()
 
     private lazy var headerForListToday: UIView = {
-        let view = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 50))
-        view.backgroundColor = .systemBackground
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 45))
+        view.backgroundColor = .tertiarySystemBackground
         let label = UILabel()
         label.text = "Today"
         label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
@@ -195,13 +200,13 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         label.translatesAutoresizingMaskIntoConstraints = false
         label.sizeToFit()
         label.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-        label.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 32).isActive = true
+        label.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 36).isActive = true
 
         return view
     }()
 
     private lazy var headerForListTommorow: UIView = {
-        let view = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 50))
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 45))
         let label = UILabel()
         label.text = "Tomorrow"
         label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
@@ -210,13 +215,28 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         label.translatesAutoresizingMaskIntoConstraints = false
         label.sizeToFit()
         label.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-        label.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 32).isActive = true
+        label.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 36).isActive = true
+
+        return view
+    }()
+
+    private lazy var headerForListThisWeek: UIView = {
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 45))
+        let label = UILabel()
+        label.text = "This Week"
+        label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
+        label.textAlignment = .left
+        view.addSubview(label)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.sizeToFit()
+        label.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        label.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 36).isActive = true
 
         return view
     }()
 
     private lazy var headerForListLater: UIView = {
-        let view = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 50))
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 45))
         let label = UILabel()
         label.text = "Later"
         label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
@@ -225,7 +245,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         label.translatesAutoresizingMaskIntoConstraints = false
         label.sizeToFit()
         label.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-        label.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 32).isActive = true
+        label.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 36).isActive = true
 
         return view
     }()
@@ -312,6 +332,8 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
             case 1:
                 return allTasks.tasksForTommorow().count
             case 2:
+                return allTasks.tasksForThisWeek().count
+            case 3:
                 return allTasks.tasksForLater().count
             default:
                 return 0
@@ -323,7 +345,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
     func numberOfSections(in tableView: UITableView) -> Int {
         if tableView == listTable {
-            return 3
+            return 4
         } else {
             return 1
         }
@@ -331,7 +353,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if tableView == listTable {
-            return 50
+            return 45
         } else {
             return 0
         }
@@ -345,6 +367,8 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
             case 1:
                 return headerForListTommorow
             case 2:
+                return headerForListThisWeek
+            case 3:
                 return headerForListLater
             default:
                 return nil
@@ -372,6 +396,8 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
             case 1:
                 data = allTasks.tasksForTommorow()
             case 2:
+                data = allTasks.tasksForThisWeek()
+            case 3:
                 data = allTasks.tasksForLater()
             default:
                 data = allTasks.tasksForToday()
@@ -403,7 +429,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
             tasksTable.backgroundColor = .clear
             animatePlaceholder()
         } else {
-            tasksTable.backgroundColor = .systemBackground
+            tasksTable.backgroundColor = .tertiarySystemBackground
         }
     }
 
@@ -532,9 +558,12 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
             return (row, 0)
         } else if let row = self.allTasks.tasksForTommorow().firstIndexById(id: task.id.uuidString) {
             return (row, 1)
-        } else if let row = self.allTasks.tasksForLater().firstIndexById(id: task.id.uuidString) {
+        } else if let row = self.allTasks.tasksForThisWeek().firstIndexById(id: task.id.uuidString) {
             return (row, 2)
+        } else if let row = self.allTasks.tasksForLater().firstIndexById(id: task.id.uuidString) {
+            return (row, 3)
         }
+
         return (-1, -1)
     }
 
@@ -625,26 +654,61 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
     // override
 
-    
-    private var sideMenu: SideMenuNavigationController!
+    private var sideMenu: SideMenuNavigationController?
+    private let settingsController = SettingsVC()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        var settings = SideMenuSettings()
-        settings.statusBarEndAlpha = 0
-        settings.menuWidth = UIScreen.main.bounds.width * 0.5
-        sideMenu = SideMenuNavigationController(rootViewController: MenuVC(with: ["Home", "Info", "Settings"]), settings: settings)
-        sideMenu.leftSide = true
-        SideMenuManager.default.leftMenuNavigationController = sideMenu
-//        SideMenuManager.default.addPanGestureToPresent(toView: view)
-        SideMenuManager.default.addScreenEdgePanGesturesToPresent(toView: view)
-
         isList = UserDefaults.standard.bool(forKey: "isList")
         setup()
         updateTopLabels(date: Date().addDays(add: chosenIndex))
         NotificationCenter.default.addObserver(self, selector: #selector(handleAppDidBecomeActiveNotification(notification:)),
                                                name: UIApplication.didBecomeActiveNotification, object: nil)
+
+        createMenu()
     }
+
+    func createMenu() {
+        var settings = SideMenuSettings()
+        settings.statusBarEndAlpha = 0
+        settings.menuWidth = UIScreen.main.bounds.width * 0.5
+        settings.presentationStyle = .viewSlideOut
+
+        let menuVC = MenuVC(with: ["Home", "Settings"])
+        menuVC.delegate = self
+        sideMenu = SideMenuNavigationController(rootViewController: menuVC, settings: settings)
+        sideMenu?.leftSide = true
+        sideMenu?.presentationStyle.onTopShadowOpacity = 0.3
+        SideMenuManager.default.leftMenuNavigationController = sideMenu
+        SideMenuManager.default.addScreenEdgePanGesturesToPresent(toView: view, forMenu: .left)
+        addChildControllers()
+    }
+
+    private func addChildControllers() {
+        addChild(settingsController)
+        view.addSubview(settingsController.view)
+        settingsController.view.frame = view.bounds
+        settingsController.didMove(toParent: self)
+        settingsController.view.isHidden = true
+    }
+
+    func didSelectMenuItem(named: String) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            self.sideMenu?.dismiss(animated: true, completion: nil)
+        }
+
+        switch named { // TODO: add animation
+        case "home":
+            settingsController.view.isHidden = true
+
+        case "settings":
+            settingsController.view.isHidden = false
+
+        default:
+            return
+        }
+    }
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(true, animated: animated)
@@ -725,9 +789,11 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
     @objc
     func calendarOrListPressed() {
+//        sideMenu.pushViewController(SettingsVC(), animated: true)
+//        return
         if !isList {
             placeholder(show: false) // TODO: save to core
-            calendarOrList.setTitle("Calendar", for: .normal)
+            calendarOrList.setTitle("Schedule", for: .normal)
             self.tasksTable.alpha = 0
             isList = true
             UserDefaults.standard.set(isList, forKey: "isList")
@@ -776,6 +842,11 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         generator.impactOccurred()
     }
 
+    @objc
+    func menuBtnTapped() {
+        present(sideMenu!, animated: true)
+    }
+
     func placeholder(show: Bool) {
         self.rocket.alpha = show ? 1 : 0
         self.quote.alpha = show ? 1 : 0
@@ -814,7 +885,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     lazy var animatedView1 = GlassView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 60))
 
     func setup() {
-        self.view.backgroundColor = .systemBackground
+        self.view.backgroundColor = .tertiarySystemBackground
 
         let safeAreaView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: UIApplication.shared.statusBarFrame.maxY + 1))
         safeAreaView.backgroundColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
@@ -844,6 +915,8 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         menuBtn.heightAnchor.constraint(equalToConstant: 20).isActive = true
         menuBtn.widthAnchor.constraint(equalToConstant: 20).isActive = true
         menuBtn.leadingAnchor.constraint(equalTo: topView.leadingAnchor, constant: 21).isActive = true
+        menuBtn.isUserInteractionEnabled = true
+        menuBtn.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(menuBtnTapped)))
 
         self.view.addSubview(dateLabel)
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -903,7 +976,8 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         tasksTable.contentInset.bottom = 10
         tasksTable.showsHorizontalScrollIndicator = false
         tasksTable.showsVerticalScrollIndicator = false
-        tasksTable.backgroundColor = .systemBackground
+//        tasksTable.backgroundColor = .systemBackground
+//        tasksTable.backgroundColor = .systemGroupedBackground
 
         listTable.translatesAutoresizingMaskIntoConstraints = false
         listTable.topAnchor.constraint(equalTo: topView.bottomAnchor, constant: 0).isActive = true
@@ -915,7 +989,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         listTable.contentInset.bottom = 10
         listTable.showsHorizontalScrollIndicator = false
         listTable.showsVerticalScrollIndicator = false
-        listTable.backgroundColor = .systemBackground
+        listTable.backgroundColor = .tertiarySystemBackground
 
         refreshControl.addTarget(self, action: #selector(self.newTask(_:)), for: .valueChanged)
         refreshControl.tintColor = .clear
@@ -938,8 +1012,8 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
         self.view.addSubview(calendarOrList)
         calendarOrList.translatesAutoresizingMaskIntoConstraints = false
-        calendarOrList.widthAnchor.constraint(equalToConstant: 70).isActive = true
-        calendarOrList.heightAnchor.constraint(equalToConstant: 26).isActive = true
+        calendarOrList.widthAnchor.constraint(equalToConstant: 75).isActive = true
+        calendarOrList.heightAnchor.constraint(equalToConstant: 28).isActive = true
         calendarOrList.centerYAnchor.constraint(equalTo: dayLabel.centerYAnchor).isActive = true
         calendarOrList.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -25).isActive = true
     }
