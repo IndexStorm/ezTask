@@ -115,7 +115,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         let image = UIImageView()
         image.image = UIImage(named: "calendar")
         image.contentMode = .scaleAspectFit
-        image.tintColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
+        image.tintColor = ThemeManager.currentTheme().mainColor
 
         return image
     }()
@@ -228,18 +228,18 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         isPriority = model.isPriority
         priorityImage.image = UIImage(named: isPriority ? "square_filled" : "square")
         datePicker.date = model.taskDate
-
+        
         let formatter = DateFormatter()
         formatter.dateStyle = .full
         formatter.timeStyle = .none
         dateTextField.text = formatter.string(from: datePicker.date)
-        if model.isAlarmSet, model.taskDate.startOfDay >= Date().startOfDay {
+        if model.isAlarmSet && model.taskDate.startOfDay >= Date().startOfDay {
             timePicker.date = model.alarmDate!
             let formatter = DateFormatter()
             formatter.dateStyle = .none
             formatter.timeStyle = .short
             timeTextField.text = formatter.string(from: timePicker.date)
-            timeImage.tintColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
+            timeImage.tintColor = ThemeManager.currentTheme().mainColor
             isAlarmSet = true
             deleteAlarmImage.alpha = 1
         }
@@ -276,7 +276,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         let circle = UIImageView()
         circle.image = UIImage(named: "circle")
         circle.contentMode = .scaleAspectFit
-        circle.tintColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
+        circle.tintColor = ThemeManager.currentTheme().mainColor
         view.addSubview(circle)
         circle.translatesAutoresizingMaskIntoConstraints = false
         circle.heightAnchor.constraint(equalToConstant: 25).isActive = true
@@ -479,7 +479,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         formatter.dateStyle = .none
         formatter.timeStyle = .short
         timeTextField.text = formatter.string(from: picker.date)
-        timeImage.tintColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
+        timeImage.tintColor = ThemeManager.currentTheme().mainColor
         isAlarmSet = true
         deleteAlarmImage.alpha = 1
         checkIfAllowedNotifications(picker: picker)
