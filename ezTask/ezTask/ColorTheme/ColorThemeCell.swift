@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ColorThemeCell: UITableViewCell {
+class ColorThemeCell: UICollectionViewCell {
     static let identifier = "ColorThemeCell"
 
     let label: UILabel = {
@@ -51,23 +51,25 @@ class ColorThemeCell: UITableViewCell {
             case 8:
                 self.contentView.backgroundColor = .systemYellow
                 return "Yellow"
+            case 9:
+                self.contentView.backgroundColor = UIColor().colorFromHexString("#191919")
+                return "Black"
             default:
                 self.contentView.backgroundColor = .systemIndigo
                 return "Indigo"
             }
         }()
         if self.contentView.backgroundColor == ThemeManager.currentTheme().mainColor {
-            self.contentView.layer.borderWidth = 4
+            self.contentView.layer.borderWidth = 6
             self.contentView.layer.borderColor = UIColor.systemGray3.cgColor
         } else {
             self.contentView.layer.borderWidth = 0
         }
         label.text = text
     }
-
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.selectionStyle = .none
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
 
         self.backgroundColor = .tertiarySystemBackground
         self.contentView.addSubview(label)
@@ -79,8 +81,6 @@ class ColorThemeCell: UITableViewCell {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        let margins = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0)
-        contentView.frame = contentView.frame.inset(by: margins)
     }
 
     required init?(coder: NSCoder) {
@@ -89,16 +89,5 @@ class ColorThemeCell: UITableViewCell {
 
     override func prepareForReuse() {
         super.prepareForReuse()
-    }
-
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
-    }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
     }
 }

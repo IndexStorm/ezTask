@@ -35,9 +35,7 @@ class TaskCell: UITableViewCell {
         let image = UIImageView()
         image.image = UIImage(named: "square")
         image.contentMode = .scaleAspectFit
-//        image.tintColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
         image.tintColor = ThemeManager.currentTheme().mainColor
-        image.alpha = 0.9
 
         return image
     }()
@@ -230,7 +228,7 @@ class TaskCell: UITableViewCell {
         priorityIcon.heightAnchor.constraint(equalToConstant: 10).isActive = true
         priorityIcon.widthAnchor.constraint(equalToConstant: 10).isActive = true
         priorityIcon.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 24).isActive = true
-        priorityIcon.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 11).isActive = true
+        priorityIcon.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 10).isActive = true
 
         checkbox.translatesAutoresizingMaskIntoConstraints = false
         checkbox.heightAnchor.constraint(equalToConstant: 20).isActive = true

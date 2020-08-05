@@ -54,11 +54,10 @@ func == (l: UIColor?, r: UIColor?) -> Bool {
 }
 
 enum Theme: Int {
-    case theme1, theme2, theme3, theme4, theme5, theme6, theme7, theme8, theme9
+    case theme1, theme2, theme3, theme4, theme5, theme6, theme7, theme8, theme9, theme10
 
     var mainColor: UIColor {
         switch self {
-//            #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
         case .theme1:
             return UIColor.systemIndigo
         case .theme2:
@@ -77,13 +76,14 @@ enum Theme: Int {
             return UIColor.systemTeal
         case .theme9:
             return UIColor.systemYellow
+        case .theme10:
+            return UIColor().colorFromHexString("#191919")
         }
     }
 }
 
 let SelectedThemeKey = "SelectedTheme"
 
-// This will let you use a theme in the app.
 class ThemeManager {
     // ThemeManager
     static func currentTheme() -> Theme {

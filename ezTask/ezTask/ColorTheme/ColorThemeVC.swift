@@ -8,27 +8,19 @@
 
 import UIKit
 
-class ColorThemeVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
-    
-    let tableView = UITableView()
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 9
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        75
+class ColorThemeVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 10
     }
 
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: ColorThemeCell.identifier, for: indexPath) as! ColorThemeCell
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ColorThemeCell.identifier, for: indexPath) as! ColorThemeCell
         cell.configure(row: indexPath.row)
 
         return cell
     }
 
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         switch indexPath.row {
         case 0:
             ThemeManager.applyTheme(theme: .theme1)
@@ -48,35 +40,48 @@ class ColorThemeVC: UIViewController, UITableViewDelegate, UITableViewDataSource
             ThemeManager.applyTheme(theme: .theme8)
         case 8:
             ThemeManager.applyTheme(theme: .theme9)
+        case 9:
+            ThemeManager.applyTheme(theme: .theme10)
         default:
             ThemeManager.applyTheme(theme: .theme1)
         }
-        tableView.reloadData()
+        collectionView.reloadData()
         let generator = UIImpactFeedbackGenerator(style: .light)
         generator.impactOccurred()
     }
+
+    var collectionView: UICollectionView?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .tertiarySystemBackground
         self.navigationItem.title = "Theme"
         setup()
-        self.tableView.reloadData()
     }
-    
+
     private func setup() {
-        self.tableView.register(ColorThemeCell.self, forCellReuseIdentifier: ColorThemeCell.identifier)
-        self.tableView.delegate = self
-        self.tableView.dataSource = self
-        self.tableView.showsVerticalScrollIndicator = false
-        self.tableView.showsHorizontalScrollIndicator = false
-        self.view.addSubview(tableView)
-        self.tableView.translatesAutoresizingMaskIntoConstraints = false
-        self.tableView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 45).isActive = true
-        self.tableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -45).isActive = true
-        self.tableView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 32).isActive = true
-        self.tableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
-        self.tableView.backgroundColor = .tertiarySystemBackground
-        self.tableView.contentInset.bottom = 10
+        createCollection()
+        collectionView?.translatesAutoresizingMaskIntoConstraints = false
+        collectionView?.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 0).isActive = true
+        collectionView?.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 0).isActive = true
+        collectionView?.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 10).isActive = true
+        collectionView?.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 10).isActive = true
+    }
+
+    func createCollection() {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        layout.itemSize = CGSize(width: self.view.frame.width / 2 - 48, height: self.view.frame.width / 2 - 48)
+        layout.sectionInset = UIEdgeInsets(top: 32, left: 32, bottom: 32, right: 32)
+        layout.minimumLineSpacing = 32
+        layout.minimumInteritemSpacing = 32
+
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView?.register(ColorThemeCell.self, forCellWithReuseIdentifier: ColorThemeCell.identifier)
+        collectionView?.showsHorizontalScrollIndicator = false
+        collectionView?.delegate = self
+        collectionView?.dataSource = self
+        collectionView?.backgroundColor = .clear
+        self.view.addSubview(collectionView!)
     }
 }
