@@ -59,7 +59,7 @@ class ColorThemeVC: UIViewController, UITableViewDelegate, UITableViewDataSource
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .tertiarySystemBackground
-        self.navigationItem.title = "Theme Color"
+        self.navigationItem.title = "Theme"
         setup()
         self.tableView.reloadData()
     }

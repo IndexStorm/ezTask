@@ -9,7 +9,7 @@
 import UIKit
 
 class ColorThemeCell: UITableViewCell {
-    static let identifier = "ColorThemeCell" // change
+    static let identifier = "ColorThemeCell"
 
     let label: UILabel = {
         let label = UILabel()

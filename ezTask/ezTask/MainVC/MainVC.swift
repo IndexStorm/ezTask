@@ -156,7 +156,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         }
 
         func update(offset: CGFloat) {
-            self.liquidView.frame.origin.y = (1 - offset / 130) * bounds.height
+            self.liquidView.frame.origin.y = max(1 - offset / 130, 0) * bounds.height
         }
     }
 
@@ -665,6 +665,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
     private var sideMenu: SideMenuNavigationController?
     private let colorThemeVC = ColorThemeVC()
+    private let settingsVC = SettingsVC()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -684,7 +685,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         settings.menuWidth = UIScreen.main.bounds.width * 0.5
         settings.presentationStyle = .viewSlideOut
 
-        let menuVC = MenuVC(with: ["Home", "Theme Color"])
+        let menuVC = MenuVC(with: ["Home", "Theme", "Settings"])
         menuVC.delegate = self
         sideMenu = SideMenuNavigationController(rootViewController: menuVC, settings: settings)
         sideMenu?.leftSide = true
@@ -700,25 +701,40 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         colorThemeVC.view.frame = view.bounds
         colorThemeVC.didMove(toParent: self)
         colorThemeVC.view.isHidden = true
+
+        addChild(settingsVC)
+        view.addSubview(settingsVC.view)
+        settingsVC.view.frame = view.bounds
+        settingsVC.didMove(toParent: self)
+        settingsVC.view.isHidden = true
     }
 
     func didSelectMenuItem(named: String) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             self.sideMenu?.dismiss(animated: true, completion: nil)
         }
 
-        switch named { // TODO: add animation
-        case "home":
-            colorThemeVC.view.isHidden = true
+        switch named {
+        case "Home":
             safeAreaView.isHidden = false
+            colorThemeVC.view.isHidden = true
+            settingsVC.view.isHidden = true
             setupColorsFromTheme()
             navigationController?.setNavigationBarHidden(true, animated: false)
 
-        case "Theme Color":
+        case "Theme":
             safeAreaView.isHidden = true
             colorThemeVC.view.isHidden = false
+            settingsVC.view.isHidden = true
             navigationController?.setNavigationBarHidden(false, animated: false)
-            self.navigationItem.title = "Theme Color"
+            self.navigationItem.title = "Theme"
+
+        case "Settings":
+            safeAreaView.isHidden = true
+            colorThemeVC.view.isHidden = true
+            settingsVC.view.isHidden = false
+            navigationController?.setNavigationBarHidden(false, animated: false)
+            self.navigationItem.title = "Settings"
 
         default:
             return
