@@ -31,6 +31,7 @@ public func save(model: TaskModel, completion: () -> Void) {
     do {
         try managedContext.save()
         completion()
+        sendMorningReminder()
     } catch let error as NSError {
         print("Could not save. \(error), \(error.userInfo)")
     }
@@ -61,6 +62,7 @@ public func setDone(id: String, completion: () -> Void) {
     do {
         try managedContext.save()
         completion()
+        sendMorningReminder()
     } catch {
         print("Failed to save updated")
     }
@@ -86,6 +88,7 @@ public func setUndone(id: String, completion: () -> Void) {
     do {
         try managedContext.save()
         completion()
+        sendMorningReminder()
     } catch {
         print("Failed to save updated")
     }
@@ -110,6 +113,7 @@ public func deleteTask(id: String, completion: () -> Void) {
     do {
         try managedContext.save()
         completion()
+        sendMorningReminder()
     } catch {
         print("Failed to save updated")
     }
@@ -141,7 +145,23 @@ public func update(id: String, newModel: TaskModel, completion: () -> Void) {
     do {
         try managedContext.save()
         completion()
+        sendMorningReminder()
     } catch {
         print("Failed to save updated")
     }
+}
+
+func fetchAllTasks() -> [TaskModel] {
+    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+        return []
+    }
+    let managedContext = appDelegate.persistentContainer.viewContext
+    let fetchAll = NSFetchRequest<TaskCoreModel>(entityName: "TaskCoreModel")
+    do {
+        let objects = try managedContext.fetch(fetchAll)
+        return objects.map { TaskModel(task: $0) }
+    } catch let error as NSError {
+        print("Could not fetch. \(error), \(error.userInfo)")
+    }
+    return []
 }

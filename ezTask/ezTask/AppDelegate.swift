@@ -35,6 +35,14 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationC
         window.makeKeyAndVisible()
         self.window = window
     }
+    
+    func applicationDidEnterBackground(_ application: UIApplication) {
+        sendMorningReminder()
+    }
+    
+    func applicationDidBecomeActive(_ application: UIApplication) {
+        sendMorningReminder()
+    }
 
     lazy var persistentContainer: NSPersistentContainer = {
         /*

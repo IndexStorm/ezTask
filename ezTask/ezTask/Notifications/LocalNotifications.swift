@@ -41,7 +41,7 @@ func scheduleNotification(targetDate: Date, content: UNMutableNotificationConten
             if error != nil {
                 print("Error with notifications")
             }
-            })
+        })
     }
     let completeAction = UNNotificationAction(identifier: "Complete", title: "Complete", options: UNNotificationActionOptions(rawValue: 0))
     let postpone15MinAction = UNNotificationAction(identifier: "Postpone15Minutes", title: "Remind in 15 minutes", options: UNNotificationActionOptions(rawValue: 0))
@@ -64,4 +64,61 @@ func checkNotifications() {
     UNUserNotificationCenter.current().getNotificationSettings { settings in
         notificationsStatus = settings.authorizationStatus
     }
+}
+
+func sendMorningReminder() {
+    sendEveningReminder()
+    var tomorrow = Date().dayAfter
+    if Date().hour < 8 {
+        tomorrow = Date()
+    }
+    let tomorrowTasks = fetchAllTasks().undoneTasksForTheDay(day: tomorrow)
+
+    let content = UNMutableNotificationContent()
+    content.title = "Good morning"
+    if !tomorrowTasks.isEmpty {
+        content.body = "You have \(tomorrowTasks.count) tasks for today 💪"
+    } else {
+        content.body = "You don't have any tasks for today. Lucky you 😉"
+    }
+    content.sound = .default
+    content.badge = 1
+    UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["MORNING"])
+    UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: ["MORNING"])
+    let targetDate = tomorrow.startOfDay.addingTimeInterval(TimeInterval(60 * 60 * 8))
+    let trigger = UNCalendarNotificationTrigger(dateMatching: Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: targetDate), repeats: false)
+    let request = UNNotificationRequest(identifier: "MORNING", content: content, trigger: trigger)
+    UNUserNotificationCenter.current().add(request, withCompletionHandler: { error in
+        if error != nil {
+            print("Error with notifications")
+        }
+    })
+}
+
+func sendEveningReminder() { // TODO: if delets -> still count
+    if Date().hour >= 21  {
+        return
+    }
+    let today = Date()
+    let todayTasks = fetchAllTasks().doneTasksForTheDay(day: today)
+
+    let content = UNMutableNotificationContent()
+    content.title = "Good evening"
+    if !todayTasks.isEmpty {
+        content.body = "You have completed \(todayTasks.count) tasks today. Good job 👍" // TODO: tasks -> task
+    } else {
+        return
+    }
+    content.sound = .default
+    content.badge = 1
+    UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["EVENING"])
+    UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: ["EVENING"])
+    let targetDate = today.startOfDay.addingTimeInterval(TimeInterval(60 * 60 * 21))
+    let trigger = UNCalendarNotificationTrigger(dateMatching: Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: targetDate), repeats: false)
+    let request = UNNotificationRequest(identifier: "EVENING", content: content, trigger: trigger)
+    UNUserNotificationCenter.current().add(request, withCompletionHandler: { error in
+        if error != nil {
+            print("Error with notifications")
+        }
+    })
 }

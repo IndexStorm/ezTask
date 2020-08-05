@@ -18,8 +18,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
     var lastOffsetWithSound: CGFloat = 0
     var chosenIndex: Int = 0
-    let pullSound = URL(fileURLWithPath: Bundle.main.path(forResource: "sound-pull", ofType: "mp3")!) // TODO: move to class
-    let doneSound = URL(fileURLWithPath: Bundle.main.path(forResource: "sound-done", ofType: "mp3")!)
+    let doneSound = URL(fileURLWithPath: Bundle.main.path(forResource: "sound-done", ofType: "mp3")!) // TODO: move
     let deleteSound = URL(fileURLWithPath: Bundle.main.path(forResource: "sound-pop", ofType: "mp3")!)
     var audioPlayer = AVAudioPlayer()
     var isList: Bool = false
@@ -478,7 +477,8 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
                     }
                     let generator = UINotificationFeedbackGenerator()
                     generator.notificationOccurred(.warning)
-            })
+                })
+                daysCollectionView?.reloadData()
             }
         }
     }
@@ -515,6 +515,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
                     }
                     let generator = UINotificationFeedbackGenerator()
                     generator.notificationOccurred(.warning)
+                    self.daysCollectionView?.reloadData()
                 })
                 return
             }
@@ -543,6 +544,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
                         self.tasksTable.reloadData()
                     })
                 }
+                self.daysCollectionView?.reloadData()
             }
         }
         self.present(newVC, animated: true, completion: nil)
@@ -638,6 +640,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
                     })
                 }
             }
+            self.daysCollectionView?.reloadData()
         }
     }
 
@@ -661,7 +664,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     // override
 
     private var sideMenu: SideMenuNavigationController?
-    private let settingsController = SettingsVC()
+    private let colorThemeVC = ColorThemeVC()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -681,7 +684,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         settings.menuWidth = UIScreen.main.bounds.width * 0.5
         settings.presentationStyle = .viewSlideOut
 
-        let menuVC = MenuVC(with: ["Home", "Settings"])
+        let menuVC = MenuVC(with: ["Home", "Theme Color"])
         menuVC.delegate = self
         sideMenu = SideMenuNavigationController(rootViewController: menuVC, settings: settings)
         sideMenu?.leftSide = true
@@ -692,11 +695,11 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     }
 
     private func addChildControllers() {
-        addChild(settingsController)
-        view.addSubview(settingsController.view)
-        settingsController.view.frame = view.bounds
-        settingsController.didMove(toParent: self)
-        settingsController.view.isHidden = true
+        addChild(colorThemeVC)
+        view.addSubview(colorThemeVC.view)
+        colorThemeVC.view.frame = view.bounds
+        colorThemeVC.didMove(toParent: self)
+        colorThemeVC.view.isHidden = true
     }
 
     func didSelectMenuItem(named: String) {
@@ -706,13 +709,16 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
         switch named { // TODO: add animation
         case "home":
-            settingsController.view.isHidden = true
+            colorThemeVC.view.isHidden = true
             safeAreaView.isHidden = false
             setupColorsFromTheme()
+            navigationController?.setNavigationBarHidden(true, animated: false)
 
-        case "settings":
+        case "Theme Color":
             safeAreaView.isHidden = true
-            settingsController.view.isHidden = false
+            colorThemeVC.view.isHidden = false
+            navigationController?.setNavigationBarHidden(false, animated: false)
+            self.navigationItem.title = "Theme Color"
 
         default:
             return
@@ -758,18 +764,11 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
     @objc
     func newTask(_ sender: AnyObject) {
-        do {
-            audioPlayer = try AVAudioPlayer(contentsOf: pullSound)
-            audioPlayer.play()
-        } catch {
-            // couldn't load file :(
-        }
         let generator = UIImpactFeedbackGenerator(style: .medium)
         generator.impactOccurred()
         let newVC = NewTaskVC()
         newVC.chosenDate = Date().addDays(add: chosenIndex).startOfDay
         newVC.returnTask = { task in
-            print("-----RETURNED TASK-----\n", task)
             if task.mainText.isEmpty {
                 return
             }
@@ -891,10 +890,10 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
     func checkDayIsBusy(date: Date) -> Bool {
         for task in allTasks {
-            if task.taskDate.startOfDay == date.startOfDay {
+            if task.taskDate.startOfDay == date.startOfDay, !task.isDone {
                 return true
             }
-            if date.isToday(), task.taskDate.startOfDay < date.startOfDay {
+            if date.isToday(), task.taskDate.startOfDay < date.startOfDay, !task.isDone {
                 return true
             }
         }
@@ -996,8 +995,6 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         tasksTable.contentInset.bottom = 10
         tasksTable.showsHorizontalScrollIndicator = false
         tasksTable.showsVerticalScrollIndicator = false
-//        tasksTable.backgroundColor = .systemBackground
-//        tasksTable.backgroundColor = .systemGroupedBackground
 
         listTable.translatesAutoresizingMaskIntoConstraints = false
         listTable.topAnchor.constraint(equalTo: topView.bottomAnchor, constant: 0).isActive = true

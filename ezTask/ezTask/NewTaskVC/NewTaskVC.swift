@@ -540,7 +540,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
     }
 
     func alertNotificationsDenied() { // TODO: finish this alert
-        let alert = UIAlertController(title: "Alert", message: "Message", preferredStyle: UIAlertController.Style.alert)
+        let alert = UIAlertController(title: "Notifications", message: "In order to set alarms and get things done, please allow our app to send you notifications.", preferredStyle: UIAlertController.Style.alert)
         alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }

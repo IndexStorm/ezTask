@@ -33,7 +33,7 @@ class MenuVC: UITableViewController {
             self.delegate?.didSelectMenuItem(named: "home")
 
         } else {
-            delegate?.didSelectMenuItem(named: "settings")
+            delegate?.didSelectMenuItem(named: "Theme Color")
         }
     }
 

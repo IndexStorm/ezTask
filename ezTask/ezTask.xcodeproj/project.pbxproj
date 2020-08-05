@@ -11,8 +11,9 @@
 		E60DFBD524C2121600043A76 /* MainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E60DFBD424C2121600043A76 /* MainVC.swift */; };
 		E60DFBDA24C2121B00043A76 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E60DFBD924C2121B00043A76 /* Assets.xcassets */; };
 		E60DFBDD24C2121B00043A76 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E60DFBDB24C2121B00043A76 /* LaunchScreen.storyboard */; };
+		E63240DE24DAEFB1000D9F19 /* ColorThemeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E63240DD24DAEFB1000D9F19 /* ColorThemeCell.swift */; };
 		E64EFD2324D9AD4900CC3208 /* MenuVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E64EFD2224D9AD4900CC3208 /* MenuVC.swift */; };
-		E64EFD2624D9ED7F00CC3208 /* SettingsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E64EFD2524D9ED7F00CC3208 /* SettingsVC.swift */; };
+		E64EFD2624D9ED7F00CC3208 /* ColorThemeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E64EFD2524D9ED7F00CC3208 /* ColorThemeVC.swift */; };
 		E656C30224C771FF00FCF85E /* NewTaskVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E656C30124C771FF00FCF85E /* NewTaskVC.swift */; };
 		E68450D224C84632005D72A5 /* ViewAnimator in Frameworks */ = {isa = PBXBuildFile; productRef = E68450D124C84632005D72A5 /* ViewAnimator */; };
 		E68450D524C8924F005D72A5 /* CoreDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E68450D324C8924F005D72A5 /* CoreDataModel.xcdatamodeld */; };
@@ -38,8 +39,9 @@
 		E60DFBD924C2121B00043A76 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E60DFBDC24C2121B00043A76 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E60DFBDE24C2121B00043A76 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E63240DD24DAEFB1000D9F19 /* ColorThemeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorThemeCell.swift; sourceTree = "<group>"; };
 		E64EFD2224D9AD4900CC3208 /* MenuVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuVC.swift; sourceTree = "<group>"; };
-		E64EFD2524D9ED7F00CC3208 /* SettingsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsVC.swift; sourceTree = "<group>"; };
+		E64EFD2524D9ED7F00CC3208 /* ColorThemeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorThemeVC.swift; sourceTree = "<group>"; };
 		E656C30124C771FF00FCF85E /* NewTaskVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTaskVC.swift; sourceTree = "<group>"; };
 		E68450D424C8924F005D72A5 /* TaskDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TaskDataModel.xcdatamodel; sourceTree = "<group>"; };
 		E68E3F4424CF300300E7EA7F /* LocalNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotifications.swift; sourceTree = "<group>"; };
@@ -89,7 +91,7 @@
 			isa = PBXGroup;
 			children = (
 				E60DFBD024C2121600043A76 /* AppDelegate.swift */,
-				E64EFD2424D9ED6700CC3208 /* Settings */,
+				E64EFD2424D9ED6700CC3208 /* ColorTheme */,
 				E64EFD2124D9AD3200CC3208 /* Menu */,
 				E62D4E1424D5F2DB00062758 /* MainVC */,
 				E62D4E1524D5F2EE00062758 /* NewTaskVC */,
@@ -129,12 +131,13 @@
 			path = Menu;
 			sourceTree = "<group>";
 		};
-		E64EFD2424D9ED6700CC3208 /* Settings */ = {
+		E64EFD2424D9ED6700CC3208 /* ColorTheme */ = {
 			isa = PBXGroup;
 			children = (
-				E64EFD2524D9ED7F00CC3208 /* SettingsVC.swift */,
+				E64EFD2524D9ED7F00CC3208 /* ColorThemeVC.swift */,
+				E63240DD24DAEFB1000D9F19 /* ColorThemeCell.swift */,
 			);
-			path = Settings;
+			path = ColorTheme;
 			sourceTree = "<group>";
 		};
 		E68E3F4324CF2FE700E7EA7F /* Notifications */ = {
@@ -275,9 +278,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E64EFD2624D9ED7F00CC3208 /* SettingsVC.swift in Sources */,
+				E64EFD2624D9ED7F00CC3208 /* ColorThemeVC.swift in Sources */,
 				E68450D524C8924F005D72A5 /* CoreDataModel.xcdatamodeld in Sources */,
 				E68E3F5524CF38E900E7EA7F /* Date.swift in Sources */,
+				E63240DE24DAEFB1000D9F19 /* ColorThemeCell.swift in Sources */,
 				E68E3F4524CF300300E7EA7F /* LocalNotifications.swift in Sources */,
 				E6A5CB9624D81F320036F45B /* UIApplication.swift in Sources */,
 				E6D6EEF024C37CE300AF82A3 /* TaskCell.swift in Sources */,
@@ -425,7 +429,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = S77KJ672M8;
 				INFOPLIST_FILE = ezTask/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -446,7 +450,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = S77KJ672M8;
 				INFOPLIST_FILE = ezTask/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
