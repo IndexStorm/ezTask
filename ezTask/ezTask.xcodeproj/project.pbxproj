@@ -20,6 +20,7 @@
 		E68E3F4F24CF34BA00E7EA7F /* CoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E68E3F4E24CF34BA00E7EA7F /* CoreData.swift */; };
 		E68E3F5224CF352600E7EA7F /* TaskModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E68E3F5124CF352600E7EA7F /* TaskModel.swift */; };
 		E68E3F5524CF38E900E7EA7F /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = E68E3F5424CF38E900E7EA7F /* Date.swift */; };
+		E69ADC9F24DAC1BA0009C120 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = E69ADC9E24DAC1BA0009C120 /* Colors.swift */; };
 		E6A5CB9624D81F320036F45B /* UIApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6A5CB9524D81F320036F45B /* UIApplication.swift */; };
 		E6A5CB9C24D829EA0036F45B /* sound-done.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = E6A5CB9824D829E90036F45B /* sound-done.mp3 */; };
 		E6A5CB9D24D829EA0036F45B /* sound-pull.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = E6A5CB9924D829EA0036F45B /* sound-pull.mp3 */; };
@@ -45,6 +46,7 @@
 		E68E3F4E24CF34BA00E7EA7F /* CoreData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreData.swift; sourceTree = "<group>"; };
 		E68E3F5124CF352600E7EA7F /* TaskModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskModel.swift; sourceTree = "<group>"; };
 		E68E3F5424CF38E900E7EA7F /* Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
+		E69ADC9E24DAC1BA0009C120 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		E6A5CB9524D81F320036F45B /* UIApplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIApplication.swift; sourceTree = "<group>"; };
 		E6A5CB9824D829E90036F45B /* sound-done.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "sound-done.mp3"; sourceTree = "<group>"; };
 		E6A5CB9924D829EA0036F45B /* sound-pull.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "sound-pull.mp3"; sourceTree = "<group>"; };
@@ -165,6 +167,7 @@
 			children = (
 				E68E3F5424CF38E900E7EA7F /* Date.swift */,
 				E6A5CB9524D81F320036F45B /* UIApplication.swift */,
+				E69ADC9E24DAC1BA0009C120 /* Colors.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -281,6 +284,7 @@
 				E64EFD2324D9AD4900CC3208 /* MenuVC.swift in Sources */,
 				E68E3F5224CF352600E7EA7F /* TaskModel.swift in Sources */,
 				E60DFBD524C2121600043A76 /* MainVC.swift in Sources */,
+				E69ADC9F24DAC1BA0009C120 /* Colors.swift in Sources */,
 				E68E3F4F24CF34BA00E7EA7F /* CoreData.swift in Sources */,
 				E656C30224C771FF00FCF85E /* NewTaskVC.swift in Sources */,
 				E6D6EEEE24C2D94400AF82A3 /* DayCell.swift in Sources */,

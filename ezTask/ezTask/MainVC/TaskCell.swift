@@ -35,7 +35,8 @@ class TaskCell: UITableViewCell {
         let image = UIImageView()
         image.image = UIImage(named: "square")
         image.contentMode = .scaleAspectFit
-        image.tintColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
+//        image.tintColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
+        image.tintColor = ThemeManager.currentTheme().mainColor
         image.alpha = 0.9
 
         return image
@@ -80,14 +81,14 @@ class TaskCell: UITableViewCell {
             self.image.image = UIImage(named: "alarm")
             self.image.contentMode = .scaleAspectFit
             self.image.translatesAutoresizingMaskIntoConstraints = false
-            self.image.heightAnchor.constraint(equalToConstant: 14).isActive = true
-            self.image.widthAnchor.constraint(equalToConstant: 14).isActive = true
-            self.image.leadingAnchor.constraint(equalTo: self.containerView.leadingAnchor, constant: 0).isActive = true
+            self.image.heightAnchor.constraint(equalToConstant: 11).isActive = true
+            self.image.widthAnchor.constraint(equalToConstant: 11).isActive = true
+            self.image.leadingAnchor.constraint(equalTo: self.containerView.leadingAnchor, constant: 4).isActive = true
             self.image.centerYAnchor.constraint(equalTo: self.containerView.centerYAnchor).isActive = true
 
             self.containerView.addSubview(self.label)
             self.label.text = "20:30"
-            self.label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+            self.label.font = UIFont.systemFont(ofSize: 13, weight: .regular)
             self.label.sizeToFit()
             self.label.translatesAutoresizingMaskIntoConstraints = false
             self.label.leadingAnchor.constraint(equalTo: self.image.trailingAnchor, constant: 2).isActive = true
@@ -107,6 +108,8 @@ class TaskCell: UITableViewCell {
                 self.label.text = formatter.string(from: time)
                 self.label.textColor = .systemYellow
                 self.image.tintColor = .systemYellow
+//                self.label.textColor = .tertiarySystemBackground
+//                self.image.tintColor = .tertiarySystemBackground
             }
             self.label.setNeedsLayout()
             self.label.layoutIfNeeded()
@@ -131,7 +134,7 @@ class TaskCell: UITableViewCell {
             if !self.isVisible {
                 return 0
             }
-            return self.label.frame.width + self.image.frame.width + 2 + 5 // margin between and left
+            return self.label.frame.width + self.image.frame.width + 2 + 5 // margin between
         }
     }
 
@@ -230,8 +233,8 @@ class TaskCell: UITableViewCell {
         priorityIcon.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 11).isActive = true
 
         checkbox.translatesAutoresizingMaskIntoConstraints = false
-        checkbox.heightAnchor.constraint(equalToConstant: 22).isActive = true
-        checkbox.widthAnchor.constraint(equalToConstant: 22).isActive = true
+        checkbox.heightAnchor.constraint(equalToConstant: 20).isActive = true
+        checkbox.widthAnchor.constraint(equalToConstant: 20).isActive = true
         checkbox.leadingAnchor.constraint(equalTo: priorityIcon.trailingAnchor, constant: 10).isActive = true
         checkbox.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 5).isActive = true
         checkbox.isUserInteractionEnabled = true
@@ -249,16 +252,16 @@ class TaskCell: UITableViewCell {
         dayLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor).isActive = true
 
         alarmView.translatesAutoresizingMaskIntoConstraints = false
-        alarmView.leadingAnchor.constraint(equalTo: dayLabel.trailingAnchor, constant: 5).isActive = true
-        alarmView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor).isActive = true
-        alarmView.heightAnchor.constraint(equalToConstant: 20).isActive = true
+        alarmView.leadingAnchor.constraint(equalTo: dayLabel.trailingAnchor, constant: 0).isActive = true
+        alarmView.bottomAnchor.constraint(equalTo: dayLabel.bottomAnchor, constant: 0).isActive = true
+        alarmView.heightAnchor.constraint(equalToConstant: 18).isActive = true
         alarmWidth = alarmView.widthAnchor.constraint(equalToConstant: 0)
         alarmWidth.isActive = true
 
         subtasksIcon.translatesAutoresizingMaskIntoConstraints = false
         subtasksIcon.bottomAnchor.constraint(equalTo: dayLabel.bottomAnchor, constant: -4).isActive = true
         subtasksIcon.heightAnchor.constraint(equalToConstant: 10).isActive = true
-        subtasksIcon.leadingAnchor.constraint(equalTo: alarmView.trailingAnchor, constant: 3).isActive = true
+        subtasksIcon.leadingAnchor.constraint(equalTo: alarmView.trailingAnchor, constant: 5).isActive = true
         subtaskWidth = subtasksIcon.widthAnchor.constraint(equalToConstant: 0)
         subtaskWidth.isActive = true
     }
@@ -267,6 +270,7 @@ class TaskCell: UITableViewCell {
         super.prepareForReuse()
         titleLabel.text = ""
         checkbox.image = UIImage(named: "square")
+        checkbox.tintColor = ThemeManager.currentTheme().mainColor
         alarmView.unset()
         self.contentView.alpha = 1
     }

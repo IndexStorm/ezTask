@@ -50,7 +50,7 @@ extension Date {
     }
 
     public func isTomorrow() -> Bool {
-        return self.startOfDay == Date().dayAfter.startOfDay
+        return self.startOfDay > Date().endOfDay && self.endOfDay < Date().dayAfter.dayAfter.startOfDay
     }
 
     public func dayNameOfWeek() -> String {

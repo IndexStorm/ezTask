@@ -24,11 +24,13 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     var audioPlayer = AVAudioPlayer()
     var isList: Bool = false
 
+//    let theme = ThemeManager.currentTheme()
+
     // Views
 
     let topView: UIView = {
         let view = UIView()
-        view.backgroundColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
+        view.backgroundColor = ThemeManager.currentTheme().mainColor
         view.layer.cornerRadius = 20
         view.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
         view.layer.shadowColor = UIColor.black.cgColor
@@ -72,7 +74,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         let btn = UIButton(type: .system)
         btn.setTitle("Today", for: .normal)
         btn.backgroundColor = .white
-        btn.tintColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
+        btn.tintColor = ThemeManager.currentTheme().mainColor
         let image = UIImage(named: "left_arrow")
         btn.setImage(image, for: .normal)
         btn.imageView?.contentMode = .scaleAspectFit
@@ -97,13 +99,13 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
             btn.setTitle("Schedule", for: .normal)
         }
         btn.backgroundColor = .white
-        btn.tintColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
+        btn.tintColor = ThemeManager.currentTheme().mainColor
         btn.layer.cornerRadius = 13
         btn.layer.shadowColor = UIColor.black.cgColor
         btn.layer.shadowOpacity = 0.3
         btn.layer.shadowOffset = CGSize(width: 0, height: 4)
         btn.layer.shadowRadius = 5
-        btn.addTarget(self, action: #selector(calendarOrListPressed), for: .touchUpInside)
+        btn.addTarget(self, action: #selector(calendarOrListTapped), for: .touchUpInside)
 
         return btn
     }()
@@ -415,9 +417,13 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         let date = Date().addDays(add: chosenIndex)
         var res = [TaskModel]()
         for task in allTasks {
-            if date.isToday(), task.taskDate.startOfDay <= date.startOfDay, !task.isDone {
+            if date.isToday(), task.taskDate.startOfDay < date.startOfDay, !task.isDone {
                 res.append(task)
-            } else if date.startOfDay == task.taskDate.startOfDay {
+            } else if date.startOfDay == task.taskDate.startOfDay, !date.isToday() {
+                res.append(task)
+            } else if date.startOfDay == task.taskDate.startOfDay, date.isToday(), !task.isDone || (task.dateModified >= date.startOfDay) {
+                res.append(task)
+            } else if task.isDone, date.isToday(), task.dateModified.isToday(), task.taskDate.startOfDay < Date().startOfDay {
                 res.append(task)
             }
         }
@@ -640,7 +646,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
             fetchTasks()
             if isList {
                 let (row, section) = getRowAndSectionOfTask(task: task)
-                listTable.insertRows(at: [IndexPath(row: row, section: section)], with: row == 0 ? .top : .left)
+                listTable.insertRows(at: [IndexPath(row: row, section: section)], with: .left)
             } else {
                 if task.taskDate.startOfDay == Date().addDays(add: chosenIndex).startOfDay { // on current page
                     if let row = self.allTasksForDay.firstIndexById(id: task.id.uuidString) {
@@ -666,6 +672,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
                                                name: UIApplication.didBecomeActiveNotification, object: nil)
 
         createMenu()
+        setupColorsFromTheme()
     }
 
     func createMenu() {
@@ -700,13 +707,26 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         switch named { // TODO: add animation
         case "home":
             settingsController.view.isHidden = true
+            safeAreaView.isHidden = false
+            setupColorsFromTheme()
 
         case "settings":
+            safeAreaView.isHidden = true
             settingsController.view.isHidden = false
 
         default:
             return
         }
+    }
+
+    func setupColorsFromTheme() {
+        topView.backgroundColor = ThemeManager.currentTheme().mainColor
+        backTodayBtn.tintColor = ThemeManager.currentTheme().mainColor
+        calendarOrList.tintColor = ThemeManager.currentTheme().mainColor
+        safeAreaView.backgroundColor = ThemeManager.currentTheme().mainColor
+        fetchTasks()
+        tasksTable.reloadData()
+        listTable.reloadData()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -729,7 +749,9 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     }
 
     func animatePlaceholder() {
-        UIView.animate(views: [rocket, quote, author], animations: [AnimationType.from(direction: .top, offset: 20.0)], initialAlpha: 0, finalAlpha: 1, duration: 1)
+        if tasksTable.alpha != 0 {
+            UIView.animate(views: [rocket, quote, author], animations: [AnimationType.from(direction: .top, offset: 20.0)], initialAlpha: 0, finalAlpha: 1, delay: 0, duration: 1)
+        }
     }
 
     // @objc
@@ -788,11 +810,9 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     }
 
     @objc
-    func calendarOrListPressed() {
-//        sideMenu.pushViewController(SettingsVC(), animated: true)
-//        return
+    func calendarOrListTapped() {
         if !isList {
-            placeholder(show: false) // TODO: save to core
+            placeholder(show: false)
             calendarOrList.setTitle("Schedule", for: .normal)
             self.tasksTable.alpha = 0
             isList = true
@@ -883,12 +903,12 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
     lazy var animatedView = GlassView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 60))
     lazy var animatedView1 = GlassView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 60))
+    var safeAreaView = UIView()
 
     func setup() {
         self.view.backgroundColor = .tertiarySystemBackground
-
-        let safeAreaView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: UIApplication.shared.statusBarFrame.maxY + 1))
-        safeAreaView.backgroundColor = #colorLiteral(red: 0.231372549, green: 0.4156862745, blue: 0.9960784314, alpha: 1)
+        safeAreaView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: UIApplication.shared.statusBarFrame.maxY + 1))
+        safeAreaView.backgroundColor = ThemeManager.currentTheme().mainColor
         safeAreaView.layer.zPosition = 1_000
         self.view.addSubview(safeAreaView)
         self.view.addSubview(rocket)
@@ -1056,7 +1076,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         listTable.sectionFooterHeight = 0.0
     }
 
-    @objc func handleAppDidBecomeActiveNotification(notification: Notification) { // TODO: add list
+    @objc func handleAppDidBecomeActiveNotification(notification: Notification) {
         if allTasks.isEmpty {
             fetchTasks()
             if isList {

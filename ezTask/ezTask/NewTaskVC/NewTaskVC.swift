@@ -227,16 +227,13 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         mainTextView.text = model.mainText
         isPriority = model.isPriority
         priorityImage.image = UIImage(named: isPriority ? "square_filled" : "square")
-        if model.taskDate.startOfDay < Date().startOfDay {
-            datePicker.date = Date() // TODO: support old dates
-        } else {
-            datePicker.date = model.taskDate
-        }
+        datePicker.date = model.taskDate
+
         let formatter = DateFormatter()
         formatter.dateStyle = .full
         formatter.timeStyle = .none
         dateTextField.text = formatter.string(from: datePicker.date)
-        if model.isAlarmSet {
+        if model.isAlarmSet, model.taskDate.startOfDay >= Date().startOfDay {
             timePicker.date = model.alarmDate!
             let formatter = DateFormatter()
             formatter.dateStyle = .none

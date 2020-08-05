@@ -20,9 +20,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationC
         setupWindow()
         do {
             try AVAudioSession.sharedInstance().setCategory(.ambient, mode: .default, options: AVAudioSession.CategoryOptions.mixWithOthers)
-        } catch {
-            print(error.localizedDescription)
-        }
+        } catch { print(error.localizedDescription) }
         return true
     }
 
