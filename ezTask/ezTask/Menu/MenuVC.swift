@@ -42,6 +42,8 @@ class MenuVC: UITableViewController {
         }, completion: { _ in
             self.delegate?.didSelectMenuItem(named: self.menuItems[indexPath.row])
         })
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
     }
 
     init(with menuItems: [String]) {
@@ -68,8 +70,6 @@ class MenuVC: UITableViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(true, animated: animated)
-        // updating new color
-//        self.tableView.reloadRows(at: [IndexPath(row: chosenRow, section: 0)], with: .none)
         self.tableView.reloadData()
     }
 }

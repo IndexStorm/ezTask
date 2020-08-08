@@ -45,6 +45,7 @@ class ColorThemeVC: UIViewController, UICollectionViewDelegate, UICollectionView
         default:
             ThemeManager.applyTheme(theme: .theme1)
         }
+        self.safeAreaView.backgroundColor = ThemeManager.currentTheme().mainColor
         collectionView.reloadData()
         let generator = UIImpactFeedbackGenerator(style: .light)
         generator.impactOccurred()
@@ -52,19 +53,70 @@ class ColorThemeVC: UIViewController, UICollectionViewDelegate, UICollectionView
 
     var collectionView: UICollectionView?
 
+    let menuBtn: UIImageView = {
+        let image = UIImageView()
+        image.image = UIImage(named: "menu")
+        image.contentMode = .scaleAspectFit
+        image.tintColor = .white
+
+        return image
+    }()
+
+    let pageTitle: UILabel = {
+        let label = UILabel()
+        label.text = "Theme"
+        label.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+        label.textColor = .white
+
+        return label
+    }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .tertiarySystemBackground
-        self.navigationItem.title = "Theme"
         setup()
+        collectionView?.reloadData()
     }
+
+    @objc
+    func menuBtnTapped() {
+        if let mainVC = self.parent as? MainVC {
+            mainVC.menuBtnTapped()
+        }
+    }
+
+    var safeAreaView = UIView()
 
     private func setup() {
         createCollection()
+
+        safeAreaView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: UIApplication.shared.statusBarFrame.maxY + 36))
+        safeAreaView.backgroundColor = ThemeManager.currentTheme().mainColor
+        safeAreaView.layer.shadowColor = UIColor.black.cgColor
+        safeAreaView.layer.shadowOpacity = 0.25
+        safeAreaView.layer.shadowOffset = CGSize(width: 0, height: 4)
+        safeAreaView.layer.shadowRadius = 5
+        self.view.addSubview(safeAreaView)
+
+        self.view.addSubview(menuBtn)
+        menuBtn.translatesAutoresizingMaskIntoConstraints = false
+        menuBtn.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 0).isActive = true
+        menuBtn.heightAnchor.constraint(equalToConstant: 20).isActive = true
+        menuBtn.widthAnchor.constraint(equalToConstant: 20).isActive = true
+        menuBtn.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 21).isActive = true
+        menuBtn.isUserInteractionEnabled = true
+        menuBtn.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(menuBtnTapped)))
+
+        self.view.addSubview(pageTitle)
+        pageTitle.translatesAutoresizingMaskIntoConstraints = false
+        pageTitle.sizeToFit()
+        pageTitle.centerXAnchor.constraint(equalTo: safeAreaView.centerXAnchor).isActive = true
+        pageTitle.centerYAnchor.constraint(equalTo: menuBtn.centerYAnchor).isActive = true
+
         collectionView?.translatesAutoresizingMaskIntoConstraints = false
         collectionView?.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 0).isActive = true
         collectionView?.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 0).isActive = true
-        collectionView?.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 10).isActive = true
+        collectionView?.topAnchor.constraint(equalTo: self.safeAreaView.bottomAnchor, constant: 0).isActive = true
         collectionView?.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 10).isActive = true
     }
 
@@ -79,6 +131,7 @@ class ColorThemeVC: UIViewController, UICollectionViewDelegate, UICollectionView
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView?.register(ColorThemeCell.self, forCellWithReuseIdentifier: ColorThemeCell.identifier)
         collectionView?.showsHorizontalScrollIndicator = false
+        collectionView?.showsVerticalScrollIndicator = false
         collectionView?.delegate = self
         collectionView?.dataSource = self
         collectionView?.backgroundColor = .clear

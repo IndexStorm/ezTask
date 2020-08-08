@@ -77,7 +77,11 @@ func sendMorningReminder() {
     let content = UNMutableNotificationContent()
     content.title = "Good morning"
     if !tomorrowTasks.isEmpty {
-        content.body = "You have \(tomorrowTasks.count) tasks for today 💪"
+        if tomorrowTasks.count == 1 {
+            content.body = "You have 1 task for today 💪"
+        } else {
+            content.body = "You have \(tomorrowTasks.count) tasks for today 💪"
+        }
     } else {
         content.body = "You don't have any tasks for today. Lucky you 😉"
     }
@@ -96,7 +100,7 @@ func sendMorningReminder() {
 }
 
 func sendEveningReminder() { // TODO: if delets -> still count
-    if Date().hour >= 21  {
+    if Date().hour >= 21 {
         return
     }
     let today = Date()
@@ -105,8 +109,13 @@ func sendEveningReminder() { // TODO: if delets -> still count
     let content = UNMutableNotificationContent()
     content.title = "Good evening"
     if !todayTasks.isEmpty {
-        content.body = "You have completed \(todayTasks.count) tasks today. Good job 👍" // TODO: tasks -> task
+        if todayTasks.count == 1 {
+            content.body = "You have completed 1 task today. Good job 👍"
+        } else {
+            content.body = "You have completed \(todayTasks.count) tasks today. Good job 👍"
+        }
     } else {
+        content.body = "Don't forget to mark your completed tasks for today 😉"
         return
     }
     content.sound = .default

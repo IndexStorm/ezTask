@@ -15,7 +15,7 @@ class ColorThemeCell: UICollectionViewCell {
         let label = UILabel()
         label.textColor = .white
         label.contentMode = .center
-        label.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
+        label.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
 
         return label
     }()

@@ -228,12 +228,12 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         isPriority = model.isPriority
         priorityImage.image = UIImage(named: isPriority ? "square_filled" : "square")
         datePicker.date = model.taskDate
-        
+
         let formatter = DateFormatter()
         formatter.dateStyle = .full
         formatter.timeStyle = .none
         dateTextField.text = formatter.string(from: datePicker.date)
-        if model.isAlarmSet && model.taskDate.startOfDay >= Date().startOfDay {
+        if model.isAlarmSet, model.taskDate.startOfDay >= Date().startOfDay {
             timePicker.date = model.alarmDate!
             let formatter = DateFormatter()
             formatter.dateStyle = .none
@@ -539,7 +539,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         self.dismiss(animated: true, completion: nil)
     }
 
-    func alertNotificationsDenied() { // TODO: finish this alert
+    func alertNotificationsDenied() {
         let alert = UIAlertController(title: "Notifications", message: "In order to set alarms and get things done, please allow our app to send you notifications.", preferredStyle: UIAlertController.Style.alert)
         alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
         self.present(alert, animated: true, completion: nil)

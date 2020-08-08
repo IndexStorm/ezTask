@@ -228,11 +228,11 @@ class TaskCell: UITableViewCell {
         priorityIcon.heightAnchor.constraint(equalToConstant: 10).isActive = true
         priorityIcon.widthAnchor.constraint(equalToConstant: 10).isActive = true
         priorityIcon.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 24).isActive = true
-        priorityIcon.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 10).isActive = true
+        priorityIcon.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 11).isActive = true
 
         checkbox.translatesAutoresizingMaskIntoConstraints = false
-        checkbox.heightAnchor.constraint(equalToConstant: 20).isActive = true
-        checkbox.widthAnchor.constraint(equalToConstant: 20).isActive = true
+        checkbox.heightAnchor.constraint(equalToConstant: 22).isActive = true
+        checkbox.widthAnchor.constraint(equalToConstant: 22).isActive = true
         checkbox.leadingAnchor.constraint(equalTo: priorityIcon.trailingAnchor, constant: 10).isActive = true
         checkbox.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 5).isActive = true
         checkbox.isUserInteractionEnabled = true

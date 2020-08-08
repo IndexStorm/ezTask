@@ -23,8 +23,6 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     var audioPlayer = AVAudioPlayer()
     var isList: Bool = false
 
-//    let theme = ThemeManager.currentTheme()
-
     // Views
 
     let topView: UIView = {
@@ -685,7 +683,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         settings.menuWidth = UIScreen.main.bounds.width * 0.5
         settings.presentationStyle = .viewSlideOut
 
-        let menuVC = MenuVC(with: ["Home", "Theme", "Settings"])
+        let menuVC = MenuVC(with: ["Home", "Settings", "Theme"])
         menuVC.delegate = self
         sideMenu = SideMenuNavigationController(rootViewController: menuVC, settings: settings)
         sideMenu?.leftSide = true
@@ -726,15 +724,15 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
             safeAreaView.isHidden = true
             colorThemeVC.view.isHidden = false
             settingsVC.view.isHidden = true
-            navigationController?.setNavigationBarHidden(false, animated: false)
-            self.navigationItem.title = "Theme"
+//            navigationController?.setNavigationBarHidden(false, animated: false)
+//            self.navigationItem.title = "Theme"
 
         case "Settings":
             safeAreaView.isHidden = true
             colorThemeVC.view.isHidden = true
             settingsVC.view.isHidden = false
-            navigationController?.setNavigationBarHidden(false, animated: false)
-            self.navigationItem.title = "Settings"
+//            navigationController?.setNavigationBarHidden(false, animated: false)
+//            self.navigationItem.title = "Settings"
 
         default:
             return
@@ -878,7 +876,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     }
 
     @objc
-    func menuBtnTapped() {
+    public func menuBtnTapped() {
         present(sideMenu!, animated: true)
     }
 
