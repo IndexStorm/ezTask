@@ -52,6 +52,9 @@ class ColorThemeCell: UICollectionViewCell {
                 self.contentView.backgroundColor = .systemYellow
                 return "Yellow"
             case 9:
+                self.contentView.backgroundColor = UIColor().colorFromHexString("#fe828c")
+                return "Blush Pink"
+            case 10:
                 self.contentView.backgroundColor = UIColor().colorFromHexString("#191919")
                 return "Black"
             default:
@@ -67,7 +70,7 @@ class ColorThemeCell: UICollectionViewCell {
         }
         label.text = text
     }
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
 

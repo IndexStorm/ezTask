@@ -10,7 +10,7 @@ import UIKit
 
 class ColorThemeVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        return 11
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -42,6 +42,8 @@ class ColorThemeVC: UIViewController, UICollectionViewDelegate, UICollectionView
             ThemeManager.applyTheme(theme: .theme9)
         case 9:
             ThemeManager.applyTheme(theme: .theme10)
+        case 10:
+            ThemeManager.applyTheme(theme: .theme11)
         default:
             ThemeManager.applyTheme(theme: .theme1)
         }
@@ -86,7 +88,7 @@ class ColorThemeVC: UIViewController, UICollectionViewDelegate, UICollectionView
     }
 
     var safeAreaView = UIView()
-    
+
     private func setup() {
         createCollection()
 
