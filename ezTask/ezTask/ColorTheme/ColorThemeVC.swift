@@ -86,7 +86,7 @@ class ColorThemeVC: UIViewController, UICollectionViewDelegate, UICollectionView
     }
 
     var safeAreaView = UIView()
-
+    
     private func setup() {
         createCollection()
 
@@ -111,7 +111,7 @@ class ColorThemeVC: UIViewController, UICollectionViewDelegate, UICollectionView
         pageTitle.translatesAutoresizingMaskIntoConstraints = false
         pageTitle.sizeToFit()
         pageTitle.centerXAnchor.constraint(equalTo: safeAreaView.centerXAnchor).isActive = true
-        pageTitle.centerYAnchor.constraint(equalTo: menuBtn.centerYAnchor).isActive = true
+        pageTitle.topAnchor.constraint(equalTo: menuBtn.topAnchor).isActive = true
 
         collectionView?.translatesAutoresizingMaskIntoConstraints = false
         collectionView?.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 0).isActive = true

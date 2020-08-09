@@ -107,9 +107,62 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         return btn
     }()
 
+//    class GlassView: UIView {
+//        let contentView = UIView() // is going to be animated from bottom to top
+//        let shapeView = UIImageView() // is going to mask everything with alpha mask
+//
+//        override init(frame: CGRect) {
+//            super.init(frame: frame)
+//            setup()
+//        }
+//
+//        required init?(coder aDecoder: NSCoder) {
+//            super.init(coder: aDecoder)
+//            setup()
+//        }
+//
+//        func setup() {
+//            self.backgroundColor = .systemGray5
+//            self.contentView.backgroundColor = .systemYellow
+//
+//            self.shapeView.contentMode = .scaleAspectFit
+//            self.shapeView.image = UIImage(named: "bulb")
+//
+//            self.addSubview(contentView)
+//            self.mask = shapeView
+//
+//            layoutIfNeeded()
+//            reset()
+//        }
+//
+//        override func layoutSubviews() {
+//            super.layoutSubviews()
+//
+//            contentView.frame = self.bounds
+//            shapeView.frame = self.bounds
+//        }
+//
+//        func reset() {
+//            contentView.frame.origin.y = bounds.height
+//        }
+//
+//        func animate() {
+//            reset()
+//            UIView.animate(withDuration: 1) {
+//                self.contentView.frame.origin.y = 0
+//            }
+//        }
+//
+//        func update(offset: CGFloat) {
+//            self.contentView.frame.origin.y = max(1 - offset / 130, 0) * bounds.height
+//        }
+//    }
+
     class GlassView: UIView {
-        let liquidView = UIView() // is going to be animated from bottom to top
-        let shapeView = UIImageView() // is going to mask everything with alpha mask
+        let contentView = UIView()
+        var circleLayer = CAShapeLayer()
+        let imageView = UIImageView()
+        let circleView = UIView()
 
         override init(frame: CGRect) {
             super.init(frame: frame)
@@ -122,39 +175,45 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         }
 
         func setup() {
-            self.backgroundColor = .systemGray5
-            self.liquidView.backgroundColor = .systemYellow
-
-            self.shapeView.contentMode = .scaleAspectFit
-            self.shapeView.image = UIImage(named: "bulb")
-
-            self.addSubview(liquidView)
-            self.mask = shapeView
+            self.contentView.backgroundColor = .tertiarySystemBackground
+            self.addSubview(contentView)
+            
+            self.circleView.frame = CGRect(x: self.frame.size.width / 2.0 - 40/2, y: 30 - 40/2, width: 40, height: 40)
+            self.circleView.layer.cornerRadius = 40/2
+            self.circleView.backgroundColor = ThemeManager.currentTheme().mainColor
+            self.circleView.alpha = 0
+            self.addSubview(circleView)
+            
+            self.imageView.image = UIImage(named: "plus")
+            self.imageView.tintColor = .tertiarySystemBackground
+            self.imageView.frame = CGRect(x: self.frame.size.width / 2.0 - 10, y: 30 - 10, width: 20, height: 20)
+            self.addSubview(imageView)
+            
+            let circlePath = UIBezierPath(arcCenter: CGPoint(x: self.frame.size.width / 2.0, y:  30), radius: 21.5, startAngle: 0, endAngle: CGFloat(Double.pi * 2), clockwise: true)
+            circleLayer = CAShapeLayer()
+            circleLayer.path = circlePath.cgPath
+            circleLayer.fillColor = UIColor.clear.cgColor
+            circleLayer.strokeColor = ThemeManager.currentTheme().mainColor.cgColor
+            circleLayer.lineWidth = 4.0;
+            circleLayer.strokeEnd = 0
+            circleLayer.lineCap = CAShapeLayerLineCap.round
+            layer.addSublayer(circleLayer)
 
             layoutIfNeeded()
-            reset()
         }
 
         override func layoutSubviews() {
             super.layoutSubviews()
 
-            liquidView.frame = self.bounds
-            shapeView.frame = self.bounds
-        }
-
-        func reset() {
-            liquidView.frame.origin.y = bounds.height
-        }
-
-        func animate() {
-            reset()
-            UIView.animate(withDuration: 1) {
-                self.liquidView.frame.origin.y = 0
-            }
+            contentView.frame = self.bounds
         }
 
         func update(offset: CGFloat) {
-            self.liquidView.frame.origin.y = max(1 - offset / 130, 0) * bounds.height
+            self.circleLayer.strokeEnd = min(offset / 130, 1)
+            self.circleView.alpha = min(offset / 110, 1)
+            
+            let newHeight = min(offset / 180 + 0.3, 1) * 22
+            self.imageView.frame = CGRect(x: self.frame.size.width / 2.0 - newHeight/2, y: 30 - newHeight/2, width: newHeight, height: newHeight)
         }
     }
 
@@ -724,15 +783,11 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
             safeAreaView.isHidden = true
             colorThemeVC.view.isHidden = false
             settingsVC.view.isHidden = true
-//            navigationController?.setNavigationBarHidden(false, animated: false)
-//            self.navigationItem.title = "Theme"
 
         case "Settings":
             safeAreaView.isHidden = true
             colorThemeVC.view.isHidden = true
             settingsVC.view.isHidden = false
-//            navigationController?.setNavigationBarHidden(false, animated: false)
-//            self.navigationItem.title = "Settings"
 
         default:
             return
