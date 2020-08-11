@@ -127,6 +127,7 @@ class CompletedTasksVC: UIViewController, UITableViewDataSource, UITableViewDele
     }
 
     private let completedTasks = UITableView()
+    var safeAreaView = UIView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -138,11 +139,12 @@ class CompletedTasksVC: UIViewController, UITableViewDataSource, UITableViewDele
         super.viewWillAppear(true)
         allDoneTasks = fetchAllTasks().allDoneTasks()
         completedTasks.reloadData()
+        safeAreaView.backgroundColor = ThemeManager.currentTheme().mainColor
     }
 
     func setup() {
         self.view.addSubview(completedTasks)
-        let safeAreaView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: UIApplication.shared.statusBarFrame.maxY + 36))
+        safeAreaView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: UIApplication.shared.statusBarFrame.maxY + 36))
         safeAreaView.backgroundColor = ThemeManager.currentTheme().mainColor
         safeAreaView.layer.shadowColor = UIColor.black.cgColor
         safeAreaView.layer.shadowOpacity = 0.25
@@ -165,7 +167,7 @@ class CompletedTasksVC: UIViewController, UITableViewDataSource, UITableViewDele
         pageTitle.centerXAnchor.constraint(equalTo: safeAreaView.centerXAnchor).isActive = true
         pageTitle.topAnchor.constraint(equalTo: menuBtn.topAnchor).isActive = true
 
-        self.view.addSubview(completedTasks)
+//        self.view.addSubview(completedTasks)
         createTable()
         completedTasks.translatesAutoresizingMaskIntoConstraints = false
         completedTasks.topAnchor.constraint(equalTo: safeAreaView.bottomAnchor, constant: 0).isActive = true

@@ -81,6 +81,11 @@ class ColorThemeVC: UIViewController, UICollectionViewDelegate, UICollectionView
         setup()
         collectionView?.reloadData()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        safeAreaView.backgroundColor = ThemeManager.currentTheme().mainColor
+    }
 
     @objc
     func menuBtnTapped() {

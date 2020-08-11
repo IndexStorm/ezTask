@@ -33,12 +33,14 @@ class SettingsVC: UIViewController {
             mainVC.menuBtnTapped()
         }
     }
+    
+    var safeAreaView = UIView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .tertiarySystemBackground
 
-        let safeAreaView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: UIApplication.shared.statusBarFrame.maxY + 36))
+        safeAreaView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: UIApplication.shared.statusBarFrame.maxY + 36))
         safeAreaView.backgroundColor = ThemeManager.currentTheme().mainColor
         safeAreaView.layer.shadowColor = UIColor.black.cgColor
         safeAreaView.layer.shadowOpacity = 0.25
@@ -60,5 +62,10 @@ class SettingsVC: UIViewController {
         pageTitle.sizeToFit()
         pageTitle.centerXAnchor.constraint(equalTo: safeAreaView.centerXAnchor).isActive = true
         pageTitle.topAnchor.constraint(equalTo: menuBtn.topAnchor).isActive = true
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        safeAreaView.backgroundColor = ThemeManager.currentTheme().mainColor
     }
 }

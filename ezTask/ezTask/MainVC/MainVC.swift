@@ -740,12 +740,14 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
             colorThemeVC.view.isHidden = false
             settingsVC.view.isHidden = true
             completedTasksVC.view.isHidden = true
+            colorThemeVC.viewWillAppear(true)
 
         case "Settings":
             safeAreaView.isHidden = true
             colorThemeVC.view.isHidden = true
             settingsVC.view.isHidden = false
             completedTasksVC.view.isHidden = true
+            settingsVC.viewWillAppear(true)
 
         case "Completed":
             safeAreaView.isHidden = true
