@@ -15,6 +15,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
 
     var isPriority: Bool = false
     var isAlarmSet: Bool = false
+    var isDone: Bool = false
     public var returnTask: ((_ task: TaskModel) -> Void)?
     public var model: TaskModel?
     public var chosenDate: Date = Date()
@@ -226,6 +227,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         mainTextView.resignFirstResponder()
         mainTextView.text = model.mainText
         isPriority = model.isPriority
+        isDone = model.isDone
         priorityImage.image = UIImage(named: isPriority ? "square_filled" : "square")
         datePicker.date = model.taskDate
 
@@ -245,6 +247,14 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         }
         if let subtasksString = model.subtasks {
             loadSubtasks(str: subtasksString)
+        }
+        if isDone {
+            subtaskStackView.removeArrangedSubview(addSubtaskView)
+            addSubtaskView.removeFromSuperview()
+            priorityImage.alpha = 0
+            priorityLabel.alpha = 0
+            timeImage.alpha = 0
+            timeTextField.alpha = 0
         }
     }
 
@@ -551,7 +561,6 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
 
         let dataFromSubtasks = getStringFromSubtasks()
         let id = model == nil ? UUID() : model!.id
-        let isDone = model == nil ? false : model!.isDone
         let dateCompleted = isDone ? model!.dateCompleted : nil
         if dataFromSubtasks != nil, mainTextView.text == "" {
             mainTextView.text = "Empty task"

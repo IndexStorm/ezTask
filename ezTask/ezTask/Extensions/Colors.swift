@@ -54,7 +54,7 @@ func == (l: UIColor?, r: UIColor?) -> Bool {
 }
 
 enum Theme: Int {
-    case theme1, theme2, theme3, theme4, theme5, theme6, theme7, theme8, theme9, theme10, theme11
+    case theme1, theme2, theme3, theme4, theme5, theme6, theme7, theme8, theme9, theme10, theme11, theme12
 
     var mainColor: UIColor {
         switch self {
@@ -80,6 +80,8 @@ enum Theme: Int {
             return UIColor().colorFromHexString("#fe828c")
         case .theme11:
             return UIColor().colorFromHexString("#191919")
+        case .theme12:
+            return UIColor().colorFromHexString("#d98695")
         }
     }
 }

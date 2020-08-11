@@ -48,6 +48,8 @@ class MenuCell: UITableViewCell {
             self.icon.image = UIImage(named: "theme")
         case "Settings":
             self.icon.image = UIImage(named: "settings")
+        case "Completed":
+            self.icon.image = UIImage(named: "completed")
         default:
             self.icon.image = UIImage(named: "home")
         }

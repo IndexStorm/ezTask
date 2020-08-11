@@ -10,7 +10,7 @@ import UIKit
 
 class ColorThemeVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 11
+        return 12
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -44,6 +44,8 @@ class ColorThemeVC: UIViewController, UICollectionViewDelegate, UICollectionView
             ThemeManager.applyTheme(theme: .theme10)
         case 10:
             ThemeManager.applyTheme(theme: .theme11)
+        case 11:
+            ThemeManager.applyTheme(theme: .theme12)
         default:
             ThemeManager.applyTheme(theme: .theme1)
         }

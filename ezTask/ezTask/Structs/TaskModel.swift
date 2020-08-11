@@ -77,10 +77,7 @@ public struct TaskModel: Equatable, Comparable {
             return lhs.isPriority
         }
         if lhs.isDone == rhs.isDone {
-            if lhs.isPriority == rhs.isPriority {
-                return lhs.dateCompleted! > rhs.dateCompleted!
-            }
-            return lhs.isPriority
+            return lhs.dateCompleted! > rhs.dateCompleted!
         }
         return !lhs.isDone
     }
@@ -132,6 +129,12 @@ extension Array where Element == TaskModel {
     public func doneTasksForTheDay(day: Date) -> [TaskModel] {
         return self.filter {
             ($0.isDone && ($0.dateModified.startOfDay == day.startOfDay))
+        }.sorted()
+    }
+
+    public func allDoneTasks() -> [TaskModel] {
+        return self.filter {
+            ($0.isDone)
         }.sorted()
     }
 }

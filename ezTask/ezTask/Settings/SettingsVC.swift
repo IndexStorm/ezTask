@@ -9,7 +9,6 @@
 import UIKit
 
 class SettingsVC: UIViewController {
-    
     let menuBtn: UIImageView = {
         let image = UIImageView()
         image.image = UIImage(named: "menu")
@@ -27,7 +26,7 @@ class SettingsVC: UIViewController {
 
         return label
     }()
-    
+
     @objc
     func menuBtnTapped() {
         if let mainVC = self.parent as? MainVC {
@@ -46,7 +45,7 @@ class SettingsVC: UIViewController {
         safeAreaView.layer.shadowOffset = CGSize(width: 0, height: 4)
         safeAreaView.layer.shadowRadius = 5
         self.view.addSubview(safeAreaView)
-        
+
         self.view.addSubview(menuBtn)
         menuBtn.translatesAutoresizingMaskIntoConstraints = false
         menuBtn.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 0).isActive = true
@@ -62,5 +61,4 @@ class SettingsVC: UIViewController {
         pageTitle.centerXAnchor.constraint(equalTo: safeAreaView.centerXAnchor).isActive = true
         pageTitle.topAnchor.constraint(equalTo: menuBtn.topAnchor).isActive = true
     }
-
 }

@@ -57,18 +57,25 @@ class ColorThemeCell: UICollectionViewCell {
             case 10:
                 self.contentView.backgroundColor = UIColor().colorFromHexString("#191919")
                 return "Black"
+            case 11:
+                self.contentView.backgroundColor = UIColor().colorFromHexString("#d98695")
+                return "Blush Pink 2"
             default:
                 self.contentView.backgroundColor = .systemIndigo
                 return "Indigo"
             }
         }()
         if self.contentView.backgroundColor == ThemeManager.currentTheme().mainColor {
-            self.contentView.layer.borderWidth = 6
+            self.contentView.layer.borderWidth = 5
             self.contentView.layer.borderColor = UIColor.systemGray3.cgColor
         } else {
             self.contentView.layer.borderWidth = 0
         }
         label.text = text
+        self.contentView.layer.shadowColor = UIColor.black.cgColor
+        self.contentView.layer.shadowOpacity = 0.25
+        self.contentView.layer.shadowOffset = CGSize(width: 0, height: 0)
+        self.contentView.layer.shadowRadius = 4
     }
 
     override init(frame: CGRect) {
