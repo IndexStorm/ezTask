@@ -856,6 +856,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
             updateTopLabels(date: Date().addDays(add: chosenIndex))
             fetchTasks()
             listTable.reloadData()
+            listTable.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
             self.calendarOrList.alpha = 0
             UIView.animate(withDuration: 0.2, animations: {
                 self.daysCollectionView?.alpha = 0

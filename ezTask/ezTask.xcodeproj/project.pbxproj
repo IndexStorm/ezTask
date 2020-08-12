@@ -12,6 +12,7 @@
 		E60DFBDA24C2121B00043A76 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E60DFBD924C2121B00043A76 /* Assets.xcassets */; };
 		E60DFBDD24C2121B00043A76 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E60DFBDB24C2121B00043A76 /* LaunchScreen.storyboard */; };
 		E63240DE24DAEFB1000D9F19 /* ColorThemeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E63240DD24DAEFB1000D9F19 /* ColorThemeCell.swift */; };
+		E647C55824E428D60048628F /* SettingsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E647C55724E428D60048628F /* SettingsCell.swift */; };
 		E64EFD2324D9AD4900CC3208 /* MenuVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E64EFD2224D9AD4900CC3208 /* MenuVC.swift */; };
 		E64EFD2624D9ED7F00CC3208 /* ColorThemeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E64EFD2524D9ED7F00CC3208 /* ColorThemeVC.swift */; };
 		E6505E8424DB487800107180 /* MenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6505E8324DB487800107180 /* MenuCell.swift */; };
@@ -43,6 +44,7 @@
 		E60DFBDC24C2121B00043A76 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E60DFBDE24C2121B00043A76 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E63240DD24DAEFB1000D9F19 /* ColorThemeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorThemeCell.swift; sourceTree = "<group>"; };
+		E647C55724E428D60048628F /* SettingsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCell.swift; sourceTree = "<group>"; };
 		E64EFD2224D9AD4900CC3208 /* MenuVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuVC.swift; sourceTree = "<group>"; };
 		E64EFD2524D9ED7F00CC3208 /* ColorThemeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorThemeVC.swift; sourceTree = "<group>"; };
 		E6505E8324DB487800107180 /* MenuCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuCell.swift; sourceTree = "<group>"; };
@@ -153,6 +155,7 @@
 			isa = PBXGroup;
 			children = (
 				E6505E8624DB555900107180 /* SettingsVC.swift */,
+				E647C55724E428D60048628F /* SettingsCell.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -319,6 +322,7 @@
 				E68E3F4F24CF34BA00E7EA7F /* CoreData.swift in Sources */,
 				E656C30224C771FF00FCF85E /* NewTaskVC.swift in Sources */,
 				E6D6EEEE24C2D94400AF82A3 /* DayCell.swift in Sources */,
+				E647C55824E428D60048628F /* SettingsCell.swift in Sources */,
 				E6505E8424DB487800107180 /* MenuCell.swift in Sources */,
 				E60DFBD124C2121600043A76 /* AppDelegate.swift in Sources */,
 			);
@@ -457,7 +461,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = S77KJ672M8;
 				INFOPLIST_FILE = ezTask/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -478,7 +482,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = S77KJ672M8;
 				INFOPLIST_FILE = ezTask/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;

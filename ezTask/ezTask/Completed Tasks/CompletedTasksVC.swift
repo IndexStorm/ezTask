@@ -21,6 +21,7 @@ class CompletedTasksVC: UIViewController, UITableViewDataSource, UITableViewDele
         let task = allDoneTasks[indexPath.row]
         cell.configure(task: task)
         cell.delegate = self
+        cell.setCompletedDate(date: task.dateCompleted!)
 
         return cell
     }
@@ -167,7 +168,6 @@ class CompletedTasksVC: UIViewController, UITableViewDataSource, UITableViewDele
         pageTitle.centerXAnchor.constraint(equalTo: safeAreaView.centerXAnchor).isActive = true
         pageTitle.topAnchor.constraint(equalTo: menuBtn.topAnchor).isActive = true
 
-//        self.view.addSubview(completedTasks)
         createTable()
         completedTasks.translatesAutoresizingMaskIntoConstraints = false
         completedTasks.topAnchor.constraint(equalTo: safeAreaView.bottomAnchor, constant: 0).isActive = true

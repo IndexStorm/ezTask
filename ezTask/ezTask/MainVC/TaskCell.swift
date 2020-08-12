@@ -164,7 +164,7 @@ class TaskCell: UITableViewCell {
         self.id = task.id
         self.priorityIcon.alpha = task.isPriority ? 0.9 : 0
 
-        if task.taskDate.isToday() { // TODO: make it switch
+        if task.taskDate.isToday() {
             self.dayLabel.text = "Today"
         } else if task.taskDate.isTomorrow() {
             self.dayLabel.text = "Tomorrow"
@@ -194,6 +194,18 @@ class TaskCell: UITableViewCell {
             subtaskWidth.constant = 10
         } else {
             subtaskWidth.constant = 0
+        }
+    }
+
+    public func setCompletedDate(date: Date) {
+        if date.isToday() {
+            self.dayLabel.text = "Today"
+        } else if date.isTomorrow() {
+            self.dayLabel.text = "Tomorrow"
+        } else {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "dd MMMM"
+            self.dayLabel.text = formatter.string(from: date)
         }
     }
 

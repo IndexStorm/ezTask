@@ -8,7 +8,22 @@
 
 import UIKit
 
-class SettingsVC: UIViewController {
+class SettingsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        3
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: SettingsCell.identifier, for: indexPath) as! SettingsCell
+        cell.configure(row: indexPath.row)
+
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 60
+    }
+    
     let menuBtn: UIImageView = {
         let image = UIImageView()
         image.image = UIImage(named: "menu")
@@ -34,12 +49,19 @@ class SettingsVC: UIViewController {
         }
     }
     
+    let settingsTable = UITableView()
     var safeAreaView = UIView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .tertiarySystemBackground
-
+        
+        setup()
+    }
+    
+    func setup() {
+        
+        self.view.addSubview(settingsTable)
         safeAreaView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: UIApplication.shared.statusBarFrame.maxY + 36))
         safeAreaView.backgroundColor = ThemeManager.currentTheme().mainColor
         safeAreaView.layer.shadowColor = UIColor.black.cgColor
@@ -62,6 +84,25 @@ class SettingsVC: UIViewController {
         pageTitle.sizeToFit()
         pageTitle.centerXAnchor.constraint(equalTo: safeAreaView.centerXAnchor).isActive = true
         pageTitle.topAnchor.constraint(equalTo: menuBtn.topAnchor).isActive = true
+        
+        createTable()
+        settingsTable.translatesAutoresizingMaskIntoConstraints = false
+        settingsTable.topAnchor.constraint(equalTo: safeAreaView.bottomAnchor, constant: 0).isActive = true
+        settingsTable.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 0).isActive = true
+        settingsTable.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 0).isActive = true
+        settingsTable.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 0).isActive = true
+//        settingsTable.separatorStyle = .none
+        settingsTable.contentInset.top = 10
+        settingsTable.contentInset.bottom = 10
+        settingsTable.showsHorizontalScrollIndicator = false
+        settingsTable.showsVerticalScrollIndicator = false
+        settingsTable.backgroundColor = .tertiarySystemBackground
+    }
+    
+    func createTable() {
+        settingsTable.register(SettingsCell.self, forCellReuseIdentifier: SettingsCell.identifier)
+        settingsTable.dataSource = self
+        settingsTable.delegate = self
     }
     
     override func viewWillAppear(_ animated: Bool) {

@@ -255,6 +255,9 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
             priorityLabel.alpha = 0
             timeImage.alpha = 0
             timeTextField.alpha = 0
+            dateTextField.isUserInteractionEnabled = false
+            dateTextField.textColor = .systemGray2
+            dateImage.tintColor = .systemGray2
         }
     }
 
