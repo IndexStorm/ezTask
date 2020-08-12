@@ -137,4 +137,10 @@ extension Array where Element == TaskModel {
             ($0.isDone)
         }.sorted()
     }
+    
+    public func allUndoneTasks() -> [TaskModel] {
+        return self.filter {
+            (!$0.isDone)
+        }.sorted()
+    }
 }

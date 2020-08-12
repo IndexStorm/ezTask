@@ -10,20 +10,61 @@ import UIKit
 
 class SettingsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        3
+        switch section {
+        case 0:
+            return 3
+        default:
+            return 0
+        }
     }
-    
+
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 40
+    }
+
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.size.width, height: 40))
+        headerView.backgroundColor = .clear
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
+        label.textColor = .systemGray2
+        label.textAlignment = .left
+        headerView.addSubview(label)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.sizeToFit()
+        label.centerYAnchor.constraint(equalTo: headerView.centerYAnchor, constant: 15).isActive = true
+        label.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 16).isActive = true
+
+        switch section {
+        case 0:
+            label.text = "GENERAL SETTINGS"
+        default:
+            label.text = "TESTING"
+        }
+
+        return headerView
+    }
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: SettingsCell.identifier, for: indexPath) as! SettingsCell
-        cell.configure(row: indexPath.row)
+        cell.configure(indexPath: indexPath)
+        let bottomBorder = CALayer()
+
+        bottomBorder.frame = CGRect(x: 16.0, y: 61.0, width: cell.contentView.frame.size.width, height: 1.0)
+        bottomBorder.backgroundColor = UIColor.systemGray5.cgColor
+        cell.contentView.layer.addSublayer(bottomBorder)
 
         return cell
     }
-    
+
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60
     }
-    
+
     let menuBtn: UIImageView = {
         let image = UIImageView()
         image.image = UIImage(named: "menu")
@@ -48,19 +89,18 @@ class SettingsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
             mainVC.menuBtnTapped()
         }
     }
-    
-    let settingsTable = UITableView()
+
+    let settingsTable = UITableView(frame: .zero, style: .grouped)
     var safeAreaView = UIView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .tertiarySystemBackground
-        
+
         setup()
     }
-    
+
     func setup() {
-        
         self.view.addSubview(settingsTable)
         safeAreaView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: UIApplication.shared.statusBarFrame.maxY + 36))
         safeAreaView.backgroundColor = ThemeManager.currentTheme().mainColor
@@ -84,29 +124,31 @@ class SettingsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         pageTitle.sizeToFit()
         pageTitle.centerXAnchor.constraint(equalTo: safeAreaView.centerXAnchor).isActive = true
         pageTitle.topAnchor.constraint(equalTo: menuBtn.topAnchor).isActive = true
-        
+
         createTable()
         settingsTable.translatesAutoresizingMaskIntoConstraints = false
         settingsTable.topAnchor.constraint(equalTo: safeAreaView.bottomAnchor, constant: 0).isActive = true
         settingsTable.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 0).isActive = true
         settingsTable.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 0).isActive = true
         settingsTable.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 0).isActive = true
-//        settingsTable.separatorStyle = .none
-        settingsTable.contentInset.top = 10
+        settingsTable.separatorStyle = .none
         settingsTable.contentInset.bottom = 10
         settingsTable.showsHorizontalScrollIndicator = false
         settingsTable.showsVerticalScrollIndicator = false
         settingsTable.backgroundColor = .tertiarySystemBackground
+        settingsTable.tableFooterView = UIView(frame: CGRect.zero)
+        settingsTable.sectionFooterHeight = 0.0
     }
-    
+
     func createTable() {
         settingsTable.register(SettingsCell.self, forCellReuseIdentifier: SettingsCell.identifier)
         settingsTable.dataSource = self
         settingsTable.delegate = self
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         safeAreaView.backgroundColor = ThemeManager.currentTheme().mainColor
+        settingsTable.reloadData()
     }
 }

@@ -1150,17 +1150,20 @@ extension MainVC {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             return
         }
+        let hideCompleted = UserDefaults.standard.bool(forKey: "hideCompleted")
         let managedContext = appDelegate.persistentContainer.viewContext
         let fetchUndone = NSFetchRequest<TaskCoreModel>(entityName: "TaskCoreModel")
         fetchUndone.predicate = NSPredicate(format: "isDone = false")
         let fetchDone = NSFetchRequest<TaskCoreModel>(entityName: "TaskCoreModel")
         fetchDone.predicate = NSPredicate(format: "isDone = true")
         let fetchAll = NSFetchRequest<TaskCoreModel>(entityName: "TaskCoreModel")
-
         do {
             let objects = try managedContext.fetch(fetchAll)
             allTasks = objects.map { TaskModel(task: $0) }
             allTasks.sort()
+            if isList, hideCompleted {
+                allTasks = allTasks.allUndoneTasks()
+            }
             getAllTasksForDay()
             allTasksForDay.sort()
             checkIfDayEmpty()

@@ -35,11 +35,15 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationC
         window.makeKeyAndVisible()
         self.window = window
     }
-    
+
     func applicationDidEnterBackground(_ application: UIApplication) {
         sendMorningReminder()
+        if UserDefaults.standard.bool(forKey: "badgeToday") {
+            let newBadge = fetchAllTasks().tasksForToday().allUndoneTasks().count
+            UIApplication.shared.applicationIconBadgeNumber = newBadge
+        }
     }
-    
+
     func applicationDidBecomeActive(_ application: UIApplication) {
         sendMorningReminder()
     }
@@ -88,7 +92,9 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationC
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
-        UIApplication.shared.applicationIconBadgeNumber = 0
+        if !UserDefaults.standard.bool(forKey: "badgeToday") {
+            UIApplication.shared.applicationIconBadgeNumber = 0
+        }
     }
 
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
