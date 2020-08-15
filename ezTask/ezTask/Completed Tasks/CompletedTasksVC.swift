@@ -10,6 +10,14 @@ import UIKit
 
 class CompletedTasksVC: UIViewController, UITableViewDataSource, UITableViewDelegate, TableViewCellDelegate {
     func checkboxTapped(cell: TaskCell) {}
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableView.automaticDimension
+    }
+
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 60.0
+    }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         placeholder.isHidden = allDoneTasks.count != 0

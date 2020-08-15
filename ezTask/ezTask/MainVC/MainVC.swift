@@ -391,7 +391,6 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
             let task = allTasksForDay[indexPath.row]
             cell.configure(task: task)
             cell.delegate = self
-//            cell.layoutIfNeeded() // TODO: check if it breaks anything
 
             return cell
         } else {
@@ -412,10 +411,13 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
             let task = data[indexPath.row]
             cell.configure(task: task)
             cell.delegate = self
-//            cell.layoutIfNeeded() // TODO: check if it breaks anything
 
             return cell
         }
+    }
+
+    func tableView(_ tableView: UITableView, titleForDeleteConfirmationButtonForRowAt indexPath: IndexPath) -> String? {
+        return "Delete"
     }
 
     func getAllTasksForDay() {
@@ -602,13 +604,22 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
                     setDone(id: id.uuidString, completion: {
                         fetchTasks()
                         if isList {
-                            let (row, section) = getRowAndSectionOfTask(task: task)
-                            listTable.performBatchUpdates({
-                                cell.setCellDone()
-                                listTable.moveRow(at: indexPath!, to: IndexPath(row: row, section: section))
-                            }, completion: { (_: Bool) in
-                                self.listTable.reloadData()
-                            })
+                            if UserDefaults.standard.bool(forKey: "hideCompleted") {
+                                self.listTable.performBatchUpdates({
+                                    cell.setCellDone()
+                                    self.listTable.deleteRows(at: [indexPath!], with: .none)
+                                }, completion: { (_: Bool) in
+                                    self.listTable.reloadData()
+                                })
+                            } else {
+                                let (row, section) = getRowAndSectionOfTask(task: task)
+                                listTable.performBatchUpdates({
+                                    cell.setCellDone()
+                                    listTable.moveRow(at: indexPath!, to: IndexPath(row: row, section: section))
+                                }, completion: { (_: Bool) in
+                                    self.listTable.reloadData()
+                                })
+                            }
                         } else {
                             daysCollectionView?.reloadData()
                             tasksTable.performBatchUpdates({

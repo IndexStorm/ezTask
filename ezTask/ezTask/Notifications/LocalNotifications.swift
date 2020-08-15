@@ -23,7 +23,7 @@ func setupReminder(task: TaskModel) {
     content.sound = .default
     content.categoryIdentifier = "Category"
     content.userInfo = ["id": task.id.uuidString]
-    if UserDefaults.standard.bool(forKey: "badgeToday") {
+    if !UserDefaults.standard.bool(forKey: "badgeToday") {
         content.badge = 1 // TODO: fix
     }
     let targetDate = task.alarmDate!
@@ -93,7 +93,7 @@ func sendMorningReminder() {
         content.body = "You don't have any tasks for today. Lucky you 😉"
     }
     content.sound = .default
-    if UserDefaults.standard.bool(forKey: "badgeToday") {
+    if !UserDefaults.standard.bool(forKey: "badgeToday") {
         content.badge = 1
     }
     UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["MORNING"])
@@ -133,7 +133,7 @@ func sendEveningReminder() { // TODO: if delets -> still count
         return
     }
     content.sound = .default
-    if UserDefaults.standard.bool(forKey: "badgeToday") {
+    if !UserDefaults.standard.bool(forKey: "badgeToday") {
         content.badge = 1
     }
     UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["EVENING"])

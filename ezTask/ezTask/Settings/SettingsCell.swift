@@ -24,7 +24,7 @@ class SettingsCell: UITableViewCell {
     let label: UILabel = {
         let label = UILabel()
         label.contentMode = .left
-        label.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
+        label.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
 
         return label
     }()
@@ -47,6 +47,15 @@ class SettingsCell: UITableViewCell {
         return switchDemo
     }()
 
+    let arrow: UIImageView = {
+        let image = UIImageView()
+        image.image = UIImage(named: "right_arrow")
+        image.contentMode = .scaleAspectFit
+        image.tintColor = .systemGray2
+
+        return image
+    }()
+
     @objc
     func cellSwitchChange(_ sender: UISwitch!) {
         if indexPath.section == 0 {
@@ -65,8 +74,12 @@ class SettingsCell: UITableViewCell {
     }
 
     public func configure(indexPath: IndexPath) {
+        self.selectionStyle = .none
         self.indexPath = indexPath
         cellSwitch.isOn = false
+        cellSwitch.alpha = 1
+        arrow.alpha = 0
+        arrow.tintColor = ThemeManager.currentTheme().mainColor
         icon.tintColor = ThemeManager.currentTheme().mainColor
         cellSwitch.onTintColor = ThemeManager.currentTheme().mainColor
         if indexPath.section == 0 {
@@ -91,17 +104,31 @@ class SettingsCell: UITableViewCell {
                 subtitle.text = "Lurum upsil see me fuck off"
             }
         }
+
+        if indexPath.section == 1 {
+            switch indexPath.row {
+            case 0:
+                label.text = "Mail Us"
+                subtitle.text = "Feel free to mail us any feedback"
+                icon.image = UIImage(named: "mail")
+                cellSwitch.alpha = 0
+                arrow.alpha = 1
+                self.selectionStyle = .default
+            default:
+                label.text = "Test"
+                subtitle.text = "Lurum upsil see me fuck off"
+            }
+        }
     }
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.backgroundColor = .tertiarySystemBackground
-        self.selectionStyle = .none
 
         self.contentView.addSubview(icon)
         icon.translatesAutoresizingMaskIntoConstraints = false
-        icon.widthAnchor.constraint(equalToConstant: 32).isActive = true
-        icon.heightAnchor.constraint(equalToConstant: 32).isActive = true
+        icon.widthAnchor.constraint(equalToConstant: 30).isActive = true
+        icon.heightAnchor.constraint(equalToConstant: 30).isActive = true
         icon.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 16).isActive = true
         icon.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor).isActive = true
 
@@ -111,12 +138,19 @@ class SettingsCell: UITableViewCell {
         cellSwitch.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor).isActive = true
         cellSwitch.addTarget(self, action: #selector(cellSwitchChange(_:)), for: .valueChanged)
 
+        self.contentView.addSubview(arrow)
+        arrow.translatesAutoresizingMaskIntoConstraints = false
+        arrow.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -28).isActive = true
+        arrow.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor).isActive = true
+        arrow.widthAnchor.constraint(equalToConstant: 18).isActive = true
+        arrow.heightAnchor.constraint(equalToConstant: 18).isActive = true
+
         self.contentView.addSubview(label)
         label.translatesAutoresizingMaskIntoConstraints = false
         label.widthAnchor.constraint(equalToConstant: 250).isActive = true
         label.heightAnchor.constraint(equalToConstant: 20).isActive = true
         label.leadingAnchor.constraint(equalTo: icon.trailingAnchor, constant: 10).isActive = true
-        label.topAnchor.constraint(equalTo: icon.topAnchor, constant: -1).isActive = true
+        label.topAnchor.constraint(equalTo: icon.topAnchor, constant: -2).isActive = true
 
         self.contentView.addSubview(subtitle)
         subtitle.translatesAutoresizingMaskIntoConstraints = false

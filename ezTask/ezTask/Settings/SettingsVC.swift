@@ -13,17 +13,39 @@ class SettingsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         switch section {
         case 0:
             return 3
+        case 1:
+            return 1
         default:
             return 0
         }
     }
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        return 2
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 40
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        switch section {
+        case 0:
+            return 0
+        case 1:
+            return 40
+        default:
+            return 0
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+        return "Eazy Task 1.2 @ Mike Ovyan"
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
+        let footer: UITableViewHeaderFooterView = view as! UITableViewHeaderFooterView
+        footer.textLabel?.textAlignment = .center
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -36,12 +58,14 @@ class SettingsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         headerView.addSubview(label)
         label.translatesAutoresizingMaskIntoConstraints = false
         label.sizeToFit()
-        label.centerYAnchor.constraint(equalTo: headerView.centerYAnchor, constant: 15).isActive = true
+        label.centerYAnchor.constraint(equalTo: headerView.centerYAnchor, constant: 10).isActive = true
         label.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 16).isActive = true
 
         switch section {
         case 0:
             label.text = "GENERAL SETTINGS"
+        case 1:
+            label.text = "FEEDBACK"
         default:
             label.text = "TESTING"
         }
@@ -52,8 +76,8 @@ class SettingsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: SettingsCell.identifier, for: indexPath) as! SettingsCell
         cell.configure(indexPath: indexPath)
-        let bottomBorder = CALayer()
 
+        let bottomBorder = CALayer()
         bottomBorder.frame = CGRect(x: 16.0, y: 61.0, width: cell.contentView.frame.size.width, height: 1.0)
         bottomBorder.backgroundColor = UIColor.systemGray5.cgColor
         cell.contentView.layer.addSublayer(bottomBorder)
@@ -63,6 +87,22 @@ class SettingsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+
+        if indexPath.section == 1 {
+            switch indexPath.row {
+            case 0:
+                let email = "pleasekillmyvibe@gmail.com"
+                if let url = URL(string: "mailto:\(email)") {
+                    UIApplication.shared.open(url)
+                }
+            default:
+                return
+            }
+        }
     }
 
     let menuBtn: UIImageView = {
@@ -136,8 +176,6 @@ class SettingsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         settingsTable.showsHorizontalScrollIndicator = false
         settingsTable.showsVerticalScrollIndicator = false
         settingsTable.backgroundColor = .tertiarySystemBackground
-        settingsTable.tableFooterView = UIView(frame: CGRect.zero)
-        settingsTable.sectionFooterHeight = 0.0
     }
 
     func createTable() {
