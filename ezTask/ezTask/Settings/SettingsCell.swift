@@ -23,7 +23,7 @@ class SettingsCell: UITableViewCell {
 
     let label: UILabel = {
         let label = UILabel()
-        label.contentMode = .left
+        label.textAlignment = .left
         label.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
 
         return label
@@ -31,7 +31,7 @@ class SettingsCell: UITableViewCell {
 
     let subtitle: UILabel = {
         let subtitle = UILabel()
-        subtitle.contentMode = .left
+        subtitle.textAlignment = .left
         subtitle.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         subtitle.textColor = .secondaryLabel
         subtitle.lineBreakMode = .byWordWrapping

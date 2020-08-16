@@ -33,6 +33,12 @@
 		E6A5CB9F24D829EA0036F45B /* sound-push.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = E6A5CB9B24D829EA0036F45B /* sound-push.mp3 */; };
 		E6D6EEEE24C2D94400AF82A3 /* DayCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D6EEED24C2D94400AF82A3 /* DayCell.swift */; };
 		E6D6EEF024C37CE300AF82A3 /* TaskCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D6EEEF24C37CE300AF82A3 /* TaskCell.swift */; };
+		E6E0117A24E9B57900A5982D /* OnboardingVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6E0117924E9B57900A5982D /* OnboardingVC.swift */; };
+		E6E0118224E9D28B00A5982D /* AwesomeTabButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6E0117D24E9D28B00A5982D /* AwesomeTabButton.swift */; };
+		E6E0118324E9D28B00A5982D /* AwesomeSpotlightViewBundle.bundle in Resources */ = {isa = PBXBuildFile; fileRef = E6E0117E24E9D28B00A5982D /* AwesomeSpotlightViewBundle.bundle */; };
+		E6E0118424E9D28B00A5982D /* AwesomeSpotlightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6E0117F24E9D28B00A5982D /* AwesomeSpotlightView.swift */; };
+		E6E0118524E9D28B00A5982D /* AwesomeSpotlight.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6E0118024E9D28B00A5982D /* AwesomeSpotlight.swift */; };
+		E6E0118624E9D28B00A5982D /* Localizator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6E0118124E9D28B00A5982D /* Localizator.swift */; };
 		E6F95BA824D9A7FD0092DBF0 /* SideMenu in Frameworks */ = {isa = PBXBuildFile; productRef = E6F95BA724D9A7FD0092DBF0 /* SideMenu */; };
 /* End PBXBuildFile section */
 
@@ -64,6 +70,12 @@
 		E6A5CB9B24D829EA0036F45B /* sound-push.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "sound-push.mp3"; sourceTree = "<group>"; };
 		E6D6EEED24C2D94400AF82A3 /* DayCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayCell.swift; sourceTree = "<group>"; };
 		E6D6EEEF24C37CE300AF82A3 /* TaskCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskCell.swift; sourceTree = "<group>"; };
+		E6E0117924E9B57900A5982D /* OnboardingVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingVC.swift; sourceTree = "<group>"; };
+		E6E0117D24E9D28B00A5982D /* AwesomeTabButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AwesomeTabButton.swift; sourceTree = "<group>"; };
+		E6E0117E24E9D28B00A5982D /* AwesomeSpotlightViewBundle.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = AwesomeSpotlightViewBundle.bundle; sourceTree = "<group>"; };
+		E6E0117F24E9D28B00A5982D /* AwesomeSpotlightView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AwesomeSpotlightView.swift; sourceTree = "<group>"; };
+		E6E0118024E9D28B00A5982D /* AwesomeSpotlight.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AwesomeSpotlight.swift; sourceTree = "<group>"; };
+		E6E0118124E9D28B00A5982D /* Localizator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Localizator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +111,7 @@
 			isa = PBXGroup;
 			children = (
 				E60DFBD024C2121600043A76 /* AppDelegate.swift */,
+				E6E0117824E9B55B00A5982D /* Onboarding */,
 				E68CFAFB24E30E3F00CF557B /* Completed Tasks */,
 				E6505E8524DB553F00107180 /* Settings */,
 				E64EFD2424D9ED6700CC3208 /* ColorTheme */,
@@ -224,6 +237,35 @@
 			path = Sounds;
 			sourceTree = "<group>";
 		};
+		E6E0117824E9B55B00A5982D /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				E6E0117B24E9D28B00A5982D /* AwesomeSpotlightView */,
+				E6E0117924E9B57900A5982D /* OnboardingVC.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		E6E0117B24E9D28B00A5982D /* AwesomeSpotlightView */ = {
+			isa = PBXGroup;
+			children = (
+				E6E0117C24E9D28B00A5982D /* Classes */,
+			);
+			path = AwesomeSpotlightView;
+			sourceTree = "<group>";
+		};
+		E6E0117C24E9D28B00A5982D /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				E6E0117D24E9D28B00A5982D /* AwesomeTabButton.swift */,
+				E6E0117E24E9D28B00A5982D /* AwesomeSpotlightViewBundle.bundle */,
+				E6E0117F24E9D28B00A5982D /* AwesomeSpotlightView.swift */,
+				E6E0118024E9D28B00A5982D /* AwesomeSpotlight.swift */,
+				E6E0118124E9D28B00A5982D /* Localizator.swift */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -294,6 +336,7 @@
 				E6A5CB9E24D829EA0036F45B /* sound-pop.mp3 in Resources */,
 				E6A5CB9F24D829EA0036F45B /* sound-push.mp3 in Resources */,
 				E6A5CB9C24D829EA0036F45B /* sound-done.mp3 in Resources */,
+				E6E0118324E9D28B00A5982D /* AwesomeSpotlightViewBundle.bundle in Resources */,
 				E60DFBDA24C2121B00043A76 /* Assets.xcassets in Resources */,
 				E6A5CB9D24D829EA0036F45B /* sound-pull.mp3 in Resources */,
 			);
@@ -311,11 +354,14 @@
 				E68450D524C8924F005D72A5 /* CoreDataModel.xcdatamodeld in Sources */,
 				E68E3F5524CF38E900E7EA7F /* Date.swift in Sources */,
 				E63240DE24DAEFB1000D9F19 /* ColorThemeCell.swift in Sources */,
+				E6E0118524E9D28B00A5982D /* AwesomeSpotlight.swift in Sources */,
 				E68E3F4524CF300300E7EA7F /* LocalNotifications.swift in Sources */,
 				E6A5CB9624D81F320036F45B /* UIApplication.swift in Sources */,
+				E6E0118624E9D28B00A5982D /* Localizator.swift in Sources */,
 				E6D6EEF024C37CE300AF82A3 /* TaskCell.swift in Sources */,
 				E64EFD2324D9AD4900CC3208 /* MenuVC.swift in Sources */,
 				E659F59324E30EB80076FC7D /* CompletedTasksVC.swift in Sources */,
+				E6E0118224E9D28B00A5982D /* AwesomeTabButton.swift in Sources */,
 				E68E3F5224CF352600E7EA7F /* TaskModel.swift in Sources */,
 				E60DFBD524C2121600043A76 /* MainVC.swift in Sources */,
 				E69ADC9F24DAC1BA0009C120 /* Colors.swift in Sources */,
@@ -323,8 +369,10 @@
 				E656C30224C771FF00FCF85E /* NewTaskVC.swift in Sources */,
 				E6D6EEEE24C2D94400AF82A3 /* DayCell.swift in Sources */,
 				E647C55824E428D60048628F /* SettingsCell.swift in Sources */,
+				E6E0117A24E9B57900A5982D /* OnboardingVC.swift in Sources */,
 				E6505E8424DB487800107180 /* MenuCell.swift in Sources */,
 				E60DFBD124C2121600043A76 /* AppDelegate.swift in Sources */,
+				E6E0118424E9D28B00A5982D /* AwesomeSpotlightView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

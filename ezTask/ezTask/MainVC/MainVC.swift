@@ -791,6 +791,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         super.viewDidAppear(animated)
         UIView.animate(views: [menuBtn, dateLabel, dayLabel, calendarOrList], animations: [AnimationType.from(direction: .top, offset: 10.0)], initialAlpha: 0, finalAlpha: 1, duration: 0.7)
         animateTable()
+        checkFirstLaunch()
     }
 
     func animateTable() {
@@ -1121,6 +1122,38 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         listTable.sectionFooterHeight = 0.0
     }
 
+    var first = true
+
+    func checkFirstLaunch() {
+        if !UserDefaults.standard.bool(forKey: "notFirstLaunch") {
+            if !first { // TODO: remove
+                return
+            }
+            first = false
+//            UserDefaults.standard.set(true, forKey: "notFirstLaunch") // TODO: move this to finish onboarding
+            let onboarding = OnboardingVC()
+            onboarding.modalPresentationStyle = .fullScreen
+            present(onboarding, animated: true, completion: {})
+            setupSpotlight()
+            view.addSubview(spotlightView)
+            spotlightView.layer.zPosition = 1_001
+            spotlightView.continueButtonModel.isEnable = false
+            spotlightView.skipButtonModel.isEnable = false
+            spotlightView.showAllSpotlightsAtOnce = false
+            spotlightView.start()
+        }
+    }
+
+    var spotlightView = AwesomeSpotlightView()
+
+    func setupSpotlight() {
+        let nameLabelSpotlight = AwesomeSpotlight(withRect: calendarOrList.frame, shape: .roundRectangle, text: "Switch between representations")
+        let showButtonSpotSpotlight = AwesomeSpotlight(withRect: menuBtn.frame, shape: .rectangle, text: "Use menu button to find more features")
+        spotlightView = AwesomeSpotlightView(frame: view.frame, spotlight: [nameLabelSpotlight, showButtonSpotSpotlight])
+        spotlightView.cutoutRadius = 8
+        spotlightView.delegate = self
+    }
+
     @objc func handleAppDidBecomeActiveNotification(notification: Notification) {
         if allTasks.isEmpty {
             fetchTasks()
@@ -1204,4 +1237,14 @@ class SnappingCollectionViewLayout: UICollectionViewFlowLayout {
 
         return CGPoint(x: proposedContentOffset.x + offsetAdjustment - sectionInset.left, y: proposedContentOffset.y)
     }
+}
+
+extension MainVC: AwesomeSpotlightViewDelegate {
+    func spotlightView(_ spotlightView: AwesomeSpotlightView, willNavigateToIndex index: Int) {}
+
+    func spotlightView(_ spotlightView: AwesomeSpotlightView, didNavigateToIndex index: Int) {}
+
+    func spotlightViewWillCleanup(_ spotlightView: AwesomeSpotlightView, atIndex index: Int) {}
+
+    func spotlightViewDidCleanup(_ spotlightView: AwesomeSpotlightView) {}
 }

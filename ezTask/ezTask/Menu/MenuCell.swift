@@ -21,7 +21,7 @@ class MenuCell: UITableViewCell {
 
     let label: UILabel = {
         let label = UILabel()
-        label.contentMode = .left
+        label.textAlignment = .left
         label.font = UIFont.systemFont(ofSize: 15, weight: .bold)
         label.textColor = .secondaryLabel
 

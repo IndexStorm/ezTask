@@ -108,15 +108,15 @@ extension Array where Element == TaskModel {
 
     public func tasksForThisWeek() -> [TaskModel] {
         return self.filter {
-            (($0.taskDate > Date().dayAfter.endOfDay) && ($0.taskDate <= Date().endOfWeek.endOfDay) && !$0.isDone)
-                || (($0.taskDate > Date().dayAfter.endOfDay) && ($0.taskDate <= Date().endOfWeek.endOfDay) && $0.isDone && $0.dateModified.isToday())
+            (($0.taskDate > Date().dayAfter.endOfDay) && ($0.taskDate <= Date().dayBefore.endOfWeek.endOfDay) && !$0.isDone)
+                || (($0.taskDate > Date().dayAfter.endOfDay) && ($0.taskDate <= Date().dayBefore.endOfWeek.endOfDay) && $0.isDone && $0.dateModified.isToday())
         }.sorted()
     }
 
     public func tasksForLater() -> [TaskModel] {
         return self.filter {
-            (($0.taskDate > Date().endOfWeek.endOfDay) && !$0.isDone)
-                || (($0.taskDate > Date().endOfWeek.endOfDay) && $0.isDone && $0.dateModified.isToday())
+            (($0.taskDate > Date().dayBefore.endOfWeek.endOfDay) && !$0.isDone)
+                || (($0.taskDate > Date().dayBefore.endOfWeek.endOfDay) && $0.isDone && $0.dateModified.isToday())
         }.sorted()
     }
 
@@ -137,7 +137,7 @@ extension Array where Element == TaskModel {
             ($0.isDone)
         }.sorted()
     }
-    
+
     public func allUndoneTasks() -> [TaskModel] {
         return self.filter {
             (!$0.isDone)

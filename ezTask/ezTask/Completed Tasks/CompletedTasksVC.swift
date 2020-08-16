@@ -10,7 +10,7 @@ import UIKit
 
 class CompletedTasksVC: UIViewController, UITableViewDataSource, UITableViewDelegate, TableViewCellDelegate {
     func checkboxTapped(cell: TaskCell) {}
-    
+
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
