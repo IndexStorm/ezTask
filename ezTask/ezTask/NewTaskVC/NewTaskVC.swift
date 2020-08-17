@@ -495,7 +495,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         timeImage.tintColor = ThemeManager.currentTheme().mainColor
         isAlarmSet = true
         deleteAlarmImage.alpha = 1
-        checkIfAllowedNotifications(picker: picker)
+        checkIfAllowedNotifications()
     }
 
     func verifyFiveMinutes() {
@@ -504,13 +504,14 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         }
     }
 
-    func checkIfAllowedNotifications(picker: UIDatePicker) {
+    func checkIfAllowedNotifications() {
         if notificationsStatus == .authorized {
             return
         }
         if notificationsStatus == .denied {
             timePickerCancelPressed()
             alertNotificationsDenied()
+            return
         }
         if notificationsStatus == .notDetermined {
             UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound], completionHandler: { success, error in

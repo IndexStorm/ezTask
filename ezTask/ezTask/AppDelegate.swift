@@ -17,6 +17,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationC
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         UNUserNotificationCenter.current().delegate = self
+        checkNotifications()
         setupWindow()
         do {
             try AVAudioSession.sharedInstance().setCategory(.ambient, mode: .default, options: AVAudioSession.CategoryOptions.mixWithOthers)

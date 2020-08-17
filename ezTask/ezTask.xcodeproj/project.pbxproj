@@ -39,6 +39,7 @@
 		E6E0118424E9D28B00A5982D /* AwesomeSpotlightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6E0117F24E9D28B00A5982D /* AwesomeSpotlightView.swift */; };
 		E6E0118524E9D28B00A5982D /* AwesomeSpotlight.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6E0118024E9D28B00A5982D /* AwesomeSpotlight.swift */; };
 		E6E0118624E9D28B00A5982D /* Localizator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6E0118124E9D28B00A5982D /* Localizator.swift */; };
+		E6E0118A24EA863200A5982D /* tutorial.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = E6E0118924EA861500A5982D /* tutorial.mp4 */; };
 		E6F95BA824D9A7FD0092DBF0 /* SideMenu in Frameworks */ = {isa = PBXBuildFile; productRef = E6F95BA724D9A7FD0092DBF0 /* SideMenu */; };
 /* End PBXBuildFile section */
 
@@ -76,6 +77,7 @@
 		E6E0117F24E9D28B00A5982D /* AwesomeSpotlightView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AwesomeSpotlightView.swift; sourceTree = "<group>"; };
 		E6E0118024E9D28B00A5982D /* AwesomeSpotlight.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AwesomeSpotlight.swift; sourceTree = "<group>"; };
 		E6E0118124E9D28B00A5982D /* Localizator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Localizator.swift; sourceTree = "<group>"; };
+		E6E0118924EA861500A5982D /* tutorial.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = tutorial.mp4; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -242,6 +244,7 @@
 			children = (
 				E6E0117B24E9D28B00A5982D /* AwesomeSpotlightView */,
 				E6E0117924E9B57900A5982D /* OnboardingVC.swift */,
+				E6E0118924EA861500A5982D /* tutorial.mp4 */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -332,6 +335,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E6E0118A24EA863200A5982D /* tutorial.mp4 in Resources */,
 				E60DFBDD24C2121B00043A76 /* LaunchScreen.storyboard in Resources */,
 				E6A5CB9E24D829EA0036F45B /* sound-pop.mp3 in Resources */,
 				E6A5CB9F24D829EA0036F45B /* sound-push.mp3 in Resources */,

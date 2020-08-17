@@ -789,8 +789,8 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        UIView.animate(views: [menuBtn, dateLabel, dayLabel, calendarOrList], animations: [AnimationType.from(direction: .top, offset: 10.0)], initialAlpha: 0, finalAlpha: 1, duration: 0.7)
-        animateTable()
+//        UIView.animate(views: [menuBtn, dateLabel, dayLabel, calendarOrList], animations: [AnimationType.from(direction: .top, offset: 10.0)], initialAlpha: 0, finalAlpha: 1, duration: 0.7)
+//        animateTable()
         checkFirstLaunch()
     }
 
@@ -868,7 +868,9 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
             updateTopLabels(date: Date().addDays(add: chosenIndex))
             fetchTasks()
             listTable.reloadData()
-            listTable.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
+            if !listTable.visibleCells.isEmpty {
+                listTable.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
+            }
             self.calendarOrList.alpha = 0
             UIView.animate(withDuration: 0.2, animations: {
                 self.daysCollectionView?.alpha = 0
@@ -1148,8 +1150,9 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
     func setupSpotlight() {
         let nameLabelSpotlight = AwesomeSpotlight(withRect: calendarOrList.frame, shape: .roundRectangle, text: "Switch between representations")
-        let showButtonSpotSpotlight = AwesomeSpotlight(withRect: menuBtn.frame, shape: .rectangle, text: "Use menu button to find more features")
-        spotlightView = AwesomeSpotlightView(frame: view.frame, spotlight: [nameLabelSpotlight, showButtonSpotSpotlight])
+        let menuRect = CGRect(x: menuBtn.frame.origin.x - 10, y: menuBtn.frame.origin.y - 10, width: menuBtn.frame.size.width + 20, height: menuBtn.frame.size.height + 20)
+        let menuBtnSpotlight = AwesomeSpotlight(withRect: menuRect, shape: .circle, text: "Use menu button to find more features")
+        spotlightView = AwesomeSpotlightView(frame: view.frame, spotlight: [nameLabelSpotlight, menuBtnSpotlight])
         spotlightView.cutoutRadius = 8
         spotlightView.delegate = self
     }
