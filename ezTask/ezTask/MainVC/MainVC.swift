@@ -1124,15 +1124,8 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         listTable.sectionFooterHeight = 0.0
     }
 
-    var first = true
-
     func checkFirstLaunch() {
         if !UserDefaults.standard.bool(forKey: "notFirstLaunch") {
-            if !first { // TODO: remove
-                return
-            }
-            first = false
-//            UserDefaults.standard.set(true, forKey: "notFirstLaunch") // TODO: move this to finish onboarding
             let onboarding = OnboardingVC()
             onboarding.modalPresentationStyle = .fullScreen
             present(onboarding, animated: true, completion: {})

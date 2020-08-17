@@ -29,7 +29,7 @@ class OnboardingVC: UIViewController {
         lets.translatesAutoresizingMaskIntoConstraints = false
         lets.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30).isActive = true
         lets.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        lets.topAnchor.constraint(equalTo: view.topAnchor, constant: 30).isActive = true
+        lets.topAnchor.constraint(equalTo: view.topAnchor, constant: 20).isActive = true
 
         let get = UILabel()
         view.addSubview(get)
@@ -38,7 +38,7 @@ class OnboardingVC: UIViewController {
         get.translatesAutoresizingMaskIntoConstraints = false
         get.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30).isActive = true
         get.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        get.topAnchor.constraint(equalTo: lets.bottomAnchor, constant: 25).isActive = true
+        get.topAnchor.constraint(equalTo: lets.bottomAnchor, constant: 20).isActive = true
 
         let things = UILabel()
         view.addSubview(things)
@@ -47,7 +47,7 @@ class OnboardingVC: UIViewController {
         things.translatesAutoresizingMaskIntoConstraints = false
         things.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30).isActive = true
         things.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        things.topAnchor.constraint(equalTo: get.bottomAnchor, constant: 25).isActive = true
+        things.topAnchor.constraint(equalTo: get.bottomAnchor, constant: 20).isActive = true
 
         let done = UILabel()
         view.addSubview(done)
@@ -56,7 +56,7 @@ class OnboardingVC: UIViewController {
         done.translatesAutoresizingMaskIntoConstraints = false
         done.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30).isActive = true
         done.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        done.topAnchor.constraint(equalTo: things.bottomAnchor, constant: 25).isActive = true
+        done.topAnchor.constraint(equalTo: things.bottomAnchor, constant: 20).isActive = true
 
         let eazy = UILabel()
         view.addSubview(eazy)
@@ -65,7 +65,7 @@ class OnboardingVC: UIViewController {
         eazy.translatesAutoresizingMaskIntoConstraints = false
         eazy.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30).isActive = true
         eazy.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        eazy.topAnchor.constraint(equalTo: done.bottomAnchor, constant: 25).isActive = true
+        eazy.topAnchor.constraint(equalTo: done.bottomAnchor, constant: 20).isActive = true
 
         let task = UILabel()
         view.addSubview(task)
@@ -105,9 +105,9 @@ class OnboardingVC: UIViewController {
         view.addSubview(videoView)
         videoView.translatesAutoresizingMaskIntoConstraints = false
         videoView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        videoView.topAnchor.constraint(equalTo: view.topAnchor, constant: 30).isActive = true
+        videoView.topAnchor.constraint(equalTo: view.topAnchor, constant: 10).isActive = true
         videoView.widthAnchor.constraint(equalToConstant: 200).isActive = true
-        videoView.heightAnchor.constraint(equalToConstant: 420).isActive = true
+        videoView.heightAnchor.constraint(equalToConstant: self.view.bounds.height / 2).isActive = true
 
         let swipeDown = UILabel()
         view.addSubview(swipeDown)
@@ -120,7 +120,7 @@ class OnboardingVC: UIViewController {
         swipeDown.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16).isActive = true
         swipeDown.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16).isActive = true
         swipeDown.topAnchor.constraint(equalTo: videoView.bottomAnchor, constant: 30).isActive = true
-        
+
         let saveTask = UILabel()
         view.addSubview(saveTask)
         saveTask.font = UIFont.systemFont(ofSize: 20, weight: .bold)
@@ -331,6 +331,7 @@ class OnboardingVC: UIViewController {
     @objc
     func buttonPressed() {
         if currentPage == 2 {
+            UserDefaults.standard.set(true, forKey: "notFirstLaunch")
             dismiss(animated: true, completion: {})
             return
         }
@@ -339,7 +340,7 @@ class OnboardingVC: UIViewController {
                 debugPrint("video not found")
                 return
             }
-            player = AVQueuePlayer()
+            player = AVQueuePlayer(playerItem: AVPlayerItem(asset: AVAsset(url: URL(fileURLWithPath: path))))
             looper = AVPlayerLooper(player: player, templateItem: AVPlayerItem(asset: AVAsset(url: URL(fileURLWithPath: path))))
             playerController = AVPlayerViewController()
             playerController.player = player

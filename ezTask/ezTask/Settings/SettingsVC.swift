@@ -40,7 +40,7 @@ class SettingsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        return "Eazy Task 1.2 @ Mike Ovyan"
+        return "Eazy Task 1.3 @ Mike Ovyan"
     }
     
     func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
