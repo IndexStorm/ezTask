@@ -53,13 +53,13 @@ class ColorThemeCell: UICollectionViewCell {
                 return "Yellow"
             case 9:
                 self.contentView.backgroundColor = UIColor().colorFromHexString("#fe828c")
-                return "Blush Pink"
+                return "Salmon"
             case 10:
                 self.contentView.backgroundColor = UIColor().colorFromHexString("#191919")
                 return "Black"
             case 11:
                 self.contentView.backgroundColor = UIColor().colorFromHexString("#d98695")
-                return "Blush Pink 2"
+                return "Blush Pink"
             default:
                 self.contentView.backgroundColor = .systemIndigo
                 return "Indigo"

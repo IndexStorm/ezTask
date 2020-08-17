@@ -1126,6 +1126,8 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
     func checkFirstLaunch() {
         if !UserDefaults.standard.bool(forKey: "notFirstLaunch") {
+            UserDefaults.standard.set(true, forKey: "dailyNotifications")
+            createInitialTasks()
             let onboarding = OnboardingVC()
             onboarding.modalPresentationStyle = .fullScreen
             present(onboarding, animated: true, completion: {})
@@ -1244,3 +1246,23 @@ extension MainVC: AwesomeSpotlightViewDelegate {
 
     func spotlightViewDidCleanup(_ spotlightView: AwesomeSpotlightView) {}
 }
+
+extension MainVC {
+    func createInitialTasks() {
+        if fetchAllTasks().count == 0 {
+            var task = TaskModel(id: UUID(), mainText: "A simple task for today", subtasks: "done\nDownload the app\nundone\nBecome more productive\n", isPriority: false, isDone: false, taskDate: Date(), isAlarmSet: false, alarmDate: nil, dateCompleted: nil, dateModified: Date())
+            save(model: task, completion: {})
+            task = TaskModel(id: UUID(), mainText: "Swipe left to delete the task", subtasks: nil, isPriority: false, isDone: false, taskDate: Date(), isAlarmSet: false, alarmDate: nil, dateCompleted: nil, dateModified: Date())
+            save(model: task, completion: {})
+            task = TaskModel(id: UUID(), mainText: "Create a task by yourself", subtasks: "undone\nSwipe down\nundone\nEnter the text\nundone\nSwipe down to save\n", isPriority: false, isDone: false, taskDate: Date(), isAlarmSet: false, alarmDate: nil, dateCompleted: nil, dateModified: Date())
+            save(model: task, completion: {})
+            task = TaskModel(id: UUID(), mainText: "Watch a movie", subtasks: "undone\nSnatch\nundone\nThe Transporter\nundone\nCrank\nundone\nDeath Race\n", isPriority: false, isDone: false, taskDate: Date().dayAfter, isAlarmSet: false, alarmDate: nil, dateCompleted: nil, dateModified: Date())
+            save(model: task, completion: {})
+            task = TaskModel(id: UUID(), mainText: "Rate the app on AppStore", subtasks: nil, isPriority: false, isDone: false, taskDate: Date().addDays(add: 4), isAlarmSet: false, alarmDate: nil, dateCompleted: nil, dateModified: Date())
+            save(model: task, completion: {})
+        }
+        fetchTasks()
+    }
+}
+
+

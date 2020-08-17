@@ -120,6 +120,7 @@ class CompletedTasksVC: UIViewController, UITableViewDataSource, UITableViewDele
     let placeholder: UILabel = {
         let label = UILabel()
         label.text = "You don't have any completed tasks"
+        label.textAlignment = .center
         label.lineBreakMode = .byWordWrapping
         label.numberOfLines = 0
         label.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
