@@ -82,6 +82,10 @@ class OnboardingVC: UIViewController {
         button.tintColor = .white
         button.backgroundColor = .systemBlue
         button.layer.cornerRadius = 25
+        button.layer.shadowColor = UIColor.systemBlue.cgColor
+        button.layer.shadowOpacity = 0.3
+        button.layer.shadowOffset = CGSize(width: 0, height: 0)
+        button.layer.shadowRadius = 10
         view.addSubview(button)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.heightAnchor.constraint(equalToConstant: 50).isActive = true
@@ -151,6 +155,10 @@ class OnboardingVC: UIViewController {
         button.tintColor = .white
         button.backgroundColor = .systemBlue
         button.layer.cornerRadius = 25
+        button.layer.shadowColor = UIColor.systemBlue.cgColor
+        button.layer.shadowOpacity = 0.3
+        button.layer.shadowOffset = CGSize(width: 0, height: 0)
+        button.layer.shadowRadius = 3
         view.addSubview(button)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.heightAnchor.constraint(equalToConstant: 50).isActive = true
@@ -207,6 +215,10 @@ class OnboardingVC: UIViewController {
         notifyBtn.tintColor = .white
         notifyBtn.backgroundColor = .systemBlue
         notifyBtn.layer.cornerRadius = 25
+        notifyBtn.layer.shadowColor = UIColor.systemBlue.cgColor
+        notifyBtn.layer.shadowOpacity = 0.3
+        notifyBtn.layer.shadowOffset = CGSize(width: 0, height: 0)
+        notifyBtn.layer.shadowRadius = 3
         view.addSubview(notifyBtn)
         notifyBtn.translatesAutoresizingMaskIntoConstraints = false
         notifyBtn.heightAnchor.constraint(equalToConstant: 50).isActive = true
@@ -232,6 +244,10 @@ class OnboardingVC: UIViewController {
         if notificationsStatus == .authorized || notificationsStatus == .denied {
             notifyBtn.alpha = 0
             button.backgroundColor = .systemBlue
+            button.layer.shadowColor = UIColor.systemBlue.cgColor
+            button.layer.shadowOpacity = 0.3
+            button.layer.shadowOffset = CGSize(width: 0, height: 0)
+            button.layer.shadowRadius = 3
         }
 
         return view
