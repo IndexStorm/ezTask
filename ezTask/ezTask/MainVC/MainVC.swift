@@ -868,9 +868,9 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
             updateTopLabels(date: Date().addDays(add: chosenIndex))
             fetchTasks()
             listTable.reloadData()
-            if !listTable.visibleCells.isEmpty {
-                listTable.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
-            }
+//            if !listTable.visibleCells.isEmpty { // TODO: check if this crashes ios 14
+//                listTable.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
+//            }
             self.calendarOrList.alpha = 0
             UIView.animate(withDuration: 0.2, animations: {
                 self.daysCollectionView?.alpha = 0
@@ -971,17 +971,17 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         self.view.addSubview(topView)
         topView.translatesAutoresizingMaskIntoConstraints = false
         topView.topAnchor.constraint(equalTo: topView.superview!.safeAreaLayoutGuide.topAnchor).isActive = true
-        topViewHeight = topView.heightAnchor.constraint(equalToConstant: 164)
+        topViewHeight = topView.heightAnchor.constraint(equalToConstant: 169)
         topViewHeight.isActive = true
         if isList {
-            topViewHeight.constant = 100
+            topViewHeight.constant = 105
         }
         topView.leadingAnchor.constraint(equalTo: topView.superview!.leadingAnchor, constant: 0).isActive = true
         topView.trailingAnchor.constraint(equalTo: topView.superview!.trailingAnchor, constant: 0).isActive = true
 
         self.view.addSubview(menuBtn)
         menuBtn.translatesAutoresizingMaskIntoConstraints = false
-        menuBtn.topAnchor.constraint(equalTo: topView.safeAreaLayoutGuide.topAnchor, constant: 0).isActive = true
+        menuBtn.topAnchor.constraint(equalTo: topView.safeAreaLayoutGuide.topAnchor, constant: 5).isActive = true
         menuBtn.heightAnchor.constraint(equalToConstant: 20).isActive = true
         menuBtn.widthAnchor.constraint(equalToConstant: 20).isActive = true
         menuBtn.leadingAnchor.constraint(equalTo: topView.leadingAnchor, constant: 21).isActive = true

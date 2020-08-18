@@ -14,7 +14,7 @@ class SettingsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         case 0:
             return 3
         case 1:
-            return 1
+            return 2
         default:
             return 0
         }
@@ -27,7 +27,7 @@ class SettingsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 40
     }
-    
+
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         switch section {
         case 0:
@@ -38,11 +38,11 @@ class SettingsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
             return 0
         }
     }
-    
+
     func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        return "Eazy Task 1.3 @ Mike Ovyan"
+        return "Eazy Task 1.3.1 @ Mike Ovyan"
     }
-    
+
     func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
         let footer: UITableViewHeaderFooterView = view as! UITableViewHeaderFooterView
         footer.textLabel?.textAlignment = .center
@@ -99,6 +99,10 @@ class SettingsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
                 if let url = URL(string: "mailto:\(email)") {
                     UIApplication.shared.open(url)
                 }
+            case 1:
+                if let url = URL(string: "itms-apps://apple.com/app/id1526203030") {
+                    UIApplication.shared.open(url)
+                }
             default:
                 return
             }
@@ -142,7 +146,7 @@ class SettingsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     func setup() {
         self.view.addSubview(settingsTable)
-        safeAreaView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: UIApplication.shared.statusBarFrame.maxY + 36))
+        safeAreaView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: UIApplication.shared.statusBarFrame.maxY + 41))
         safeAreaView.backgroundColor = ThemeManager.currentTheme().mainColor
         safeAreaView.layer.shadowColor = UIColor.black.cgColor
         safeAreaView.layer.shadowOpacity = 0.25
@@ -152,7 +156,7 @@ class SettingsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
         self.view.addSubview(menuBtn)
         menuBtn.translatesAutoresizingMaskIntoConstraints = false
-        menuBtn.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 0).isActive = true
+        menuBtn.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 5).isActive = true
         menuBtn.heightAnchor.constraint(equalToConstant: 20).isActive = true
         menuBtn.widthAnchor.constraint(equalToConstant: 20).isActive = true
         menuBtn.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 21).isActive = true

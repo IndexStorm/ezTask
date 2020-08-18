@@ -109,8 +109,15 @@ class SettingsCell: UITableViewCell {
             switch indexPath.row {
             case 0:
                 label.text = "Mail Us"
-                subtitle.text = "Feel free to mail us any feedback"
+                subtitle.text = "Feel free to mail us any questions"
                 icon.image = UIImage(named: "mail")
+                cellSwitch.alpha = 0
+                arrow.alpha = 1
+                self.selectionStyle = .default
+            case 1:
+                label.text = "Rate on the AppStore"
+                subtitle.text = "Leave your feedback on the app page"
+                icon.image = UIImage(named: "rate")
                 cellSwitch.alpha = 0
                 arrow.alpha = 1
                 self.selectionStyle = .default

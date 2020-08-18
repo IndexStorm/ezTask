@@ -99,7 +99,7 @@ class ColorThemeVC: UIViewController, UICollectionViewDelegate, UICollectionView
     private func setup() {
         createCollection()
 
-        safeAreaView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: UIApplication.shared.statusBarFrame.maxY + 36))
+        safeAreaView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: UIApplication.shared.statusBarFrame.maxY + 41))
         safeAreaView.backgroundColor = ThemeManager.currentTheme().mainColor
         safeAreaView.layer.shadowColor = UIColor.black.cgColor
         safeAreaView.layer.shadowOpacity = 0.25
@@ -109,7 +109,7 @@ class ColorThemeVC: UIViewController, UICollectionViewDelegate, UICollectionView
 
         self.view.addSubview(menuBtn)
         menuBtn.translatesAutoresizingMaskIntoConstraints = false
-        menuBtn.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 0).isActive = true
+        menuBtn.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 5).isActive = true
         menuBtn.heightAnchor.constraint(equalToConstant: 20).isActive = true
         menuBtn.widthAnchor.constraint(equalToConstant: 20).isActive = true
         menuBtn.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 21).isActive = true
