@@ -74,7 +74,7 @@ class SettingsCell: UITableViewCell {
     }
 
     public func configure(indexPath: IndexPath) {
-        self.selectionStyle = .none
+//        self.selectionStyle = .none
         self.indexPath = indexPath
         cellSwitch.isOn = false
         cellSwitch.alpha = 1
@@ -85,45 +85,45 @@ class SettingsCell: UITableViewCell {
         if indexPath.section == 0 {
             switch indexPath.row {
             case 0:
-                label.text = "App Badge"
-                subtitle.text = "Set equal to the number of today's tasks"
+                label.text = "label.appBadge".localized
+                subtitle.text = "Set equal to the number of today's tasks".localized
                 icon.image = UIImage(named: "badge")
                 cellSwitch.isOn = UserDefaults.standard.bool(forKey: "badgeToday")
             case 1:
-                label.text = "Daily Notifications"
-                subtitle.text = "Send morning and evening notifications"
+                label.text = "label.dailyNotifications".localized
+                subtitle.text = "Send morning and evening notifications".localized
                 icon.image = UIImage(named: "clock")
                 cellSwitch.isOn = UserDefaults.standard.bool(forKey: "dailyNotifications")
             case 2:
-                label.text = "Hide Completed"
-                subtitle.text = "Hide completed tasks in List"
+                label.text = "label.hideCompleted".localized
+                subtitle.text = "Hide completed tasks in List".localized
                 icon.image = UIImage(named: "hide")
                 cellSwitch.isOn = UserDefaults.standard.bool(forKey: "hideCompleted")
             default:
-                label.text = "Test"
-                subtitle.text = "Lurum upsil see me fuck off"
+                label.text = "label.test".localized
+                subtitle.text = "Lurum upsil I'm broken"
             }
         }
 
         if indexPath.section == 1 {
             switch indexPath.row {
             case 0:
-                label.text = "Mail Us"
-                subtitle.text = "Feel free to mail us any questions"
+                label.text = "label.mailUs".localized
+                subtitle.text = "Feel free to mail us any questions".localized
                 icon.image = UIImage(named: "mail")
                 cellSwitch.alpha = 0
                 arrow.alpha = 1
                 self.selectionStyle = .default
             case 1:
-                label.text = "Rate on the AppStore"
-                subtitle.text = "Leave your feedback on the app page"
+                label.text = "label.rateOnTheAppStore".localized
+                subtitle.text = "Leave your feedback on the app page".localized
                 icon.image = UIImage(named: "star")
                 cellSwitch.alpha = 0
                 arrow.alpha = 1
                 self.selectionStyle = .default
             default:
-                label.text = "Test"
-                subtitle.text = "Lurum upsil see me fuck off"
+                label.text = "Test".localized
+                subtitle.text = "Lurum upsil I'm broken"
             }
         }
     }
@@ -134,10 +134,10 @@ class SettingsCell: UITableViewCell {
 
         self.contentView.addSubview(icon)
         icon.translatesAutoresizingMaskIntoConstraints = false
-        icon.widthAnchor.constraint(equalToConstant: 30).isActive = true
-        icon.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        icon.widthAnchor.constraint(equalToConstant: 28).isActive = true
+        icon.heightAnchor.constraint(equalToConstant: 28).isActive = true
         icon.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 16).isActive = true
-        icon.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor).isActive = true
+        icon.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 10).isActive = true
 
         self.contentView.addSubview(cellSwitch)
         cellSwitch.translatesAutoresizingMaskIntoConstraints = false
@@ -154,7 +154,7 @@ class SettingsCell: UITableViewCell {
 
         self.contentView.addSubview(label)
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.widthAnchor.constraint(equalToConstant: 250).isActive = true
+        label.trailingAnchor.constraint(equalTo: cellSwitch.leadingAnchor, constant: -10).isActive = true
         label.heightAnchor.constraint(equalToConstant: 20).isActive = true
         label.leadingAnchor.constraint(equalTo: icon.trailingAnchor, constant: 10).isActive = true
         label.topAnchor.constraint(equalTo: icon.topAnchor, constant: -2).isActive = true
@@ -164,6 +164,7 @@ class SettingsCell: UITableViewCell {
         subtitle.trailingAnchor.constraint(equalTo: cellSwitch.leadingAnchor, constant: -10).isActive = true
         subtitle.leadingAnchor.constraint(equalTo: icon.trailingAnchor, constant: 10).isActive = true
         subtitle.topAnchor.constraint(equalTo: label.bottomAnchor).isActive = true
+        subtitle.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -4).isActive = true
     }
 
     override func prepareForReuse() {

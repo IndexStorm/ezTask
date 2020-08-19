@@ -1,0 +1,47 @@
+/* 
+  Localizable.strings
+  ezTask
+
+  Created by Mike Ovyan on 19.08.2020.
+  Copyright © 2020 Mike Ovyan. All rights reserved.
+*/
+
+"button.schedule" = "Неделя";
+"button.list" = "День";
+"label.today" = "Сегодня";
+"label.tomorrow" = "Завтра";
+"label.thisWeek" = "Неделя";
+"label.later" = "Позже";
+"label.generalSettings" = "ОСНОВНЫЕ";
+"label.feedback" = "ОБРАТНАЯ СВЯЗЬ";
+"label.testing" = "TESTING";
+"label.settings" = "Настройки";
+"label.appBadge" = "Значок приложения";
+"label.dailyNotifications" = "Ежедневные уведомления";
+"label.hideCompleted" = "Скрыть выполненные";
+"label.mailUs" = "Напишите письмо";
+"label.rateOnTheAppStore" = "Оцените приложение";
+"label.completed" = "Выполненные";
+"label.theme" = "Тема";
+"label.home" = "Задачи";
+
+
+"Indigo" = "Индиго";
+"Green" = "Зеленый";
+"Red" = "Красный";
+"Blue" = "Голубой";
+"Pink" = "Розовый";
+"Orange" = "Оранжевый";
+"Purple" = "Фиолетовый";
+"Teal" = "Тил";
+"Yellow" = "Желтый";
+"Salmon" = "Лосось";
+"Black" = "Черный";
+"Blush Pink" = "Румянец";
+
+"Set equal to the number of today's tasks" = "Показывать количество задач на сегодня";
+"Send morning and evening notifications" = "Отправлять утренние и вечерние уведомления";
+"Hide completed tasks in List" = "Скрывать выполненные на неделе";
+"Feel free to mail us any questions" = "Не стесняйтесь писать любые замечания и пожелания";
+"Leave your feedback on the app page" = "Оставьте отзыв на приложение в AppStore";
+"You don't have any completed tasks" = "У вас еще нет выполненных задач";

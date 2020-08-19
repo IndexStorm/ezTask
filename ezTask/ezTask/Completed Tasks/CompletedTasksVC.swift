@@ -110,7 +110,7 @@ class CompletedTasksVC: UIViewController, UITableViewDataSource, UITableViewDele
 
     let pageTitle: UILabel = {
         let label = UILabel()
-        label.text = "Completed"
+        label.text = "label.completed".localized
         label.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         label.textColor = .white
 

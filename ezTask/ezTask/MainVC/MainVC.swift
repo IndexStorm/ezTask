@@ -69,7 +69,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
     let backTodayBtn: UIButton = {
         let btn = UIButton(type: .system)
-        btn.setTitle("Today", for: .normal)
+        btn.setTitle("label.today".localized, for: .normal)
         btn.backgroundColor = .white
         btn.tintColor = ThemeManager.currentTheme().mainColor
         let image = UIImage(named: "left_arrow")
@@ -91,7 +91,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         let btn = UIButton(type: .system)
         btn.titleLabel?.font = UIFont.systemFont(ofSize: 14, weight: .medium)
         if !self.isList {
-            btn.setTitle("List", for: .normal)
+            btn.setTitle("button.list".localized, for: .normal)
         } else {
             btn.setTitle("button.schedule".localized, for: .normal)
         }
@@ -200,7 +200,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         let view = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 45))
         view.backgroundColor = .tertiarySystemBackground
         let label = UILabel()
-        label.text = "Today"
+        label.text = "label.today".localized
         label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
         label.textAlignment = .left
         view.addSubview(label)
@@ -215,7 +215,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     private lazy var headerForListTommorow: UIView = {
         let view = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 45))
         let label = UILabel()
-        label.text = "Tomorrow"
+        label.text = "label.tomorrow".localized
         label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
         label.textAlignment = .left
         view.addSubview(label)
@@ -230,7 +230,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     private lazy var headerForListThisWeek: UIView = {
         let view = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 45))
         let label = UILabel()
-        label.text = "This Week"
+        label.text = "label.thisWeek".localized
         label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
         label.textAlignment = .left
         view.addSubview(label)
@@ -245,7 +245,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     private lazy var headerForListLater: UIView = {
         let view = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 45))
         let label = UILabel()
-        label.text = "Later"
+        label.text = "label.later".localized
         label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
         label.textAlignment = .left
         view.addSubview(label)
@@ -700,7 +700,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     func createMenu() {
         var settings = SideMenuSettings()
         settings.statusBarEndAlpha = 0
-        settings.menuWidth = UIScreen.main.bounds.width * 0.5
+        settings.menuWidth = UIScreen.main.bounds.width * 0.54
         settings.presentationStyle = .viewSlideOut
 
         let menuVC = MenuVC(with: ["Home", "Settings", "Completed", "Theme"])
@@ -860,7 +860,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     func calendarOrListTapped() {
         if !isList {
             placeholder(show: false)
-            calendarOrList.setTitle("Schedule", for: .normal)
+            calendarOrList.setTitle("button.schedule".localized, for: .normal)
             self.tasksTable.alpha = 0
             isList = true
             UserDefaults.standard.set(isList, forKey: "isList")
@@ -887,7 +887,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
                 })
             })
         } else {
-            calendarOrList.setTitle("List", for: .normal)
+            calendarOrList.setTitle("button.list".localized, for: .normal)
             self.calendarOrList.alpha = 0
             isList = false
             UserDefaults.standard.set(isList, forKey: "isList")
@@ -929,9 +929,9 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         let formattedDate = formatter.string(from: date)
         dateLabel.text = formattedDate
         if date.isToday() {
-            dayLabel.text = "Today"
+            dayLabel.text = "label.today".localized
         } else if date.isTomorrow() {
-            dayLabel.text = "Tomorrow"
+            dayLabel.text = "label.tomorrow".localized
         } else {
             let formatter = DateFormatter()
             formatter.dateFormat = "EEEE"

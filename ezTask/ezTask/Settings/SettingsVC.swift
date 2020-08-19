@@ -40,7 +40,7 @@ class SettingsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        return "Eazy Task 1.3.1 @ Mike Ovyan"
+        return "Eazy Task 1.3.2 @ Mike Ovyan"
     }
 
     func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
@@ -63,11 +63,11 @@ class SettingsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
         switch section {
         case 0:
-            label.text = "GENERAL SETTINGS"
+            label.text = "label.generalSettings".localized
         case 1:
-            label.text = "FEEDBACK"
+            label.text = "label.feedback".localized
         default:
-            label.text = "TESTING"
+            label.text = "label.testing".localized
         }
 
         return headerView
@@ -76,17 +76,18 @@ class SettingsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: SettingsCell.identifier, for: indexPath) as! SettingsCell
         cell.configure(indexPath: indexPath)
-
-        let bottomBorder = CALayer()
-        bottomBorder.frame = CGRect(x: 16.0, y: 61.0, width: cell.contentView.frame.size.width, height: 1.0)
-        bottomBorder.backgroundColor = UIColor.systemGray5.cgColor
-        cell.contentView.layer.addSublayer(bottomBorder)
+        
+//        let bottomBorder = CALayer()
+//        bottomBorder.frame = CGRect(x: 16.0, y: cell.contentView.frame.size.height, width: cell.contentView.frame.size.width, height: 1.0)
+//        bottomBorder.backgroundColor = UIColor.systemGray5.cgColor
+//        cell.contentView.layer.addSublayer(bottomBorder)
 
         return cell
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 60
+//        return 60
+        return UITableView.automaticDimension
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -120,7 +121,7 @@ class SettingsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     let pageTitle: UILabel = {
         let label = UILabel()
-        label.text = "Settings"
+        label.text = "label.settings".localized
         label.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         label.textColor = .white
 

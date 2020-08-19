@@ -34,8 +34,8 @@
 		E6D6EEEE24C2D94400AF82A3 /* DayCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D6EEED24C2D94400AF82A3 /* DayCell.swift */; };
 		E6D6EEF024C37CE300AF82A3 /* TaskCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D6EEEF24C37CE300AF82A3 /* TaskCell.swift */; };
 		E6DC7FEE24ED2265004A5731 /* Amplitude in Frameworks */ = {isa = PBXBuildFile; productRef = E6DC7FED24ED2265004A5731 /* Amplitude */; };
-		E6DC7FF224ED2BC3004A5731 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E6DC7FF124ED2BC3004A5731 /* Localizable.strings */; };
 		E6DC7FF424ED2C6E004A5731 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6DC7FF324ED2C6E004A5731 /* String.swift */; };
+		E6DC7FF724ED2F33004A5731 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E6DC7FF924ED2F33004A5731 /* Localizable.strings */; };
 		E6E0117A24E9B57900A5982D /* OnboardingVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6E0117924E9B57900A5982D /* OnboardingVC.swift */; };
 		E6E0118224E9D28B00A5982D /* AwesomeTabButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6E0117D24E9D28B00A5982D /* AwesomeTabButton.swift */; };
 		E6E0118324E9D28B00A5982D /* AwesomeSpotlightViewBundle.bundle in Resources */ = {isa = PBXBuildFile; fileRef = E6E0117E24E9D28B00A5982D /* AwesomeSpotlightViewBundle.bundle */; };
@@ -74,9 +74,10 @@
 		E6A5CB9B24D829EA0036F45B /* sound-push.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "sound-push.mp3"; sourceTree = "<group>"; };
 		E6D6EEED24C2D94400AF82A3 /* DayCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayCell.swift; sourceTree = "<group>"; };
 		E6D6EEEF24C37CE300AF82A3 /* TaskCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskCell.swift; sourceTree = "<group>"; };
-		E6DC7FF124ED2BC3004A5731 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		E6DC7FF324ED2C6E004A5731 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
-		E6DC7FF524ED2DD3004A5731 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		E6DC7FF624ED2ED8004A5731 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		E6DC7FF824ED2F33004A5731 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		E6DC7FFA24ED2F40004A5731 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		E6E0117924E9B57900A5982D /* OnboardingVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingVC.swift; sourceTree = "<group>"; };
 		E6E0117D24E9D28B00A5982D /* AwesomeTabButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AwesomeTabButton.swift; sourceTree = "<group>"; };
 		E6E0117E24E9D28B00A5982D /* AwesomeSpotlightViewBundle.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = AwesomeSpotlightViewBundle.bundle; sourceTree = "<group>"; };
@@ -251,7 +252,7 @@
 		E6DC7FF024ED2B95004A5731 /* Localization */ = {
 			isa = PBXGroup;
 			children = (
-				E6DC7FF124ED2BC3004A5731 /* Localizable.strings */,
+				E6DC7FF924ED2F33004A5731 /* Localizable.strings */,
 			);
 			path = Localization;
 			sourceTree = "<group>";
@@ -359,7 +360,7 @@
 				E60DFBDD24C2121B00043A76 /* LaunchScreen.storyboard in Resources */,
 				E6A5CB9E24D829EA0036F45B /* sound-pop.mp3 in Resources */,
 				E6A5CB9F24D829EA0036F45B /* sound-push.mp3 in Resources */,
-				E6DC7FF224ED2BC3004A5731 /* Localizable.strings in Resources */,
+				E6DC7FF724ED2F33004A5731 /* Localizable.strings in Resources */,
 				E6A5CB9C24D829EA0036F45B /* sound-done.mp3 in Resources */,
 				E6E0118324E9D28B00A5982D /* AwesomeSpotlightViewBundle.bundle in Resources */,
 				E60DFBDA24C2121B00043A76 /* Assets.xcassets in Resources */,
@@ -409,9 +410,18 @@
 			isa = PBXVariantGroup;
 			children = (
 				E60DFBDC24C2121B00043A76 /* Base */,
-				E6DC7FF524ED2DD3004A5731 /* ru */,
+				E6DC7FF624ED2ED8004A5731 /* ru */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		E6DC7FF924ED2F33004A5731 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E6DC7FF824ED2F33004A5731 /* en */,
+				E6DC7FFA24ED2F40004A5731 /* ru */,
+			);
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -540,7 +550,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = S77KJ672M8;
 				INFOPLIST_FILE = ezTask/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -548,7 +558,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3.1;
+				MARKETING_VERSION = 1.3.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.indexStorm.ezTask;
 				PRODUCT_NAME = "Eazy Task";
 				SWIFT_VERSION = 5.0;
@@ -561,7 +571,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = S77KJ672M8;
 				INFOPLIST_FILE = ezTask/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -569,7 +579,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3.1;
+				MARKETING_VERSION = 1.3.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.indexStorm.ezTask;
 				PRODUCT_NAME = "Eazy Task";
 				SWIFT_VERSION = 5.0;

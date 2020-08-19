@@ -68,7 +68,7 @@ class ColorThemeVC: UIViewController, UICollectionViewDelegate, UICollectionView
 
     let pageTitle: UILabel = {
         let label = UILabel()
-        label.text = "Theme"
+        label.text = "label.theme".localized
         label.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         label.textColor = .white
 

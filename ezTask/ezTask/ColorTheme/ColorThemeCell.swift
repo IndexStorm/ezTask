@@ -26,43 +26,43 @@ class ColorThemeCell: UICollectionViewCell {
             switch row {
             case 0:
                 self.contentView.backgroundColor = .systemIndigo
-                return "Indigo"
+                return "Indigo".localized
             case 1:
                 self.contentView.backgroundColor = .systemGreen
-                return "Green"
+                return "Green".localized
             case 2:
                 self.contentView.backgroundColor = .systemRed
-                return "Red"
+                return "Red".localized
             case 3:
                 self.contentView.backgroundColor = .systemBlue
-                return "Blue"
+                return "Blue".localized
             case 4:
                 self.contentView.backgroundColor = .systemPink
-                return "Pink"
+                return "Pink".localized
             case 5:
                 self.contentView.backgroundColor = .systemOrange
-                return "Orange"
+                return "Orange".localized
             case 6:
                 self.contentView.backgroundColor = .systemPurple
-                return "Purple"
+                return "Purple".localized
             case 7:
                 self.contentView.backgroundColor = .systemTeal
-                return "Teal"
+                return "Teal".localized
             case 8:
                 self.contentView.backgroundColor = .systemYellow
-                return "Yellow"
+                return "Yellow".localized
             case 9:
                 self.contentView.backgroundColor = UIColor().colorFromHexString("#fe828c")
-                return "Salmon"
+                return "Salmon".localized
             case 10:
                 self.contentView.backgroundColor = UIColor().colorFromHexString("#191919")
-                return "Black"
+                return "Black".localized
             case 11:
                 self.contentView.backgroundColor = UIColor().colorFromHexString("#d98695")
-                return "Blush Pink"
+                return "Blush Pink".localized
             default:
                 self.contentView.backgroundColor = .systemIndigo
-                return "Indigo"
+                return "Indigo".localized
             }
         }()
         if self.contentView.backgroundColor == ThemeManager.currentTheme().mainColor {

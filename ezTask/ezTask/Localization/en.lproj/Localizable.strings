@@ -1,0 +1,48 @@
+/* 
+  Localizable.strings
+  ezTask
+
+  Created by Mike Ovyan on 19.08.2020.
+  Copyright © 2020 Mike Ovyan. All rights reserved.
+*/
+
+"button.schedule" = "Schedule";
+"button.list" = "List";
+"label.today" = "Today";
+"label.tomorrow" = "Tomorrow";
+"label.thisWeek" = "This Week";
+"label.later" = "Later";
+"label.generalSettings" = "GENERAL SETTINGS";
+"label.feedback" = "FEEDBACK";
+"label.testing" = "TESTING";
+"label.settings" = "Settings";
+"label.appBadge" = "App Badge";
+"label.dailyNotifications" = "Daily Notifications";
+"label.hideCompleted" = "Hide Completed";
+"label.mailUs" = "Mail us";
+"label.rateOnTheAppStore" = "Rate on the AppStore";
+"label.completed" = "Completed";
+"label.theme" = "Theme";
+"label.home" = "Home";
+
+
+
+"Indigo" = "Indigo";
+"Green" = "Green";
+"Red" = "Red";
+"Blue" = "Blue";
+"Pink" = "Pink";
+"Orange" = "Orange";
+"Purple" = "Purple";
+"Teal" = "Teal";
+"Yellow" = "Yellow";
+"Salmon" = "Salmon";
+"Black" = "Black";
+"Blush Pink" = "Blush Pink";
+"Set equal to the number of today's tasks" = "Set equal to the number of today's tasks";
+"Send morning and evening notifications" = "Send morning and evening notifications";
+"Hide completed tasks in List" = "Hide completed tasks in List";
+"Feel free to mail us any questions" = "Feel free to mail us any questions";
+"Leave your feedback on the app page" = "Leave your feedback on the app page";
+"You don't have any completed tasks" = "You don't have any completed tasks";
+

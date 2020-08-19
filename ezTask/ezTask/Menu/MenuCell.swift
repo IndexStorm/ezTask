@@ -29,7 +29,6 @@ class MenuCell: UITableViewCell {
     }()
 
     public func configure(text: String, isChosen: Bool) {
-        label.text = text
         self.contentView.layer.cornerRadius = 15
         if isChosen {
             label.textColor = .label
@@ -43,12 +42,16 @@ class MenuCell: UITableViewCell {
 
         switch text {
         case "Home":
+            label.text = "label.home".localized
             self.icon.image = UIImage(named: "home")
         case "Theme":
+            label.text = "label.theme".localized
             self.icon.image = UIImage(named: "theme")
         case "Settings":
+            label.text = "label.settings".localized
             self.icon.image = UIImage(named: "settings")
         case "Completed":
+            label.text = "label.completed".localized
             self.icon.image = UIImage(named: "completed")
         default:
             self.icon.image = UIImage(named: "home")

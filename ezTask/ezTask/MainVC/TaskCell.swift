@@ -140,7 +140,7 @@ class TaskCell: UITableViewCell {
 
     private let dayLabel: UILabel = {
         let label = UILabel()
-        label.text = "Today"
+        label.text = "label.today".localized
         label.font = UIFont.systemFont(ofSize: 14, weight: .regular)
         label.textColor = .systemGray
         label.lineBreakMode = .byWordWrapping
@@ -165,9 +165,9 @@ class TaskCell: UITableViewCell {
         self.priorityIcon.alpha = task.isPriority ? 0.9 : 0
 
         if task.taskDate.isToday() {
-            self.dayLabel.text = "Today"
+            self.dayLabel.text = "label.today".localized
         } else if task.taskDate.isTomorrow() {
-            self.dayLabel.text = "Tomorrow"
+            self.dayLabel.text = "label.tomorrow".localized
         } else {
             let formatter = DateFormatter()
             formatter.dateFormat = "dd MMMM"
@@ -199,9 +199,9 @@ class TaskCell: UITableViewCell {
 
     public func setCompletedDate(date: Date) {
         if date.isToday() {
-            self.dayLabel.text = "Today"
+            self.dayLabel.text = "label.today".localized
         } else if date.isTomorrow() {
-            self.dayLabel.text = "Tomorrow"
+            self.dayLabel.text = "label.tomorrow".localized
         } else {
             let formatter = DateFormatter()
             formatter.dateFormat = "dd MMMM"
