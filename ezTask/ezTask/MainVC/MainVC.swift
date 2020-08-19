@@ -69,7 +69,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
     let backTodayBtn: UIButton = {
         let btn = UIButton(type: .system)
-        btn.setTitle("label.today".localized, for: .normal)
+        btn.setTitle("label.backToToday".localized, for: .normal)
         btn.backgroundColor = .white
         btn.tintColor = ThemeManager.currentTheme().mainColor
         let image = UIImage(named: "left_arrow")
@@ -176,7 +176,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
     private let quote: UILabel = {
         let label = UILabel()
-        label.text = "“The Way To Get Started Is To Quit Talking And Begin Doing.”"
+        label.text = "“The Way To Get Started Is To Quit Talking And Begin Doing.”".localized
         label.font = UIFont.systemFont(ofSize: 18, weight: .bold)
         label.textAlignment = .center
         label.lineBreakMode = .byWordWrapping
@@ -860,6 +860,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     func calendarOrListTapped() {
         if !isList {
             placeholder(show: false)
+            self.backTodayBtn.alpha = 0
             calendarOrList.setTitle("button.schedule".localized, for: .normal)
             self.tasksTable.alpha = 0
             isList = true
@@ -868,9 +869,6 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
             updateTopLabels(date: Date().addDays(add: chosenIndex))
             fetchTasks()
             listTable.reloadData()
-//            if !listTable.visibleCells.isEmpty { // TODO: check if this crashes ios 14
-//                listTable.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
-//            }
             self.calendarOrList.alpha = 0
             UIView.animate(withDuration: 0.2, animations: {
                 self.daysCollectionView?.alpha = 0
@@ -925,7 +923,11 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
     func updateTopLabels(date: Date) {
         let formatter = DateFormatter()
-        formatter.dateFormat = "MMMM d, yyyy"
+        if Locale.current.identifier == "en" {
+            formatter.dateFormat = "MMMM d, yyyy"
+        } else {
+            formatter.dateFormat = "d MMMM, yyyy"
+        }
         let formattedDate = formatter.string(from: date)
         dateLabel.text = formattedDate
         if date.isToday() {
@@ -993,7 +995,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         dateLabel.topAnchor.constraint(equalTo: menuBtn.bottomAnchor, constant: 4).isActive = true
         dateLabel.heightAnchor.constraint(equalToConstant: 30).isActive = true
         dateLabel.leadingAnchor.constraint(equalTo: topView.leadingAnchor, constant: 21).isActive = true
-        dateLabel.widthAnchor.constraint(equalToConstant: 230).isActive = true // TODO: Test on different languages
+        dateLabel.widthAnchor.constraint(equalToConstant: 240).isActive = true // TODO: Test on different languages
 
         self.view.addSubview(dayLabel)
         dayLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -1139,14 +1141,17 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
             spotlightView.showAllSpotlightsAtOnce = false
             spotlightView.start()
         }
+        if UserDefaults.standard.object(forKey: "dateInstalled") == nil {
+            UserDefaults.standard.set(Date(), forKey: "dateInstalled")
+        }
     }
 
     var spotlightView = AwesomeSpotlightView()
 
     func setupSpotlight() {
-        let nameLabelSpotlight = AwesomeSpotlight(withRect: calendarOrList.frame, shape: .roundRectangle, text: "Switch between representations")
+        let nameLabelSpotlight = AwesomeSpotlight(withRect: calendarOrList.frame, shape: .roundRectangle, text: "Switch between representations".localized)
         let menuRect = CGRect(x: menuBtn.frame.origin.x - 10, y: menuBtn.frame.origin.y - 10, width: menuBtn.frame.size.width + 20, height: menuBtn.frame.size.height + 20)
-        let menuBtnSpotlight = AwesomeSpotlight(withRect: menuRect, shape: .circle, text: "Use menu button to find more features")
+        let menuBtnSpotlight = AwesomeSpotlight(withRect: menuRect, shape: .circle, text: "Use menu button to find more features".localized)
         spotlightView = AwesomeSpotlightView(frame: view.frame, spotlight: [nameLabelSpotlight, menuBtnSpotlight])
         spotlightView.cutoutRadius = 8
         spotlightView.delegate = self
@@ -1250,15 +1255,15 @@ extension MainVC: AwesomeSpotlightViewDelegate {
 extension MainVC {
     func createInitialTasks() {
         if fetchAllTasks().isEmpty {
-            var task = TaskModel(id: UUID(), mainText: "A simple task for today", subtasks: "done\nDownload the app\nundone\nBecome more productive\n", isPriority: false, isDone: false, taskDate: Date(), isAlarmSet: false, alarmDate: nil, dateCompleted: nil, dateModified: Date())
+            var task = TaskModel(id: UUID(), mainText: "A simple task for today".localized, subtasks: "done\nDownload the app\nundone\nBecome more productive\n".localized, isPriority: false, isDone: false, taskDate: Date(), isAlarmSet: false, alarmDate: nil, dateCompleted: nil, dateModified: Date())
             save(model: task, completion: {})
-            task = TaskModel(id: UUID(), mainText: "Swipe left to delete the task", subtasks: nil, isPriority: false, isDone: false, taskDate: Date(), isAlarmSet: false, alarmDate: nil, dateCompleted: nil, dateModified: Date())
+            task = TaskModel(id: UUID(), mainText: "Swipe left to delete the task".localized, subtasks: nil, isPriority: false, isDone: false, taskDate: Date(), isAlarmSet: false, alarmDate: nil, dateCompleted: nil, dateModified: Date())
             save(model: task, completion: {})
-            task = TaskModel(id: UUID(), mainText: "Create a task by yourself", subtasks: "undone\nSwipe down\nundone\nEnter the text\nundone\nSwipe down to save\n", isPriority: false, isDone: false, taskDate: Date(), isAlarmSet: false, alarmDate: nil, dateCompleted: nil, dateModified: Date())
+            task = TaskModel(id: UUID(), mainText: "Create a task by yourself".localized, subtasks: "undone\nSwipe down\nundone\nEnter the text\nundone\nSwipe down to save\n".localized, isPriority: false, isDone: false, taskDate: Date(), isAlarmSet: false, alarmDate: nil, dateCompleted: nil, dateModified: Date())
             save(model: task, completion: {})
-            task = TaskModel(id: UUID(), mainText: "Watch a movie", subtasks: "undone\nSnatch\nundone\nThe Transporter\nundone\nCrank\nundone\nDeath Race\n", isPriority: false, isDone: false, taskDate: Date().dayAfter, isAlarmSet: false, alarmDate: nil, dateCompleted: nil, dateModified: Date())
+            task = TaskModel(id: UUID(), mainText: "Watch a movie".localized, subtasks: "undone\nSnatch\nundone\nThe Transporter\nundone\nCrank\n".localized, isPriority: false, isDone: false, taskDate: Date().dayAfter, isAlarmSet: false, alarmDate: nil, dateCompleted: nil, dateModified: Date())
             save(model: task, completion: {})
-            task = TaskModel(id: UUID(), mainText: "Rate the app on AppStore", subtasks: nil, isPriority: false, isDone: false, taskDate: Date().addDays(add: 4), isAlarmSet: false, alarmDate: nil, dateCompleted: nil, dateModified: Date())
+            task = TaskModel(id: UUID(), mainText: "Rate the app on AppStore".localized, subtasks: nil, isPriority: false, isDone: false, taskDate: Date().addDays(add: 4), isAlarmSet: false, alarmDate: nil, dateCompleted: nil, dateModified: Date())
             save(model: task, completion: {})
         }
         fetchTasks()

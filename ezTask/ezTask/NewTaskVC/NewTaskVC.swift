@@ -51,7 +51,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
     private let topLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
-        label.text = "New Task"
+        label.text = "label.newTask".localized
         label.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
 
         return label
@@ -59,7 +59,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
 
     private let planning: UILabel = {
         let label = UILabel()
-        label.text = "What are you planning?"
+        label.text = "What are you planning?".localized
         label.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
         label.textColor = .systemGray2
 
@@ -89,7 +89,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         image.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0).isActive = true
 
         let label = UILabel()
-        label.text = "Add Subtask"
+        label.text = "label.addSubtask".localized
         label.font = UIFont.systemFont(ofSize: 16, weight: .regular)
         label.textColor = .systemGray
         view.addSubview(label)
@@ -146,7 +146,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
 
     private let timeTextField: UITextField = {
         let field = UITextField()
-        field.placeholder = "Add Reminder"
+        field.placeholder = "label.addReminder".localized
         field.font = UIFont.systemFont(ofSize: 17, weight: .medium)
         field.tintColor = .clear
 
@@ -177,7 +177,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
 
     private let priorityLabel: UILabel = {
         let label = UILabel()
-        label.text = "High Priority"
+        label.text = "label.highPriority".localized
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         label.textColor = .systemRed
         label.alpha = 0.9
@@ -300,7 +300,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         circle.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(circleTapped(_:))))
 
         let textField = UITextField()
-        textField.placeholder = "New Subtask"
+        textField.placeholder = "label.newSubtask".localized
         textField.font = UIFont.systemFont(ofSize: 16, weight: .regular) // TODO: change to medium
         textField.returnKeyType = .done
         textField.delegate = self
@@ -554,7 +554,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
     }
 
     func alertNotificationsDenied() {
-        let alert = UIAlertController(title: "Notifications", message: "In order to set alarms and get things done, please allow our app to send you notifications.", preferredStyle: UIAlertController.Style.alert)
+        let alert = UIAlertController(title: "label.notifications".localized, message: "In order to set alarms and get things done, please allow our app to deliver notifications.".localized, preferredStyle: UIAlertController.Style.alert)
         alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }
@@ -567,7 +567,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         let id = model == nil ? UUID() : model!.id
         let dateCompleted = isDone ? model!.dateCompleted : nil
         if dataFromSubtasks != nil, mainTextView.text == "" {
-            mainTextView.text = "Empty task"
+            mainTextView.text = "label.emptyTask".localized
         }
         let task = TaskModel(id: id, mainText: mainTextView.text, subtasks: dataFromSubtasks, isPriority: isPriority, isDone: isDone, taskDate: datePicker.date, isAlarmSet: isAlarmSet, alarmDate: isAlarmSet ? timePicker.date : nil, dateCompleted: dateCompleted, dateModified: Date())
         returnTask?(task)
@@ -682,7 +682,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         self.containerView.addSubview(timeTextField)
         timeTextField.translatesAutoresizingMaskIntoConstraints = false
         timeTextField.heightAnchor.constraint(equalToConstant: 22).isActive = true
-        timeTextField.widthAnchor.constraint(equalToConstant: 120).isActive = true
+//        timeTextField.widthAnchor.constraint(equalToConstant: 120).isActive = true
         timeTextField.leadingAnchor.constraint(equalTo: timeImage.trailingAnchor, constant: 12).isActive = true
         timeTextField.topAnchor.constraint(equalTo: dateTextField.bottomAnchor, constant: 20).isActive = true
 
@@ -694,6 +694,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         deleteAlarmImage.trailingAnchor.constraint(equalTo: self.containerView.trailingAnchor, constant: -25).isActive = true
         deleteAlarmImage.isUserInteractionEnabled = true
         deleteAlarmImage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(deleteAlarmTapped)))
+        timeTextField.trailingAnchor.constraint(equalTo: deleteAlarmImage.leadingAnchor, constant: -10).isActive = true
 
         self.containerView.addSubview(priorityImage)
         priorityImage.translatesAutoresizingMaskIntoConstraints = false
@@ -707,7 +708,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         self.containerView.addSubview(priorityLabel)
         priorityLabel.translatesAutoresizingMaskIntoConstraints = false
         priorityLabel.heightAnchor.constraint(equalToConstant: 22).isActive = true
-        priorityLabel.widthAnchor.constraint(equalToConstant: 100).isActive = true
+        priorityLabel.trailingAnchor.constraint(equalTo: self.containerView.trailingAnchor).isActive = true
         priorityLabel.leadingAnchor.constraint(equalTo: priorityImage.trailingAnchor, constant: 12).isActive = true
         priorityLabel.topAnchor.constraint(equalTo: timeTextField.bottomAnchor, constant: 20).isActive = true
         priorityLabel.bottomAnchor.constraint(equalTo: self.containerView.bottomAnchor).isActive = true

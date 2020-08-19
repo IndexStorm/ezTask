@@ -24,7 +24,18 @@
 "label.completed" = "Completed";
 "label.theme" = "Theme";
 "label.home" = "Home";
-
+"label.newTask" = "New Task";
+"label.addSubtask" = "Add Subtask";
+"label.addReminder" = "Add Reminder";
+"label.highPriority" = "High Priority";
+"label.newSubtask" = "New Subtask";
+"label.notifications" = "Notifications";
+"label.emptyTask" = "Empty task";
+"label.begin" = "Begin";
+"label.continue" = "Continue";
+"label.allowNotifications" = "Allow Notifications";
+"label.backToToday" = "Today";
+"label.complete" = "Complete";
 
 
 "Indigo" = "Indigo";
@@ -39,10 +50,36 @@
 "Salmon" = "Salmon";
 "Black" = "Black";
 "Blush Pink" = "Blush Pink";
+
 "Set equal to the number of today's tasks" = "Set equal to the number of today's tasks";
 "Send morning and evening notifications" = "Send morning and evening notifications";
 "Hide completed tasks in List" = "Hide completed tasks in List";
 "Feel free to mail us any questions" = "Feel free to mail us any questions";
 "Leave your feedback on the app page" = "Leave your feedback on the app page";
 "You don't have any completed tasks" = "You don't have any completed tasks";
-
+"What are you planning?" = "What are you planning?";
+"In order to set alarms and get things done, please allow the app to deliver notifications." = "In order to set alarms and get things done, please allow the app to deliver notifications.";
+"Swipe down to create a new task" = "Swipe down to create a new task";
+"Swipe one more time to save it" = "Swipe one more time to save it";
+"Eazy as that" = "Eazy as that";
+"Switch between representations" = "Switch between representations";
+"Use menu button to find more features" = "Use menu button to find more features";
+"A simple task for today" = "A simple task for today";
+"done\nDownload the app\nundone\nBecome more productive\n" = "done\nDownload the app\nundone\nBecome more productive\n";
+"Swipe left to delete the task" = "Swipe left to delete the task";
+"Create a task by yourself" = "Create a task by yourself";
+"undone\nSwipe down\nundone\nEnter the text\nundone\nSwipe down to save\n" = "undone\nSwipe down\nundone\nEnter the text\nundone\nSwipe down to save\n";
+"Watch a movie" = "Watch a movie";
+"undone\nSnatch\nundone\nThe Transporter\nundone\nCrank\n" = "undone\nSnatch\nundone\nThe Transporter\nundone\nCrank\n";
+"Rate the app on AppStore" = "Rate the app on AppStore";
+"Remind in 15 minutes" = "Remind in 15 minutes";
+"Remind in 30 minutes" = "Remind in 30 minutes";
+"Good morning" = "Good morning";
+"You have 1 task for today 💪" = "You have 1 task for today 💪";
+"You have %d tasks for today 💪" = "You have %d tasks for today 💪";
+"You don't have any tasks for today. Lucky you 😉" = "You don't have any tasks for today. Lucky you 😉";
+"Good evening" = "Good evening";
+"You have completed 1 task today. Good job 👍" = "You have completed 1 task today. Good job 👍";
+"You have completed %d tasks today. Good job 👍" = "You have completed %d tasks today. Good job 👍";
+"Don't forget to mark your completed tasks for today 😉" = "Don't forget to mark your completed tasks for today 😉";
+"“The Way To Get Started Is To Quit Talking And Begin Doing.”" = "“The Way To Get Started Is To Quit Talking And Begin Doing.”";

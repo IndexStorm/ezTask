@@ -45,9 +45,9 @@ func scheduleNotification(targetDate: Date, content: UNMutableNotificationConten
             }
         })
     }
-    let completeAction = UNNotificationAction(identifier: "Complete", title: "Complete", options: UNNotificationActionOptions(rawValue: 0))
-    let postpone15MinAction = UNNotificationAction(identifier: "Postpone15Minutes", title: "Remind in 15 minutes", options: UNNotificationActionOptions(rawValue: 0))
-    let postpone30MinutesAction = UNNotificationAction(identifier: "Postpone30Minutes", title: "Remind in 30 minutes", options: UNNotificationActionOptions(rawValue: 0))
+    let completeAction = UNNotificationAction(identifier: "Complete", title: "label.complete".localized, options: UNNotificationActionOptions(rawValue: 0))
+    let postpone15MinAction = UNNotificationAction(identifier: "Postpone15Minutes", title: "Remind in 15 minutes".localized, options: UNNotificationActionOptions(rawValue: 0))
+    let postpone30MinutesAction = UNNotificationAction(identifier: "Postpone30Minutes", title: "Remind in 30 minutes".localized, options: UNNotificationActionOptions(rawValue: 0))
     let category = UNNotificationCategory(identifier: "Category", actions: [completeAction, postpone15MinAction, postpone30MinutesAction], intentIdentifiers: [], options: .customDismissAction)
     UNUserNotificationCenter.current().setNotificationCategories([category])
 }
@@ -82,15 +82,15 @@ func sendMorningReminder() {
     let tomorrowTasks = fetchAllTasks().undoneTasksForTheDay(day: tomorrow)
 
     let content = UNMutableNotificationContent()
-    content.title = "Good morning"
+    content.title = "Good morning".localized
     if !tomorrowTasks.isEmpty {
         if tomorrowTasks.count == 1 {
-            content.body = "You have 1 task for today 💪"
+            content.body = "You have 1 task for today 💪".localized
         } else {
-            content.body = "You have \(tomorrowTasks.count) tasks for today 💪"
+            content.body = "You have %d tasks for today 💪".localized.format(tomorrowTasks.count)
         }
     } else {
-        content.body = "You don't have any tasks for today. Lucky you 😉"
+        content.body = "You don't have any tasks for today. Lucky you 😉".localized
     }
     content.sound = .default
     if !UserDefaults.standard.bool(forKey: "badgeToday") {
@@ -121,15 +121,15 @@ func sendEveningReminder() { // TODO: if delets -> still count
     let todayTasks = fetchAllTasks().doneTasksForTheDay(day: today)
 
     let content = UNMutableNotificationContent()
-    content.title = "Good evening"
+    content.title = "Good evening".localized
     if !todayTasks.isEmpty {
         if todayTasks.count == 1 {
-            content.body = "You have completed 1 task today. Good job 👍"
+            content.body = "You have completed 1 task today. Good job 👍".localized
         } else {
-            content.body = "You have completed \(todayTasks.count) tasks today. Good job 👍"
+            content.body = "You have completed %d tasks today. Good job 👍".localized.format(todayTasks.count)
         }
     } else {
-        content.body = "Don't forget to mark your completed tasks for today 😉"
+        content.body = "Don't forget to mark your completed tasks for today 😉".localized
         return
     }
     content.sound = .default

@@ -77,7 +77,7 @@ class OnboardingVC: UIViewController {
         task.centerYAnchor.constraint(equalTo: eazy.centerYAnchor).isActive = true
 
         let button = UIButton(type: .system)
-        button.setTitle("Begin", for: .normal)
+        button.setTitle("label.begin".localized, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         button.tintColor = .white
         button.backgroundColor = .systemBlue
@@ -115,42 +115,42 @@ class OnboardingVC: UIViewController {
 
         let swipeDown = UILabel()
         view.addSubview(swipeDown)
-        swipeDown.font = UIFont.systemFont(ofSize: 20, weight: .bold)
-        swipeDown.text = "Swipe down to create a new task"
+        swipeDown.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        swipeDown.text = "Swipe down to create a new task".localized
         swipeDown.textAlignment = .left
         swipeDown.numberOfLines = 0
         swipeDown.lineBreakMode = .byWordWrapping
         swipeDown.translatesAutoresizingMaskIntoConstraints = false
-        swipeDown.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16).isActive = true
-        swipeDown.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16).isActive = true
+        swipeDown.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10).isActive = true
+        swipeDown.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0).isActive = true
         swipeDown.topAnchor.constraint(equalTo: videoView.bottomAnchor, constant: 30).isActive = true
 
         let saveTask = UILabel()
         view.addSubview(saveTask)
-        saveTask.font = UIFont.systemFont(ofSize: 20, weight: .bold)
-        saveTask.text = "Swipe one more time to save it"
+        saveTask.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        saveTask.text = "Swipe one more time to save it".localized
         saveTask.textColor = .secondaryLabel
         saveTask.textAlignment = .left
         saveTask.numberOfLines = 0
         saveTask.lineBreakMode = .byWordWrapping
         saveTask.translatesAutoresizingMaskIntoConstraints = false
-        saveTask.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16).isActive = true
-        saveTask.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16).isActive = true
+        saveTask.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10).isActive = true
+        saveTask.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0).isActive = true
         saveTask.topAnchor.constraint(equalTo: swipeDown.bottomAnchor, constant: 10).isActive = true
 
         let eazy = UILabel()
         view.addSubview(eazy)
-        eazy.font = UIFont.systemFont(ofSize: 20, weight: .black)
-        eazy.text = "Eazy as that"
+        eazy.font = UIFont.systemFont(ofSize: 18, weight: .black)
+        eazy.text = "Eazy as that".localized
         eazy.textColor = .systemBlue
         eazy.textAlignment = .left
         eazy.translatesAutoresizingMaskIntoConstraints = false
-        eazy.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16).isActive = true
+        eazy.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10).isActive = true
         eazy.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16).isActive = true
         eazy.topAnchor.constraint(equalTo: saveTask.bottomAnchor, constant: 10).isActive = true
 
         let button = UIButton(type: .system)
-        button.setTitle("Continue", for: .normal)
+        button.setTitle("label.continue".localized, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         button.tintColor = .white
         button.backgroundColor = .systemBlue
@@ -186,31 +186,30 @@ class OnboardingVC: UIViewController {
         let notificationsLabel = UILabel()
         view.addSubview(notificationsLabel)
         notificationsLabel.font = UIFont.systemFont(ofSize: 24, weight: .bold)
-        notificationsLabel.text = "Notifications"
+        notificationsLabel.text = "label.notifications".localized
         notificationsLabel.textAlignment = .center
         notificationsLabel.translatesAutoresizingMaskIntoConstraints = false
-        notificationsLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16).isActive = true
-        notificationsLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16).isActive = true
-        notificationsLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        notificationsLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -250).isActive = true
-        image.bottomAnchor.constraint(equalTo: notificationsLabel.topAnchor, constant: -50).isActive = true
+        notificationsLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24).isActive = true
+        notificationsLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24).isActive = true
+        notificationsLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -270).isActive = true
+        image.bottomAnchor.constraint(equalTo: notificationsLabel.topAnchor, constant: -40).isActive = true
 
         let subtitle = UILabel()
         view.addSubview(subtitle)
         subtitle.font = UIFont.systemFont(ofSize: 14, weight: .medium)
         subtitle.textColor = .secondaryLabel
-        subtitle.text = "In order to set alarms and get things done, please allow our app to deliver notifications."
+        subtitle.text = "In order to set alarms and get things done, please allow the app to deliver notifications.".localized
         subtitle.textAlignment = .center
         subtitle.numberOfLines = 0
         subtitle.lineBreakMode = .byWordWrapping
         subtitle.translatesAutoresizingMaskIntoConstraints = false
-        subtitle.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16).isActive = true
-        subtitle.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16).isActive = true
+        subtitle.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24).isActive = true
+        subtitle.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24).isActive = true
         subtitle.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         subtitle.topAnchor.constraint(equalTo: notificationsLabel.bottomAnchor, constant: 5).isActive = true
 
         let notifyBtn = UIButton(type: .system)
-        notifyBtn.setTitle("Allow Notifications", for: .normal)
+        notifyBtn.setTitle("label.allowNotifications".localized, for: .normal)
         notifyBtn.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         notifyBtn.tintColor = .white
         notifyBtn.backgroundColor = .systemBlue
@@ -227,7 +226,7 @@ class OnboardingVC: UIViewController {
         notifyBtn.addTarget(self, action: #selector(notifyBtnPressed), for: .touchUpInside)
 
         let button = UIButton(type: .system)
-        button.setTitle("Continue", for: .normal)
+        button.setTitle("label.continue".localized, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         button.tintColor = .white
         button.backgroundColor = .systemGray5
