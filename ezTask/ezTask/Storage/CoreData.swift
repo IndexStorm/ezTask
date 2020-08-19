@@ -9,8 +9,10 @@
 import CoreData
 import Foundation
 import UIKit
+import Amplitude
 
 public func save(model: TaskModel, completion: () -> Void) {
+    Amplitude.instance()?.logEvent("saved_task")
     guard let appDelegate =
         UIApplication.shared.delegate as? AppDelegate else {
         return
@@ -38,9 +40,9 @@ public func save(model: TaskModel, completion: () -> Void) {
 }
 
 public func setDone(id: String, completion: () -> Void) {
+    Amplitude.instance()?.logEvent("set_done_task")
     // removing alarms
     removeNotificationsById(id: id)
-    // TODO: keep alarmDate?
     guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
         return
     }
@@ -69,6 +71,7 @@ public func setDone(id: String, completion: () -> Void) {
 }
 
 public func setUndone(id: String, completion: () -> Void) {
+    Amplitude.instance()?.logEvent("set_undone_task")
     guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
         return
     }
@@ -95,6 +98,7 @@ public func setUndone(id: String, completion: () -> Void) {
 }
 
 public func deleteTask(id: String, completion: () -> Void) {
+    Amplitude.instance()?.logEvent("deleted_task")
     removeNotificationsById(id: id)
     guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
         return
@@ -120,6 +124,7 @@ public func deleteTask(id: String, completion: () -> Void) {
 }
 
 public func update(id: String, newModel: TaskModel, completion: () -> Void) {
+    Amplitude.instance()?.logEvent("updated_task")
     guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
         return
     }

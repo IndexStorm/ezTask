@@ -93,7 +93,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         if !self.isList {
             btn.setTitle("List", for: .normal)
         } else {
-            btn.setTitle("Schedule", for: .normal)
+            btn.setTitle("button.schedule".localized, for: .normal)
         }
         btn.backgroundColor = .white
         btn.tintColor = ThemeManager.currentTheme().mainColor
@@ -1249,7 +1249,7 @@ extension MainVC: AwesomeSpotlightViewDelegate {
 
 extension MainVC {
     func createInitialTasks() {
-        if fetchAllTasks().count == 0 {
+        if fetchAllTasks().isEmpty {
             var task = TaskModel(id: UUID(), mainText: "A simple task for today", subtasks: "done\nDownload the app\nundone\nBecome more productive\n", isPriority: false, isDone: false, taskDate: Date(), isAlarmSet: false, alarmDate: nil, dateCompleted: nil, dateModified: Date())
             save(model: task, completion: {})
             task = TaskModel(id: UUID(), mainText: "Swipe left to delete the task", subtasks: nil, isPriority: false, isDone: false, taskDate: Date(), isAlarmSet: false, alarmDate: nil, dateCompleted: nil, dateModified: Date())
@@ -1264,5 +1264,3 @@ extension MainVC {
         fetchTasks()
     }
 }
-
-

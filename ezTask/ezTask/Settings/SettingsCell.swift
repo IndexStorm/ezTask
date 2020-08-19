@@ -117,7 +117,7 @@ class SettingsCell: UITableViewCell {
             case 1:
                 label.text = "Rate on the AppStore"
                 subtitle.text = "Leave your feedback on the app page"
-                icon.image = UIImage(named: "rate")
+                icon.image = UIImage(named: "star")
                 cellSwitch.alpha = 0
                 arrow.alpha = 1
                 self.selectionStyle = .default

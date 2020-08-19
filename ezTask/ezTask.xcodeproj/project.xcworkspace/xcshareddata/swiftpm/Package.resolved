@@ -2,6 +2,15 @@
   "object": {
     "pins": [
       {
+        "package": "Amplitude",
+        "repositoryURL": "https://github.com/amplitude/Amplitude-iOS",
+        "state": {
+          "branch": null,
+          "revision": "3948ac38ee6c35f82a89eac864003e1641e386d7",
+          "version": "5.3.0"
+        }
+      },
+      {
         "package": "SideMenu",
         "repositoryURL": "https://github.com/jonkykong/SideMenu",
         "state": {

@@ -10,6 +10,7 @@ import AVFoundation
 import CoreData
 import SideMenu
 import UIKit
+import Amplitude
 
 @UIApplicationMain
 final class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
@@ -19,6 +20,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationC
         UNUserNotificationCenter.current().delegate = self
         checkNotifications()
         setupWindow()
+        setupAnalytics()
         do {
             try AVAudioSession.sharedInstance().setCategory(.ambient, mode: .default, options: AVAudioSession.CategoryOptions.mixWithOthers)
         } catch { print(error.localizedDescription) }
@@ -110,5 +112,14 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationC
             print("Unknown action")
         }
         completionHandler()
+    }
+    
+    func setupAnalytics() {
+        // Enable sending automatic session events
+        Amplitude.instance()?.trackingSessionEvents = true
+        // Initialize SDK
+        Amplitude.instance()?.initializeApiKey("cd2eca0f5b5a9000d543bd83848f9a58")
+        // Log an event
+        Amplitude.instance()?.logEvent("app_start")
     }
 }

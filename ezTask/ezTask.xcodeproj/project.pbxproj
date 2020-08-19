@@ -33,6 +33,9 @@
 		E6A5CB9F24D829EA0036F45B /* sound-push.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = E6A5CB9B24D829EA0036F45B /* sound-push.mp3 */; };
 		E6D6EEEE24C2D94400AF82A3 /* DayCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D6EEED24C2D94400AF82A3 /* DayCell.swift */; };
 		E6D6EEF024C37CE300AF82A3 /* TaskCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D6EEEF24C37CE300AF82A3 /* TaskCell.swift */; };
+		E6DC7FEE24ED2265004A5731 /* Amplitude in Frameworks */ = {isa = PBXBuildFile; productRef = E6DC7FED24ED2265004A5731 /* Amplitude */; };
+		E6DC7FF224ED2BC3004A5731 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E6DC7FF124ED2BC3004A5731 /* Localizable.strings */; };
+		E6DC7FF424ED2C6E004A5731 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6DC7FF324ED2C6E004A5731 /* String.swift */; };
 		E6E0117A24E9B57900A5982D /* OnboardingVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6E0117924E9B57900A5982D /* OnboardingVC.swift */; };
 		E6E0118224E9D28B00A5982D /* AwesomeTabButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6E0117D24E9D28B00A5982D /* AwesomeTabButton.swift */; };
 		E6E0118324E9D28B00A5982D /* AwesomeSpotlightViewBundle.bundle in Resources */ = {isa = PBXBuildFile; fileRef = E6E0117E24E9D28B00A5982D /* AwesomeSpotlightViewBundle.bundle */; };
@@ -71,6 +74,9 @@
 		E6A5CB9B24D829EA0036F45B /* sound-push.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "sound-push.mp3"; sourceTree = "<group>"; };
 		E6D6EEED24C2D94400AF82A3 /* DayCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayCell.swift; sourceTree = "<group>"; };
 		E6D6EEEF24C37CE300AF82A3 /* TaskCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskCell.swift; sourceTree = "<group>"; };
+		E6DC7FF124ED2BC3004A5731 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
+		E6DC7FF324ED2C6E004A5731 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
+		E6DC7FF524ED2DD3004A5731 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		E6E0117924E9B57900A5982D /* OnboardingVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingVC.swift; sourceTree = "<group>"; };
 		E6E0117D24E9D28B00A5982D /* AwesomeTabButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AwesomeTabButton.swift; sourceTree = "<group>"; };
 		E6E0117E24E9D28B00A5982D /* AwesomeSpotlightViewBundle.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = AwesomeSpotlightViewBundle.bundle; sourceTree = "<group>"; };
@@ -85,6 +91,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E6DC7FEE24ED2265004A5731 /* Amplitude in Frameworks */,
 				E6F95BA824D9A7FD0092DBF0 /* SideMenu in Frameworks */,
 				E68450D224C84632005D72A5 /* ViewAnimator in Frameworks */,
 			);
@@ -125,6 +132,7 @@
 				E68E3F4324CF2FE700E7EA7F /* Notifications */,
 				E68E3F5324CF38D600E7EA7F /* Extensions */,
 				E68E3F5624D0103E00E7EA7F /* Resources */,
+				E6DC7FF024ED2B95004A5731 /* Localization */,
 				E60DFBDE24C2121B00043A76 /* Info.plist */,
 			);
 			path = ezTask;
@@ -214,6 +222,7 @@
 				E68E3F5424CF38E900E7EA7F /* Date.swift */,
 				E6A5CB9524D81F320036F45B /* UIApplication.swift */,
 				E69ADC9E24DAC1BA0009C120 /* Colors.swift */,
+				E6DC7FF324ED2C6E004A5731 /* String.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -237,6 +246,14 @@
 				E6A5CB9B24D829EA0036F45B /* sound-push.mp3 */,
 			);
 			path = Sounds;
+			sourceTree = "<group>";
+		};
+		E6DC7FF024ED2B95004A5731 /* Localization */ = {
+			isa = PBXGroup;
+			children = (
+				E6DC7FF124ED2BC3004A5731 /* Localizable.strings */,
+			);
+			path = Localization;
 			sourceTree = "<group>";
 		};
 		E6E0117824E9B55B00A5982D /* Onboarding */ = {
@@ -288,6 +305,7 @@
 			packageProductDependencies = (
 				E68450D124C84632005D72A5 /* ViewAnimator */,
 				E6F95BA724D9A7FD0092DBF0 /* SideMenu */,
+				E6DC7FED24ED2265004A5731 /* Amplitude */,
 			);
 			productName = ezTask;
 			productReference = E60DFBCD24C2121600043A76 /* Eazy Task.app */;
@@ -315,11 +333,13 @@
 			knownRegions = (
 				en,
 				Base,
+				ru,
 			);
 			mainGroup = E60DFBC424C2121600043A76;
 			packageReferences = (
 				E68450D024C84632005D72A5 /* XCRemoteSwiftPackageReference "ViewAnimator" */,
 				E6F95BA624D9A7FD0092DBF0 /* XCRemoteSwiftPackageReference "SideMenu" */,
+				E6DC7FEC24ED2265004A5731 /* XCRemoteSwiftPackageReference "Amplitude-iOS" */,
 			);
 			productRefGroup = E60DFBCE24C2121600043A76 /* Products */;
 			projectDirPath = "";
@@ -339,6 +359,7 @@
 				E60DFBDD24C2121B00043A76 /* LaunchScreen.storyboard in Resources */,
 				E6A5CB9E24D829EA0036F45B /* sound-pop.mp3 in Resources */,
 				E6A5CB9F24D829EA0036F45B /* sound-push.mp3 in Resources */,
+				E6DC7FF224ED2BC3004A5731 /* Localizable.strings in Resources */,
 				E6A5CB9C24D829EA0036F45B /* sound-done.mp3 in Resources */,
 				E6E0118324E9D28B00A5982D /* AwesomeSpotlightViewBundle.bundle in Resources */,
 				E60DFBDA24C2121B00043A76 /* Assets.xcassets in Resources */,
@@ -370,6 +391,7 @@
 				E60DFBD524C2121600043A76 /* MainVC.swift in Sources */,
 				E69ADC9F24DAC1BA0009C120 /* Colors.swift in Sources */,
 				E68E3F4F24CF34BA00E7EA7F /* CoreData.swift in Sources */,
+				E6DC7FF424ED2C6E004A5731 /* String.swift in Sources */,
 				E656C30224C771FF00FCF85E /* NewTaskVC.swift in Sources */,
 				E6D6EEEE24C2D94400AF82A3 /* DayCell.swift in Sources */,
 				E647C55824E428D60048628F /* SettingsCell.swift in Sources */,
@@ -387,6 +409,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				E60DFBDC24C2121B00043A76 /* Base */,
+				E6DC7FF524ED2DD3004A5731 /* ru */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -398,6 +421,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -448,6 +472,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				"OTHER_LDFLAGS[arch=*]" = "-lsqlite3.0";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -458,6 +483,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -501,6 +527,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				"OTHER_LDFLAGS[arch=*]" = "-lsqlite3.0";
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -582,6 +609,14 @@
 				minimumVersion = 2.7.0;
 			};
 		};
+		E6DC7FEC24ED2265004A5731 /* XCRemoteSwiftPackageReference "Amplitude-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/amplitude/Amplitude-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.3.0;
+			};
+		};
 		E6F95BA624D9A7FD0092DBF0 /* XCRemoteSwiftPackageReference "SideMenu" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/jonkykong/SideMenu";
@@ -597,6 +632,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = E68450D024C84632005D72A5 /* XCRemoteSwiftPackageReference "ViewAnimator" */;
 			productName = ViewAnimator;
+		};
+		E6DC7FED24ED2265004A5731 /* Amplitude */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E6DC7FEC24ED2265004A5731 /* XCRemoteSwiftPackageReference "Amplitude-iOS" */;
+			productName = Amplitude;
 		};
 		E6F95BA724D9A7FD0092DBF0 /* SideMenu */ = {
 			isa = XCSwiftPackageProductDependency;
