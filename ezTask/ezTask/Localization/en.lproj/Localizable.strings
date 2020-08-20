@@ -36,6 +36,7 @@
 "label.allowNotifications" = "Allow Notifications";
 "label.backToToday" = "Today";
 "label.complete" = "Complete";
+"label.done" = "Done";
 
 
 "Indigo" = "Indigo";
@@ -50,6 +51,7 @@
 "Salmon" = "Salmon";
 "Black" = "Black";
 "Blush Pink" = "Blush Pink";
+
 
 "Set equal to the number of today's tasks" = "Set equal to the number of today's tasks";
 "Send morning and evening notifications" = "Send morning and evening notifications";
@@ -83,3 +85,7 @@
 "You have completed %d tasks today. Good job 👍" = "You have completed %d tasks today. Good job 👍";
 "Don't forget to mark your completed tasks for today 😉" = "Don't forget to mark your completed tasks for today 😉";
 "“The Way To Get Started Is To Quit Talking And Begin Doing.”" = "“The Way To Get Started Is To Quit Talking And Begin Doing.”";
+
+"What's new" = "What's new";
+"Version: 1.3.3" = "Version: 1.3.3";
+"☑️ Added Russian language 🇷🇺\n☑️ Fixed more bugs\n☑️ Working hard on new features!" = "☑️ Added Russian language 🇷🇺\n☑️ Fixed more bugs\n☑️ Working hard on new features!";

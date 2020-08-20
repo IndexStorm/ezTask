@@ -74,7 +74,7 @@ class SettingsCell: UITableViewCell {
     }
 
     public func configure(indexPath: IndexPath) {
-//        self.selectionStyle = .none
+        self.selectionStyle = .none
         self.indexPath = indexPath
         cellSwitch.isOn = false
         cellSwitch.alpha = 1
@@ -93,7 +93,10 @@ class SettingsCell: UITableViewCell {
                 label.text = "label.dailyNotifications".localized
                 subtitle.text = "Send morning and evening notifications".localized
                 icon.image = UIImage(named: "clock")
-                cellSwitch.isOn = UserDefaults.standard.bool(forKey: "dailyNotifications")
+//                cellSwitch.isOn = UserDefaults.standard.bool(forKey: "dailyNotifications")
+                cellSwitch.alpha = 0
+                arrow.alpha = 1
+                self.selectionStyle = .default
             case 2:
                 label.text = "label.hideCompleted".localized
                 subtitle.text = "Hide completed tasks in List".localized

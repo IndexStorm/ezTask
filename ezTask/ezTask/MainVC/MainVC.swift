@@ -789,9 +789,8 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-//        UIView.animate(views: [menuBtn, dateLabel, dayLabel, calendarOrList], animations: [AnimationType.from(direction: .top, offset: 10.0)], initialAlpha: 0, finalAlpha: 1, duration: 0.7)
-//        animateTable()
         checkFirstLaunch()
+        checkUpdate()
     }
 
     func animateTable() {
@@ -1124,6 +1123,13 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         listTable.delegate = self
         listTable.tableFooterView = UIView(frame: CGRect.zero)
         listTable.sectionFooterHeight = 0.0
+    }
+    
+    func checkUpdate() {
+        if !UserDefaults.standard.bool(forKey: "1.3.3") {
+            let updateVC = UpdateVC()
+            present(updateVC, animated: true, completion: {})
+        }
     }
 
     func checkFirstLaunch() {

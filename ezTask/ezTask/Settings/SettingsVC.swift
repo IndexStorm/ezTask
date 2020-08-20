@@ -40,7 +40,7 @@ class SettingsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        return "Eazy Task 1.3.2 @ Mike Ovyan"
+        return "Eazy Task 1.3.3 @ Mike Ovyan"
     }
 
     func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
@@ -76,11 +76,6 @@ class SettingsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: SettingsCell.identifier, for: indexPath) as! SettingsCell
         cell.configure(indexPath: indexPath)
-        
-//        let bottomBorder = CALayer()
-//        bottomBorder.frame = CGRect(x: 16.0, y: cell.contentView.frame.size.height, width: cell.contentView.frame.size.width, height: 1.0)
-//        bottomBorder.backgroundColor = UIColor.systemGray5.cgColor
-//        cell.contentView.layer.addSublayer(bottomBorder)
 
         return cell
     }
@@ -92,6 +87,16 @@ class SettingsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        
+        if indexPath.section == 0 {
+            switch indexPath.row {
+            case 1:
+                let vc = DailyNotificationsVC()
+                present(vc, animated: true, completion: {})
+            default:
+                return
+            }
+        }
 
         if indexPath.section == 1 {
             switch indexPath.row {
