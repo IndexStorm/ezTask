@@ -47,10 +47,6 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationC
         }
     }
 
-    func applicationDidBecomeActive(_ application: UIApplication) {
-        sendMorningReminder()
-    }
-
     lazy var persistentContainer: NSPersistentContainer = {
         /*
          The persistent container for the application. This implementation

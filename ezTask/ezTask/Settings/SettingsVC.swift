@@ -87,11 +87,12 @@ class SettingsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        
+
         if indexPath.section == 0 {
             switch indexPath.row {
             case 1:
                 let vc = DailyNotificationsVC()
+                self.modalPresentationStyle = .overFullScreen
                 present(vc, animated: true, completion: {})
             default:
                 return

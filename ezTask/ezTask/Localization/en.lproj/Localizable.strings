@@ -37,6 +37,8 @@
 "label.backToToday" = "Today";
 "label.complete" = "Complete";
 "label.done" = "Done";
+"label.morning" = "Morning";
+"label.evening" = "Evening";
 
 
 "Indigo" = "Indigo";

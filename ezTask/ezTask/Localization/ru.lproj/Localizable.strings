@@ -37,6 +37,8 @@
 "label.backToToday" = "Назад";
 "label.complete" = "Выполнить";
 "label.done" = "Готово";
+"label.morning" = "Утро";
+"label.evening" = "Вечер";
 
 
 "Indigo" = "Индиго";

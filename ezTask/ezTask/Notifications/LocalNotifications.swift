@@ -75,8 +75,10 @@ func sendMorningReminder() {
         UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: ["MORNING"])
         return
     }
+    let morningHour = UserDefaults.standard.integer(forKey: "morningHour")
+    let morningMinute = UserDefaults.standard.integer(forKey: "morningMinute")
     var tomorrow = Date().dayAfter
-    if Date().hour < 8 {
+    if Date().hour * 60 + Date().minute < morningHour * 60 + morningMinute {
         tomorrow = Date()
     }
     let tomorrowTasks = fetchAllTasks().undoneTasksForTheDay(day: tomorrow)
@@ -98,7 +100,7 @@ func sendMorningReminder() {
     }
     UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["MORNING"])
     UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: ["MORNING"])
-    let targetDate = tomorrow.startOfDay.addingTimeInterval(TimeInterval(60 * 60 * 8))
+    let targetDate = tomorrow.startOfDay.addingTimeInterval(TimeInterval(60 * 60 * morningHour + 60 * morningMinute))
     let trigger = UNCalendarNotificationTrigger(dateMatching: Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: targetDate), repeats: false)
     let request = UNNotificationRequest(identifier: "MORNING", content: content, trigger: trigger)
     UNUserNotificationCenter.current().add(request, withCompletionHandler: { error in
@@ -114,7 +116,9 @@ func sendEveningReminder() { // TODO: if delets -> still count
         UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: ["EVENING"])
         return
     }
-    if Date().hour >= 21 {
+    let eveningHour = UserDefaults.standard.integer(forKey: "eveningHour")
+    let eveningMinute = UserDefaults.standard.integer(forKey: "eveningMinute")
+    if Date().hour * 60 + Date().minute >= eveningHour * 60 + eveningMinute {
         return
     }
     let today = Date()
@@ -138,7 +142,7 @@ func sendEveningReminder() { // TODO: if delets -> still count
     }
     UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["EVENING"])
     UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: ["EVENING"])
-    let targetDate = today.startOfDay.addingTimeInterval(TimeInterval(60 * 60 * 21))
+    let targetDate = today.startOfDay.addingTimeInterval(TimeInterval(60 * 60 * eveningHour + 60 * eveningMinute))
     let trigger = UNCalendarNotificationTrigger(dateMatching: Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: targetDate), repeats: false)
     let request = UNNotificationRequest(identifier: "EVENING", content: content, trigger: trigger)
     UNUserNotificationCenter.current().add(request, withCompletionHandler: { error in

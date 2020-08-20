@@ -1124,7 +1124,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         listTable.tableFooterView = UIView(frame: CGRect.zero)
         listTable.sectionFooterHeight = 0.0
     }
-    
+
     func checkUpdate() {
         if !UserDefaults.standard.bool(forKey: "1.3.3") {
             let updateVC = UpdateVC()
@@ -1133,6 +1133,12 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     }
 
     func checkFirstLaunch() {
+        if UserDefaults.standard.integer(forKey: "morningHour") == 0 {
+            UserDefaults.standard.set(8, forKey: "morningHour")
+            UserDefaults.standard.set(0, forKey: "morningMinute")
+            UserDefaults.standard.set(21, forKey: "eveningHour")
+            UserDefaults.standard.set(0, forKey: "eveningMinute")
+        }
         if !UserDefaults.standard.bool(forKey: "notFirstLaunch") {
             UserDefaults.standard.set(true, forKey: "dailyNotifications")
             createInitialTasks()

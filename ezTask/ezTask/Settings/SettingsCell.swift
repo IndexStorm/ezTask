@@ -42,7 +42,7 @@ class SettingsCell: UITableViewCell {
 
     let cellSwitch: UISwitch = {
         let switchDemo = UISwitch()
-        switchDemo.isOn = false // TODO: initial value
+        switchDemo.isOn = false
 
         return switchDemo
     }()
@@ -62,9 +62,6 @@ class SettingsCell: UITableViewCell {
             switch indexPath.row {
             case 0:
                 UserDefaults.standard.set(sender.isOn, forKey: "badgeToday")
-            case 1:
-                UserDefaults.standard.set(sender.isOn, forKey: "dailyNotifications")
-                sendMorningReminder()
             case 2:
                 UserDefaults.standard.set(sender.isOn, forKey: "hideCompleted")
             default:
@@ -93,7 +90,6 @@ class SettingsCell: UITableViewCell {
                 label.text = "label.dailyNotifications".localized
                 subtitle.text = "Send morning and evening notifications".localized
                 icon.image = UIImage(named: "clock")
-//                cellSwitch.isOn = UserDefaults.standard.bool(forKey: "dailyNotifications")
                 cellSwitch.alpha = 0
                 arrow.alpha = 1
                 self.selectionStyle = .default
