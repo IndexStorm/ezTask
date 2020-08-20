@@ -38,10 +38,13 @@ class UpdateVC: UIViewController {
 
     let textView: UITextView = {
         let txt = UITextView()
+        txt.textContainer.lineBreakMode = .byWordWrapping
         let style = NSMutableParagraphStyle()
-        style.lineSpacing = 15
+        style.lineSpacing = 2
+        style.headIndent = 28
+
         let attributes = [NSAttributedString.Key.paragraphStyle: style, NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: .regular)]
-        txt.attributedText = NSAttributedString(string: "☑️ Added Russian language 🇷🇺\n☑️ Fixed more bugs\n☑️ Working hard on new features!".localized, attributes: attributes)
+        txt.attributedText = NSAttributedString(string: "☑️ Added Russian language 🇷🇺\n\n☑️ Now you can modify daily notifications\n\n☑️ Fixed more bugs\n\n☑️ Working hard on new features!".localized, attributes: attributes)
 
         return txt
     }()
@@ -80,11 +83,19 @@ class UpdateVC: UIViewController {
         topLabel.pin.top(20).hCenter().sizeToFit()
 
         container.addSubview(subtitle)
-        subtitle.pin.below(of: topLabel).marginTop(2).hCenter().sizeToFit()
+        subtitle.pin
+            .below(of: topLabel)
+            .marginTop(2)
+            .hCenter()
+            .sizeToFit()
 
         container.addSubview(textView)
-        textView.pin.below(of: subtitle).marginTop(10).hCenter().sizeToFit()
-
+        textView.pin
+            .below(of: subtitle, aligned: .center)
+            .marginVertical(10)
+            .width(container.frame.size.width - 70)
+            .height(240)
+        
         container.addSubview(button)
         button.pin.bottom(100).hCenter().width(250).height(50)
     }

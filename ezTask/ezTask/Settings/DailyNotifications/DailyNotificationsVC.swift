@@ -34,6 +34,7 @@ class DailyNotificationsVC: UIViewController {
     let mySwitch: UISwitch = {
         let switchDemo = UISwitch()
         switchDemo.isOn = false
+        switchDemo.onTintColor = ThemeManager.currentTheme().mainColor
 
         return switchDemo
     }()
@@ -142,9 +143,9 @@ class DailyNotificationsVC: UIViewController {
         button.setTitle("label.done".localized, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         button.tintColor = .white
-        button.backgroundColor = .systemBlue
+        button.backgroundColor = ThemeManager.currentTheme().mainColor
         button.layer.cornerRadius = 25
-        button.layer.shadowColor = UIColor.systemBlue.cgColor
+        button.layer.shadowColor = ThemeManager.currentTheme().mainColor.cgColor
         button.layer.shadowOpacity = 0.3
         button.layer.shadowOffset = CGSize(width: 0, height: 0)
         button.layer.shadowRadius = 3
