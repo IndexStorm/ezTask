@@ -1128,7 +1128,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     func checkUpdate() {
         if !UserDefaults.standard.bool(forKey: "1.3.3") {
             let updateVC = UpdateVC()
-            present(updateVC, animated: true, completion: {UserDefaults.standard.set(true, forKey: "1.3.3")})
+            present(updateVC, animated: true, completion: { UserDefaults.standard.set(true, forKey: "1.3.3") })
         }
     }
 
@@ -1267,15 +1267,15 @@ extension MainVC: AwesomeSpotlightViewDelegate {
 extension MainVC {
     func createInitialTasks() {
         if fetchAllTasks().isEmpty {
-            var task = TaskModel(id: UUID(), mainText: "A simple task for today".localized, subtasks: "done\nDownload the app\nundone\nBecome more productive\n".localized, isPriority: false, isDone: false, taskDate: Date(), isAlarmSet: false, alarmDate: nil, dateCompleted: nil, dateModified: Date())
+            var task = TaskModel(id: UUID(), mainText: "A simple task for today".localized, subtasks: "done\nDownload the app\nundone\nBecome more productive\n".localized, isPriority: false, isDone: false, taskDate: Date(), isAlarmSet: false, alarmDate: nil, dateCompleted: nil, dateModified: Date(), reccuringDays: nil)
             save(model: task, completion: {})
-            task = TaskModel(id: UUID(), mainText: "Swipe left to delete the task".localized, subtasks: nil, isPriority: false, isDone: false, taskDate: Date(), isAlarmSet: false, alarmDate: nil, dateCompleted: nil, dateModified: Date())
+            task = TaskModel(id: UUID(), mainText: "Swipe left to delete the task".localized, subtasks: nil, isPriority: false, isDone: false, taskDate: Date(), isAlarmSet: false, alarmDate: nil, dateCompleted: nil, dateModified: Date(), reccuringDays: nil)
             save(model: task, completion: {})
-            task = TaskModel(id: UUID(), mainText: "Create a task by yourself".localized, subtasks: "undone\nSwipe down\nundone\nEnter the text\nundone\nSwipe down to save\n".localized, isPriority: false, isDone: false, taskDate: Date(), isAlarmSet: false, alarmDate: nil, dateCompleted: nil, dateModified: Date())
+            task = TaskModel(id: UUID(), mainText: "Create a task by yourself".localized, subtasks: "undone\nSwipe down\nundone\nEnter the text\nundone\nSwipe down to save\n".localized, isPriority: false, isDone: false, taskDate: Date(), isAlarmSet: false, alarmDate: nil, dateCompleted: nil, dateModified: Date(), reccuringDays: nil)
             save(model: task, completion: {})
-            task = TaskModel(id: UUID(), mainText: "Watch a movie".localized, subtasks: "undone\nSnatch\nundone\nThe Transporter\nundone\nCrank\n".localized, isPriority: false, isDone: false, taskDate: Date().dayAfter, isAlarmSet: false, alarmDate: nil, dateCompleted: nil, dateModified: Date())
+            task = TaskModel(id: UUID(), mainText: "Watch a movie".localized, subtasks: "undone\nSnatch\nundone\nThe Transporter\nundone\nCrank\n".localized, isPriority: false, isDone: false, taskDate: Date().dayAfter, isAlarmSet: false, alarmDate: nil, dateCompleted: nil, dateModified: Date(), reccuringDays: nil)
             save(model: task, completion: {})
-            task = TaskModel(id: UUID(), mainText: "Rate the app on AppStore".localized, subtasks: nil, isPriority: false, isDone: false, taskDate: Date().addDays(add: 4), isAlarmSet: false, alarmDate: nil, dateCompleted: nil, dateModified: Date())
+            task = TaskModel(id: UUID(), mainText: "Rate the app on AppStore".localized, subtasks: nil, isPriority: false, isDone: false, taskDate: Date().addDays(add: 4), isAlarmSet: false, alarmDate: nil, dateCompleted: nil, dateModified: Date(), reccuringDays: nil)
             save(model: task, completion: {})
         }
         fetchTasks()

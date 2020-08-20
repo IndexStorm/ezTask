@@ -154,6 +154,8 @@ class DailyNotificationsVC: UIViewController {
     }()
 
     @objc func buttonPressed() {
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
         dismiss(animated: true, completion: {})
     }
 
@@ -180,13 +182,13 @@ class DailyNotificationsVC: UIViewController {
         mySwitch.addTarget(self, action: #selector(switchChange(_:)), for: .valueChanged)
 
         container.addSubview(morning)
-        morning.pin.left(42).below(of: topLabel).marginTop(30).sizeToFit()
+        morning.pin.left(64).below(of: topLabel).marginTop(30).sizeToFit()
 
         container.addSubview(morningTextField)
         morningTextField.pin.below(of: morning, aligned: .center).marginTop(10).sizeToFit().minWidth(80)
 
         container.addSubview(evening)
-        evening.pin.right(42).below(of: topLabel).marginTop(30).sizeToFit()
+        evening.pin.right(64).below(of: topLabel).marginTop(30).sizeToFit()
 
         container.addSubview(eveningTextField)
         eveningTextField.pin.below(of: evening, aligned: .center).marginTop(10).sizeToFit().minWidth(80)

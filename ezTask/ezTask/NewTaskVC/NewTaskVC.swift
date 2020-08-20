@@ -6,11 +6,12 @@
 //  Copyright © 2020 Mike Ovyan. All rights reserved.
 //
 
+import PinLayout
 import UIKit
 import UserNotifications
 import ViewAnimator
 
-class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
+class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
     // Var
 
     var isPriority: Bool = false
@@ -165,6 +166,26 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
 
     private let timePicker = UIDatePicker()
 
+    private let reccuringImage: UIImageView = {
+        let image = UIImageView()
+        image.image = UIImage(named: "repeat")
+        image.contentMode = .scaleAspectFit
+        image.tintColor = .systemGray2
+
+        return image
+    }()
+
+    private let reccuringTextField: UITextField = {
+        let field = UITextField()
+        field.placeholder = "Make Recurring"
+        field.font = UIFont.systemFont(ofSize: 17, weight: .medium)
+        field.tintColor = .clear
+
+        return field
+    }()
+
+    private let reccuringPicker = UIPickerView()
+
     private let priorityImage: UIImageView = {
         let image = UIImageView()
         image.image = UIImage(named: "square")
@@ -218,6 +239,43 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         timePicker.minuteInterval = 5
         timePicker.date = Date()
         timePicker.addTarget(self, action: #selector(timePickerChanged(picker:)), for: .valueChanged)
+    }
+
+    func createReccuringPicker() {
+        reccuringPicker.delegate = self
+        reccuringPicker.dataSource = self
+        let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 35))
+        toolbar.sizeToFit()
+        let doneBtn = UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: #selector(timePickerDonePressed))
+        let cancelBtn = UIBarButtonItem(title: "Remove", style: .plain, target: nil, action: #selector(timePickerCancelPressed))
+        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        toolbar.setItems([cancelBtn, flexibleSpace, doneBtn], animated: true)
+        reccuringTextField.inputAccessoryView = toolbar
+        reccuringTextField.inputView = reccuringPicker
+    }
+
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        2
+    }
+
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        if component == 0 {
+            return 14
+        } else {
+            return 1
+        }
+    }
+
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        if component == 0 {
+            return String(row)
+        } else {
+            return "Days"
+        }
+    }
+
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        print(row)
     }
 
     private func loadModel() {
@@ -569,7 +627,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         if dataFromSubtasks != nil, mainTextView.text == "" {
             mainTextView.text = "label.emptyTask".localized
         }
-        let task = TaskModel(id: id, mainText: mainTextView.text, subtasks: dataFromSubtasks, isPriority: isPriority, isDone: isDone, taskDate: datePicker.date, isAlarmSet: isAlarmSet, alarmDate: isAlarmSet ? timePicker.date : nil, dateCompleted: dateCompleted, dateModified: Date())
+        let task = TaskModel(id: id, mainText: mainTextView.text, subtasks: dataFromSubtasks, isPriority: isPriority, isDone: isDone, taskDate: datePicker.date, isAlarmSet: isAlarmSet, alarmDate: isAlarmSet ? timePicker.date : nil, dateCompleted: dateCompleted, dateModified: Date(), reccuringDays: nil)
         returnTask?(task)
     }
 
@@ -586,6 +644,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         checkNotifications()
         createDatePicker()
         createTimePicker()
+        createReccuringPicker()
         loadModel()
         setTimePickerDate()
     }
@@ -682,7 +741,6 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         self.containerView.addSubview(timeTextField)
         timeTextField.translatesAutoresizingMaskIntoConstraints = false
         timeTextField.heightAnchor.constraint(equalToConstant: 22).isActive = true
-//        timeTextField.widthAnchor.constraint(equalToConstant: 120).isActive = true
         timeTextField.leadingAnchor.constraint(equalTo: timeImage.trailingAnchor, constant: 12).isActive = true
         timeTextField.topAnchor.constraint(equalTo: dateTextField.bottomAnchor, constant: 20).isActive = true
 
@@ -696,12 +754,26 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         deleteAlarmImage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(deleteAlarmTapped)))
         timeTextField.trailingAnchor.constraint(equalTo: deleteAlarmImage.leadingAnchor, constant: -10).isActive = true
 
+        self.containerView.addSubview(reccuringImage)
+        reccuringImage.translatesAutoresizingMaskIntoConstraints = false
+        reccuringImage.heightAnchor.constraint(equalToConstant: 22).isActive = true
+        reccuringImage.widthAnchor.constraint(equalToConstant: 22).isActive = true
+        reccuringImage.leadingAnchor.constraint(equalTo: self.containerView.leadingAnchor, constant: 25).isActive = true
+        reccuringImage.topAnchor.constraint(equalTo: timeTextField.bottomAnchor, constant: 20).isActive = true
+
+        self.containerView.addSubview(reccuringTextField)
+        reccuringTextField.translatesAutoresizingMaskIntoConstraints = false
+        reccuringTextField.heightAnchor.constraint(equalToConstant: 22).isActive = true
+        reccuringTextField.trailingAnchor.constraint(equalTo: self.containerView.trailingAnchor).isActive = true
+        reccuringTextField.leadingAnchor.constraint(equalTo: reccuringImage.trailingAnchor, constant: 12).isActive = true
+        reccuringTextField.topAnchor.constraint(equalTo: timeTextField.bottomAnchor, constant: 20).isActive = true
+
         self.containerView.addSubview(priorityImage)
         priorityImage.translatesAutoresizingMaskIntoConstraints = false
         priorityImage.heightAnchor.constraint(equalToConstant: 22).isActive = true
         priorityImage.widthAnchor.constraint(equalToConstant: 22).isActive = true
         priorityImage.leadingAnchor.constraint(equalTo: self.containerView.leadingAnchor, constant: 25).isActive = true
-        priorityImage.topAnchor.constraint(equalTo: timeTextField.bottomAnchor, constant: 20).isActive = true
+        priorityImage.topAnchor.constraint(equalTo: reccuringTextField.bottomAnchor, constant: 20).isActive = true
         priorityImage.isUserInteractionEnabled = true
         priorityImage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(priorityTapped)))
 
@@ -710,7 +782,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         priorityLabel.heightAnchor.constraint(equalToConstant: 22).isActive = true
         priorityLabel.trailingAnchor.constraint(equalTo: self.containerView.trailingAnchor).isActive = true
         priorityLabel.leadingAnchor.constraint(equalTo: priorityImage.trailingAnchor, constant: 12).isActive = true
-        priorityLabel.topAnchor.constraint(equalTo: timeTextField.bottomAnchor, constant: 20).isActive = true
+        priorityLabel.topAnchor.constraint(equalTo: reccuringTextField.bottomAnchor, constant: 20).isActive = true
         priorityLabel.bottomAnchor.constraint(equalTo: self.containerView.bottomAnchor).isActive = true
         priorityLabel.isUserInteractionEnabled = true
         priorityLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(priorityTapped)))

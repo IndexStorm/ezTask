@@ -136,7 +136,7 @@ class SettingsCell: UITableViewCell {
         icon.widthAnchor.constraint(equalToConstant: 28).isActive = true
         icon.heightAnchor.constraint(equalToConstant: 28).isActive = true
         icon.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 16).isActive = true
-        icon.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 10).isActive = true
+        icon.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 13).isActive = true
 
         self.contentView.addSubview(cellSwitch)
         cellSwitch.translatesAutoresizingMaskIntoConstraints = false
@@ -163,7 +163,7 @@ class SettingsCell: UITableViewCell {
         subtitle.trailingAnchor.constraint(equalTo: cellSwitch.leadingAnchor, constant: -10).isActive = true
         subtitle.leadingAnchor.constraint(equalTo: icon.trailingAnchor, constant: 10).isActive = true
         subtitle.topAnchor.constraint(equalTo: label.bottomAnchor).isActive = true
-        subtitle.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -4).isActive = true
+        subtitle.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -5).isActive = true
     }
 
     override func prepareForReuse() {

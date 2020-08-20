@@ -20,6 +20,7 @@ public struct TaskModel: Equatable, Comparable {
     let alarmDate: Date?
     let dateCompleted: Date?
     let dateModified: Date
+    let reccuringDays: Int?
 
     init(task: NSManagedObject) {
         self.id = task.value(forKey: "id") as! UUID
@@ -32,9 +33,10 @@ public struct TaskModel: Equatable, Comparable {
         self.alarmDate = task.value(forKey: "alarmDate") as? Date
         self.dateCompleted = task.value(forKey: "dateCompleted") as? Date
         self.dateModified = task.value(forKey: "dateModified") as! Date
+        self.reccuringDays = task.value(forKey: "reccuringDays") as? Int
     }
 
-    init(id: UUID, mainText: String, subtasks: String?, isPriority: Bool, isDone: Bool, taskDate: Date, isAlarmSet: Bool, alarmDate: Date?, dateCompleted: Date?, dateModified: Date) {
+    init(id: UUID, mainText: String, subtasks: String?, isPriority: Bool, isDone: Bool, taskDate: Date, isAlarmSet: Bool, alarmDate: Date?, dateCompleted: Date?, dateModified: Date, reccuringDays: Int?) {
         self.id = id
         self.mainText = mainText
         self.subtasks = subtasks
@@ -45,10 +47,11 @@ public struct TaskModel: Equatable, Comparable {
         self.alarmDate = alarmDate
         self.dateCompleted = dateCompleted
         self.dateModified = dateModified
+        self.reccuringDays = reccuringDays
     }
 
     public static func == (lhs: TaskModel, rhs: TaskModel) -> Bool {
-        return lhs.id == rhs.id && lhs.mainText == rhs.mainText && lhs.subtasks == rhs.subtasks && lhs.isDone == rhs.isDone && lhs.isPriority == rhs.isPriority && lhs.taskDate == rhs.taskDate && lhs.isAlarmSet == rhs.isAlarmSet && lhs.alarmDate == rhs.alarmDate && lhs.dateCompleted == rhs.dateCompleted
+        return lhs.id == rhs.id && lhs.mainText == rhs.mainText && lhs.subtasks == rhs.subtasks && lhs.isDone == rhs.isDone && lhs.isPriority == rhs.isPriority && lhs.taskDate == rhs.taskDate && lhs.isAlarmSet == rhs.isAlarmSet && lhs.alarmDate == rhs.alarmDate && lhs.dateCompleted == rhs.dateCompleted && lhs.reccuringDays == rhs.reccuringDays
     }
 
     public static func < (lhs: TaskModel, rhs: TaskModel) -> Bool {

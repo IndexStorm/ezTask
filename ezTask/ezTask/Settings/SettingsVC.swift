@@ -94,6 +94,8 @@ class SettingsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
                 let vc = DailyNotificationsVC()
                 self.modalPresentationStyle = .overFullScreen
                 present(vc, animated: true, completion: {})
+                let generator = UIImpactFeedbackGenerator(style: .light)
+                generator.impactOccurred()
             default:
                 return
             }

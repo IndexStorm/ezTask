@@ -6,10 +6,10 @@
 //  Copyright © 2020 Mike Ovyan. All rights reserved.
 //
 
+import Amplitude
 import CoreData
 import Foundation
 import UIKit
-import Amplitude
 
 public func save(model: TaskModel, completion: () -> Void) {
     Amplitude.instance()?.logEvent("saved_task")
@@ -30,6 +30,7 @@ public func save(model: TaskModel, completion: () -> Void) {
     task.setValue(model.alarmDate, forKey: "alarmDate")
     task.setValue(model.dateCompleted, forKey: "dateCompleted")
     task.setValue(model.dateModified, forKey: "dateModified")
+    task.setValue(model.reccuringDays, forKey: "reccuringDays")
     do {
         try managedContext.save()
         completion()
@@ -56,7 +57,7 @@ public func setDone(id: String, completion: () -> Void) {
             res[0].setValue(false, forKey: "isAlarmSet")
             res[0].setValue(nil, forKey: "alarmDate")
             res[0].setValue(Date(), forKey: "dateCompleted")
-            res[0].setValue(Date(), forKey: "dateModified") // TODO: check if should change here
+            res[0].setValue(Date(), forKey: "dateModified")
         }
     } catch let error as NSError {
         print("Could not fetch. \(error), \(error.userInfo)")
@@ -140,9 +141,10 @@ public func update(id: String, newModel: TaskModel, completion: () -> Void) {
             res[0].setValue(newModel.isPriority, forKey: "isPriority")
             res[0].setValue(newModel.taskDate, forKey: "taskDate")
             res[0].setValue(newModel.isAlarmSet, forKey: "isAlarmSet")
-            res[0].setValue(newModel.alarmDate, forKey: "alarmDate") // TODO: check if works if nil
-            res[0].setValue(newModel.dateCompleted, forKey: "dateCompleted") // ^
+            res[0].setValue(newModel.alarmDate, forKey: "alarmDate")
+            res[0].setValue(newModel.dateCompleted, forKey: "dateCompleted")
             res[0].setValue(Date(), forKey: "dateModified")
+            res[0].setValue(newModel.reccuringDays, forKey: "reccuringDays")
         }
     } catch let error as NSError {
         print("Could not fetch. \(error), \(error.userInfo)")
