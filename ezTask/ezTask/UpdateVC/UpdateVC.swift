@@ -38,16 +38,17 @@ class UpdateVC: UIViewController {
 
     let textView: UITextView = {
         let txt = UITextView()
+        txt.backgroundColor = .clear
+
         txt.textContainer.lineBreakMode = .byWordWrapping
         let style = NSMutableParagraphStyle()
         style.lineSpacing = 1
         style.headIndent = 32
-        let attributes = [NSAttributedString.Key.paragraphStyle: style, NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: .regular)]
+        let attributes = [NSAttributedString.Key.paragraphStyle: style, NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: .regular), NSAttributedString.Key.foregroundColor: UIColor.label]
         txt.attributedText = NSAttributedString(string: "☑️  Added repeating tasks 🔄\n\n☑️  Added Russian language 🇷🇺\n\n☑️  Now you can modify daily notifications 💌\n\n☑️  Fixed more bugs 🛠\n\n☑️  Working hard on new features 💪\n\n🙊  Do not hesitate to give your feedback".localized, attributes: attributes)
-
         return txt
     }()
-    
+
     let feedback: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("label.giveFeedback".localized, for: .normal)
@@ -60,7 +61,7 @@ class UpdateVC: UIViewController {
         button.layer.shadowOffset = CGSize(width: 0, height: 0)
         button.layer.shadowRadius = 3
         button.addTarget(self, action: #selector(feedbackPressed), for: .touchUpInside)
-        
+
         return button
     }()
 
@@ -76,14 +77,14 @@ class UpdateVC: UIViewController {
         button.layer.shadowOffset = CGSize(width: 0, height: 0)
         button.layer.shadowRadius = 3
         button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
-        
+
         return button
     }()
 
     @objc func buttonPressed() {
         dismiss(animated: true, completion: {})
     }
-    
+
     @objc func feedbackPressed() {
         let email = "pleasekillmyvibe@gmail.com"
         if let url = URL(string: "mailto:\(email)") {
@@ -122,10 +123,9 @@ class UpdateVC: UIViewController {
         textView.widthAnchor.constraint(lessThanOrEqualToConstant: 310).isActive = true
         textView.sizeToFit()
         textView.isScrollEnabled = false
-        
+
         feedback.pin.bottom(165).hCenter().width(250).height(50)
-        
+
         button.pin.bottom(100).hCenter().width(250).height(50)
-        
     }
 }
