@@ -41,6 +41,7 @@
 "label.evening" = "Вечер";
 "label.days" = "День";
 "lable.repeat" = "Повторять";
+"lable.remove" = "Удалить";
 
 
 "Indigo" = "Индиго";
@@ -57,8 +58,8 @@
 "Blush Pink" = "Румянец";
 
 
-
-"Repeat every %d days" = "Повторять каждые %d дней";
+"Repeat every %d days" = "Kek";
+"Repeat every 2 days" = "Kek";
 "Set equal to the number of today's tasks" = "Показывать количество задач на сегодня";
 "Send morning and evening notifications" = "Отправлять утренние и вечерние уведомления";
 "Hide completed tasks in List" = "Скрывать выполненные на неделе";

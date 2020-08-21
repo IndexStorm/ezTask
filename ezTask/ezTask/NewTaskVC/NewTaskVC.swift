@@ -241,7 +241,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate, UIPi
         let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 35))
         toolbar.sizeToFit()
         let doneBtn = UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: #selector(timePickerDonePressed))
-        let cancelBtn = UIBarButtonItem(title: "Remove", style: .plain, target: nil, action: #selector(timePickerCancelPressed))
+        let cancelBtn = UIBarButtonItem(title: "lable.remove".localized, style: .plain, target: nil, action: #selector(timePickerCancelPressed))
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         toolbar.setItems([cancelBtn, flexibleSpace, doneBtn], animated: true)
         timeTextField.inputAccessoryView = toolbar
@@ -259,7 +259,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate, UIPi
         let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 35))
         toolbar.sizeToFit()
         let doneBtn = UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: #selector(reccuringPickerDonePressed))
-        let cancelBtn = UIBarButtonItem(title: "Remove", style: .plain, target: nil, action: #selector(reccuringPickerCancelPressed))
+        let cancelBtn = UIBarButtonItem(title: "lable.remove".localized, style: .plain, target: nil, action: #selector(reccuringPickerCancelPressed))
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         toolbar.setItems([cancelBtn, flexibleSpace, doneBtn], animated: true)
         reccuringTextField.inputAccessoryView = toolbar

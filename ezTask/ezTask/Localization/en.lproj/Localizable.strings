@@ -41,6 +41,7 @@
 "label.evening" = "Evening";
 "label.days" = "Days";
 "lable.repeat" = "Repeat";
+"lable.remove" = "Remove";
 
 
 "Indigo" = "Indigo";
@@ -55,6 +56,7 @@
 "Salmon" = "Salmon";
 "Black" = "Black";
 "Blush Pink" = "Blush Pink";
+
 
 "Repeat every %d days" = "Repeat every %d days";
 "Set equal to the number of today's tasks" = "Set equal to the number of today's tasks";
