@@ -534,10 +534,8 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate, UIPi
 
     @objc
     func datePickerCancelPressed() {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .full
-        formatter.timeStyle = .none
-        dateTextField.text = formatter.string(from: Date()).capitalized
+        datePicker.date = Date()
+        updateDateText()
         self.view.endEditing(true)
         let generator = UIImpactFeedbackGenerator(style: .light)
         generator.impactOccurred()

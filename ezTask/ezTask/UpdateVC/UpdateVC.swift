@@ -86,8 +86,7 @@ class UpdateVC: UIViewController {
     }
 
     @objc func feedbackPressed() {
-        let email = "pleasekillmyvibe@gmail.com"
-        if let url = URL(string: "mailto:\(email)") {
+        if let url = URL(string: "itms-apps://apple.com/app/id1526203030") {
             UIApplication.shared.open(url)
         }
     }

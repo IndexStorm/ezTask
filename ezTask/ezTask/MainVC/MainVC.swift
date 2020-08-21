@@ -1156,9 +1156,9 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     }
 
     func checkUpdate() {
-        if !UserDefaults.standard.bool(forKey: "1.3.3(4)") {
+        if !UserDefaults.standard.bool(forKey: "1.3.3(5)") {
             let updateVC = UpdateVC()
-            present(updateVC, animated: true, completion: { UserDefaults.standard.set(true, forKey: "1.3.3(4)") })
+            present(updateVC, animated: true, completion: { UserDefaults.standard.set(true, forKey: "1.3.3(5)") })
         }
     }
 
