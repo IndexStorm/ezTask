@@ -919,7 +919,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
             formatter.dateFormat = "d MMMM, yyyy"
         }
         let formattedDate = formatter.string(from: date)
-        dateLabel.text = formattedDate
+        dateLabel.text = formattedDate.capitalized
         if date.isToday() {
             dayLabel.text = "label.today".localized
         } else if date.isTomorrow() {
@@ -927,7 +927,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         } else {
             let formatter = DateFormatter()
             formatter.dateFormat = "EEEE"
-            dayLabel.text = formatter.string(from: date)
+            dayLabel.text = formatter.string(from: date).capitalized
         }
     }
 
@@ -1117,7 +1117,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     }
 
     func checkUpdate() {
-        if !UserDefaults.standard.bool(forKey: "1.3.3") {
+        if !UserDefaults.standard.bool(forKey: "1.3.2") {
             let updateVC = UpdateVC()
             present(updateVC, animated: true, completion: { UserDefaults.standard.set(true, forKey: "1.3.3") })
         }

@@ -13,27 +13,7 @@
 			<key>NSStringFormatValueTypeKey</key>
 			<string>d</string>
 			<key>one</key>
-			<string>Repeat every %d day</string>
-			<key>few</key>
-			<string>Repeat every %d days</string>
-			<key>many</key>
-			<string>Repeat every %d days</string>
-			<key>other</key>
-			<string>Repeat every %d days</string>
-		</dict>
-	</dict>
-	<key>Повторять каждые %d дней</key>
-	<dict>
-		<key>NSStringLocalizedFormatKey</key>
-		<string>%#@VARIABLE@</string>
-		<key>VARIABLE</key>
-		<dict>
-			<key>NSStringFormatSpecTypeKey</key>
-			<string>NSStringPluralRuleType</string>
-			<key>NSStringFormatValueTypeKey</key>
-			<string>d</string>
-			<key>one</key>
-			<string>Повторять каждый %d день</string>
+			<string>Повторять каждый день</string>
 			<key>few</key>
 			<string>Повторять каждые %d дня</string>
 			<key>many</key>

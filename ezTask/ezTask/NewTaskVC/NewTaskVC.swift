@@ -233,7 +233,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate, UIPi
         let formatter = DateFormatter()
         formatter.dateStyle = .full
         formatter.timeStyle = .none
-        dateTextField.text = formatter.string(from: chosenDate)
+        dateTextField.text = formatter.string(from: chosenDate).capitalized
         datePicker.date = chosenDate
     }
 
@@ -336,10 +336,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate, UIPi
         priorityImage.image = UIImage(named: isPriority ? "square_filled" : "square")
         datePicker.date = model.taskDate
 
-        let formatter = DateFormatter()
-        formatter.dateStyle = .full
-        formatter.timeStyle = .none
-        dateTextField.text = formatter.string(from: datePicker.date)
+        updateDateText()
         if model.isAlarmSet, model.taskDate.startOfDay >= Date().startOfDay {
             timePicker.date = model.alarmDate!
             let formatter = DateFormatter()
@@ -521,10 +518,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate, UIPi
 
     @objc
     func datePickerDonePressed() {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .full
-        formatter.timeStyle = .none
-        dateTextField.text = formatter.string(from: datePicker.date)
+        updateDateText()
         self.view.endEditing(true)
         let generator = UIImpactFeedbackGenerator(style: .light)
         generator.impactOccurred()
@@ -536,7 +530,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate, UIPi
         let formatter = DateFormatter()
         formatter.dateStyle = .full
         formatter.timeStyle = .none
-        dateTextField.text = formatter.string(from: Date())
+        dateTextField.text = formatter.string(from: Date()).capitalized
         self.view.endEditing(true)
         let generator = UIImpactFeedbackGenerator(style: .light)
         generator.impactOccurred()
@@ -545,11 +539,20 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate, UIPi
 
     @objc
     func datePickerChanged(picker: UIDatePicker) {
+        updateDateText()
+        setTimePickerDate()
+    }
+
+    func updateDateText() {
         let formatter = DateFormatter()
         formatter.dateStyle = .full
         formatter.timeStyle = .none
-        dateTextField.text = formatter.string(from: datePicker.date)
-        setTimePickerDate()
+        if Locale.current.identifier == "en" {
+            formatter.dateFormat = "eeee, MMMM d, yyyy"
+        } else {
+            formatter.dateFormat = "eeee, d MMMM yyyy"
+        }
+        dateTextField.text = formatter.string(from: datePicker.date).capitalized
     }
 
     func setTimePickerDate() {

@@ -82,7 +82,7 @@ class DayCell: UICollectionViewCell {
             contentView.alpha = 0.6
         }
         dayNumber.text = "\(number)"
-        dayName.text = name
+        dayName.text = name.capitalized
     }
 
     override func prepareForReuse() {

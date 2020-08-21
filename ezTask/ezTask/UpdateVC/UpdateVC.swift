@@ -38,13 +38,13 @@ class UpdateVC: UIViewController {
 
     let textView: UITextView = {
         let txt = UITextView()
+//        txt.text = "ejdne ew nwe nfwe nfewn fwenf wej"
         txt.textContainer.lineBreakMode = .byWordWrapping
         let style = NSMutableParagraphStyle()
         style.lineSpacing = 2
-        style.headIndent = 28
-
+        style.headIndent = 32
         let attributes = [NSAttributedString.Key.paragraphStyle: style, NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: .regular)]
-        txt.attributedText = NSAttributedString(string: "☑️ Added repeating tasks 🔄\n\n☑️ Added Russian language 🇷🇺\n\n☑️ Now you can modify daily notifications\n\n☑️ Fixed more bugs\n\n☑️ Working hard on new features!".localized, attributes: attributes)
+        txt.attributedText = NSAttributedString(string: "☑️  Added repeating tasks 🔄\n\n☑️  Added Russian language 🇷🇺\n\n☑️  Now you can modify daily notifications 💌\n\n☑️  Fixed more bugs 🛠\n\n☑️  Working hard on new features!".localized, attributes: attributes)
 
         return txt
     }()
@@ -90,13 +90,16 @@ class UpdateVC: UIViewController {
             .sizeToFit()
 
         container.addSubview(textView)
-        textView.pin
-            .below(of: subtitle, aligned: .center)
-            .marginVertical(10)
-            .width(container.frame.size.width - 70)
-            .height(240)
-        
         container.addSubview(button)
+        textView.translatesAutoresizingMaskIntoConstraints = false
+        textView.topAnchor.constraint(equalTo: subtitle.bottomAnchor, constant: 10).isActive = true
+        textView.bottomAnchor.constraint(equalTo: button.topAnchor, constant: -10).isActive = true
+        textView.centerXAnchor.constraint(equalTo: container.centerXAnchor).isActive = true
+        textView.widthAnchor.constraint(lessThanOrEqualToConstant: 310).isActive = true
+        textView.sizeToFit()
+        textView.isScrollEnabled = false
+        
+        
         button.pin.bottom(100).hCenter().width(250).height(50)
     }
 }
