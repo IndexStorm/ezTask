@@ -19,7 +19,7 @@
 "label.appBadge" = "Значок приложения";
 "label.dailyNotifications" = "Ежедневные уведомления";
 "label.hideCompleted" = "Скрыть выполненные";
-"label.mailUs" = "Напишите нам";
+"label.giveFeedback" = "Напишите нам";
 "label.rateOnTheAppStore" = "Оцените приложение";
 "label.completed" = "Выполненные";
 "label.theme" = "Тема";
@@ -96,4 +96,4 @@
 
 "What's new" = "Что новенького?";
 "Version: 1.3.3" = "Версия: 1.3.3";
-"☑️  Added repeating tasks 🔄\n\n☑️  Added Russian language 🇷🇺\n\n☑️  Now you can modify daily notifications 💌\n\n☑️  Fixed more bugs 🛠\n\n☑️  Working hard on new features!" = "☑️  Добавили повторение задач 🔄\n\n☑️  Добавили русский язык 🇷🇺\n\n☑️  Настройте ежедневные уведомления 💌\n\n☑️  Что-то починили и подкрутили 🛠\n\n☑️  Продолжаем работать дальше!";
+"☑️  Added repeating tasks 🔄\n\n☑️  Added Russian language 🇷🇺\n\n☑️  Now you can modify daily notifications 💌\n\n☑️  Fixed more bugs 🛠\n\n☑️  Working hard on new features 💪\n\n🙊  Do not hesitate to give your feedback" = "☑️  Добавили повторение задач 🔄\n\n☑️  Добавили русский язык 🇷🇺\n\n☑️  Настройте ежедневные уведомления 💌\n\n☑️  Что-то починили и подкрутили 🛠\n\n☑️  Продолжаем работать дальше 💪\n\n🙊  Не стесняйтесь писать нам о всех замечаниях и пожеланиях";

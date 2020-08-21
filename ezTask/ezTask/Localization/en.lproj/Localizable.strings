@@ -19,7 +19,7 @@
 "label.appBadge" = "App Badge";
 "label.dailyNotifications" = "Daily Notifications";
 "label.hideCompleted" = "Hide Completed";
-"label.mailUs" = "Mail us";
+"label.giveFeedback" = "Give Feedback";
 "label.rateOnTheAppStore" = "Rate on the AppStore";
 "label.completed" = "Completed";
 "label.theme" = "Theme";
@@ -100,4 +100,4 @@
 
 "What's new" = "What's new";
 "Version: 1.3.3" = "Version: 1.3.3";
-"☑️  Added repeating tasks 🔄\n\n☑️  Added Russian language 🇷🇺\n\n☑️  Now you can modify daily notifications 💌\n\n☑️  Fixed more bugs 🛠\n\n☑️  Working hard on new features!" = "☑️  Added repeating tasks 🔄\n\n☑️  Added Russian language 🇷🇺\n\n☑️  Now you can modify daily notifications 💌\n\n☑️  Fixed more bugs 🛠\n\n☑️  Working hard on new features!";
+"☑️  Added repeating tasks 🔄\n\n☑️  Added Russian language 🇷🇺\n\n☑️  Now you can modify daily notifications 💌\n\n☑️  Fixed more bugs 🛠\n\n☑️  Working hard on new features 💪\n\n🙊  Do not hesitate to give your feedback" = "☑️  Added repeating tasks 🔄\n\n☑️  Added Russian language 🇷🇺\n\n☑️  Now you can modify daily notifications 💌\n\n☑️  Fixed more bugs 🛠\n\n☑️  Working hard on new features 💪\n\n🙊  Do not hesitate to give your feedback";

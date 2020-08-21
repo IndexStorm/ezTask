@@ -107,7 +107,7 @@ class SettingsCell: UITableViewCell {
         if indexPath.section == 1 {
             switch indexPath.row {
             case 0:
-                label.text = "label.mailUs".localized
+                label.text = "label.giveFeedback".localized
                 subtitle.text = "Feel free to mail us any questions".localized
                 icon.image = UIImage(named: "mail")
                 cellSwitch.alpha = 0
