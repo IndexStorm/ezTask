@@ -18,6 +18,9 @@ public func removeNotificationsById(id: String) {
 }
 
 func setupReminder(task: TaskModel) {
+    if !task.isAlarmSet {
+        return
+    }
     let content = UNMutableNotificationContent()
     content.title = task.mainText
     content.sound = .default
@@ -55,7 +58,7 @@ func scheduleNotification(targetDate: Date, content: UNMutableNotificationConten
 func completeTaskFromNotification(notification: UNNotification) {
     let userInfo = notification.request.content.userInfo
     let id = userInfo["id"] as! String
-    setDone(id: id, completion: {})
+    setDone(id: id, completion: {_ in})
 }
 
 func postponeNotification(minutes: Double, notification: UNNotification) {

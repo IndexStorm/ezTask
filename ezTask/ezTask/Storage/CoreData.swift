@@ -17,6 +17,7 @@ public func save(model: TaskModel, completion: () -> Void) {
         UIApplication.shared.delegate as? AppDelegate else {
         return
     }
+    setupReminder(task: model)
     let managedContext = appDelegate.persistentContainer.viewContext
     let entity = NSEntityDescription.entity(forEntityName: "TaskCoreModel", in: managedContext)!
     let task = NSManagedObject(entity: entity, insertInto: managedContext)
@@ -40,31 +41,35 @@ public func save(model: TaskModel, completion: () -> Void) {
     }
 }
 
-public func setDone(id: String, completion: () -> Void) {
+public func setDone(id: String, completion: (_ newId: String?) -> Void) {
     Amplitude.instance()?.logEvent("set_done_task")
-    // removing alarms
     removeNotificationsById(id: id)
     guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
         return
     }
+    var newReccuringId: String?
     let managedContext = appDelegate.persistentContainer.viewContext
     let fetchRequest = NSFetchRequest<TaskCoreModel>(entityName: "TaskCoreModel")
     fetchRequest.predicate = NSPredicate(format: "id = %@", id)
     do {
         let res = try managedContext.fetch(fetchRequest)
         if !res.isEmpty {
+            if res[0].value(forKey: "reccuringDays") != nil {
+                newReccuringId = repeatReccuringTask(task: TaskModel(task: res[0]))
+            }
             res[0].setValue(true, forKey: "isDone")
             res[0].setValue(false, forKey: "isAlarmSet")
             res[0].setValue(nil, forKey: "alarmDate")
             res[0].setValue(Date(), forKey: "dateCompleted")
             res[0].setValue(Date(), forKey: "dateModified")
+            res[0].setValue(nil, forKey: "reccuringDays")
         }
     } catch let error as NSError {
         print("Could not fetch. \(error), \(error.userInfo)")
     }
     do {
         try managedContext.save()
-        completion()
+        completion(newReccuringId)
         sendMorningReminder()
     } catch {
         print("Failed to save updated")
@@ -129,6 +134,7 @@ public func update(id: String, newModel: TaskModel, completion: () -> Void) {
     guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
         return
     }
+    setupReminder(task: newModel)
     let managedContext = appDelegate.persistentContainer.viewContext
     let fetchRequest = NSFetchRequest<TaskCoreModel>(entityName: "TaskCoreModel")
     fetchRequest.predicate = NSPredicate(format: "id = %@", id)
@@ -171,4 +177,12 @@ func fetchAllTasks() -> [TaskModel] {
         print("Could not fetch. \(error), \(error.userInfo)")
     }
     return []
+}
+
+func repeatReccuringTask(task: TaskModel) -> String {
+    let newAlarmDate = task.isAlarmSet ? task.alarmDate!.addDays(add: task.reccuringDays!) : nil
+    let newId = UUID()
+    let newTask = TaskModel(id: newId, mainText: task.mainText, subtasks: task.subtasks, isPriority: task.isPriority, isDone: false, taskDate: task.taskDate.addDays(add: task.reccuringDays!), isAlarmSet: task.isAlarmSet, alarmDate: newAlarmDate, dateCompleted: nil, dateModified: Date(), reccuringDays: task.reccuringDays)
+    save(model: newTask, completion: {})
+    return newId.uuidString
 }

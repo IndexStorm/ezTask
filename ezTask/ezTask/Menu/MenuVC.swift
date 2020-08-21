@@ -59,11 +59,11 @@ class MenuVC: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .secondarySystemBackground
-        
+
         self.tableView.backgroundColor = .secondarySystemBackground
         self.tableView.transform = CGAffineTransform(scaleX: 1, y: -1)
         self.tableView.separatorStyle = UITableViewCell.SeparatorStyle.none
-        self.tableView.contentInset.top = 32
+        self.tableView.contentInset.top = 64
         self.tableView.isScrollEnabled = false
     }
 

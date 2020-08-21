@@ -17,6 +17,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate, UIPi
     var isPriority: Bool = false
     var isAlarmSet: Bool = false
     var isDone: Bool = false
+    var isReccuring: Bool = false
     public var returnTask: ((_ task: TaskModel) -> Void)?
     public var model: TaskModel?
     public var chosenDate: Date = Date()
@@ -184,6 +185,16 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate, UIPi
         return field
     }()
 
+    private let deleteReccuringImage: UIImageView = {
+        let image = UIImageView()
+        image.image = UIImage(named: "close")
+        image.contentMode = .scaleAspectFit
+        image.tintColor = .systemGray4
+        image.alpha = 0
+
+        return image
+    }()
+
     private let reccuringPicker = UIPickerView()
 
     private let priorityImage: UIImageView = {
@@ -244,18 +255,40 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate, UIPi
     func createReccuringPicker() {
         reccuringPicker.delegate = self
         reccuringPicker.dataSource = self
+        reccuringPicker.selectRow(0, inComponent: 0, animated: false)
         let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 35))
         toolbar.sizeToFit()
-        let doneBtn = UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: #selector(timePickerDonePressed))
-        let cancelBtn = UIBarButtonItem(title: "Remove", style: .plain, target: nil, action: #selector(timePickerCancelPressed))
+        let doneBtn = UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: #selector(reccuringPickerDonePressed))
+        let cancelBtn = UIBarButtonItem(title: "Remove", style: .plain, target: nil, action: #selector(reccuringPickerCancelPressed))
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         toolbar.setItems([cancelBtn, flexibleSpace, doneBtn], animated: true)
         reccuringTextField.inputAccessoryView = toolbar
         reccuringTextField.inputView = reccuringPicker
     }
 
+    @objc func reccuringPickerDonePressed() {
+        let days = reccuringPicker.selectedRow(inComponent: 0) + 1
+        reccuringTextField.text = "Repeat every \(days) days"
+        reccuringImage.tintColor = ThemeManager.currentTheme().mainColor
+        self.view.endEditing(true)
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
+        deleteReccuringImage.alpha = 1
+        isReccuring = true
+    }
+
+    @objc func reccuringPickerCancelPressed() {
+        reccuringTextField.text = ""
+        self.view.endEditing(true)
+        reccuringImage.tintColor = .systemGray2
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
+        deleteReccuringImage.alpha = 0
+        isReccuring = false
+    }
+
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        2
+        return 2
     }
 
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
@@ -268,14 +301,24 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate, UIPi
 
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         if component == 0 {
-            return String(row)
+            return String(row + 1)
         } else {
             return "Days"
         }
     }
 
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        print(row)
+        if component == 0 {
+            let days = row + 1
+            reccuringTextField.text = "Repeat every \(days) days"
+            reccuringImage.tintColor = ThemeManager.currentTheme().mainColor
+            deleteReccuringImage.alpha = 1
+            isReccuring = true
+        }
+    }
+
+    @objc func deleteReccuringTapped() {
+        reccuringPickerCancelPressed()
     }
 
     private func loadModel() {
@@ -286,6 +329,10 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate, UIPi
         mainTextView.text = model.mainText
         isPriority = model.isPriority
         isDone = model.isDone
+        if model.reccuringDays != nil {
+            reccuringPicker.selectRow(model.reccuringDays! - 1, inComponent: 0, animated: false)
+            reccuringPickerDonePressed()
+        }
         priorityImage.image = UIImage(named: isPriority ? "square_filled" : "square")
         datePicker.date = model.taskDate
 
@@ -316,6 +363,8 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate, UIPi
             dateTextField.isUserInteractionEnabled = false
             dateTextField.textColor = .systemGray2
             dateImage.tintColor = .systemGray2
+            reccuringImage.alpha = 0
+            reccuringTextField.alpha = 0
         }
     }
 
@@ -627,7 +676,9 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate, UIPi
         if dataFromSubtasks != nil, mainTextView.text == "" {
             mainTextView.text = "label.emptyTask".localized
         }
-        let task = TaskModel(id: id, mainText: mainTextView.text, subtasks: dataFromSubtasks, isPriority: isPriority, isDone: isDone, taskDate: datePicker.date, isAlarmSet: isAlarmSet, alarmDate: isAlarmSet ? timePicker.date : nil, dateCompleted: dateCompleted, dateModified: Date(), reccuringDays: nil)
+        let days = reccuringPicker.selectedRow(inComponent: 0) + 1
+        let reccuringDays = isReccuring ? days : nil
+        let task = TaskModel(id: id, mainText: mainTextView.text, subtasks: dataFromSubtasks, isPriority: isPriority, isDone: isDone, taskDate: datePicker.date, isAlarmSet: isAlarmSet, alarmDate: isAlarmSet ? timePicker.date : nil, dateCompleted: dateCompleted, dateModified: Date(), reccuringDays: reccuringDays)
         returnTask?(task)
     }
 
@@ -764,9 +815,18 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate, UIPi
         self.containerView.addSubview(reccuringTextField)
         reccuringTextField.translatesAutoresizingMaskIntoConstraints = false
         reccuringTextField.heightAnchor.constraint(equalToConstant: 22).isActive = true
-        reccuringTextField.trailingAnchor.constraint(equalTo: self.containerView.trailingAnchor).isActive = true
         reccuringTextField.leadingAnchor.constraint(equalTo: reccuringImage.trailingAnchor, constant: 12).isActive = true
         reccuringTextField.topAnchor.constraint(equalTo: timeTextField.bottomAnchor, constant: 20).isActive = true
+
+        self.containerView.addSubview(deleteReccuringImage)
+        deleteReccuringImage.translatesAutoresizingMaskIntoConstraints = false
+        deleteReccuringImage.heightAnchor.constraint(equalToConstant: 14).isActive = true
+        deleteReccuringImage.widthAnchor.constraint(equalToConstant: 14).isActive = true
+        deleteReccuringImage.centerYAnchor.constraint(equalTo: reccuringTextField.centerYAnchor).isActive = true
+        deleteReccuringImage.trailingAnchor.constraint(equalTo: self.containerView.trailingAnchor, constant: -25).isActive = true
+        deleteReccuringImage.isUserInteractionEnabled = true
+        deleteReccuringImage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(deleteReccuringTapped)))
+        reccuringTextField.trailingAnchor.constraint(equalTo: deleteReccuringImage.leadingAnchor, constant: -10).isActive = true
 
         self.containerView.addSubview(priorityImage)
         priorityImage.translatesAutoresizingMaskIntoConstraints = false

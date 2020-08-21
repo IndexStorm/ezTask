@@ -531,7 +531,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
                 self.didReceivedUpdatedTask(task: task)
                 self.fetchTasks()
                 if self.isList {
-                    let (row, section) = self.getRowAndSectionOfTask(task: task)
+                    let (row, section) = self.getRowAndSectionOfTask(id: task.id)
                     self.listTable.performBatchUpdates({
                         cell.configure(task: task)
                         tableView.moveRow(at: indexPath, to: IndexPath(row: row, section: section))
@@ -560,23 +560,19 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
     func didReceivedUpdatedTask(task: TaskModel) {
         update(id: task.id.uuidString, newModel: task, completion: {
-            removeNotificationsById(id: task.id.uuidString)
-            if task.isAlarmSet {
-                setupReminder(task: task)
-            }
             let generator = UINotificationFeedbackGenerator()
             generator.notificationOccurred(.success)
         })
     }
 
-    func getRowAndSectionOfTask(task: TaskModel) -> (Int, Int) {
-        if let row = self.allTasks.tasksForToday().firstIndexById(id: task.id.uuidString) {
+    func getRowAndSectionOfTask(id: UUID) -> (Int, Int) {
+        if let row = self.allTasks.tasksForToday().firstIndexById(id: id.uuidString) {
             return (row, 0)
-        } else if let row = self.allTasks.tasksForTommorow().firstIndexById(id: task.id.uuidString) {
+        } else if let row = self.allTasks.tasksForTommorow().firstIndexById(id: id.uuidString) {
             return (row, 1)
-        } else if let row = self.allTasks.tasksForThisWeek().firstIndexById(id: task.id.uuidString) {
+        } else if let row = self.allTasks.tasksForThisWeek().firstIndexById(id: id.uuidString) {
             return (row, 2)
-        } else if let row = self.allTasks.tasksForLater().firstIndexById(id: task.id.uuidString) {
+        } else if let row = self.allTasks.tasksForLater().firstIndexById(id: id.uuidString) {
             return (row, 3)
         }
 
@@ -601,27 +597,59 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
                     // couldn't load file :(
                 }
                 if !isDone {
-                    setDone(id: id.uuidString, completion: {
+                    setDone(id: id.uuidString, completion: { newReccuringId in
                         fetchTasks()
                         if isList {
-                            if UserDefaults.standard.bool(forKey: "hideCompleted") {
-                                self.listTable.performBatchUpdates({
-                                    cell.setCellDone()
-                                    self.listTable.deleteRows(at: [indexPath!], with: .none)
-                                }, completion: { (_: Bool) in
-                                    self.listTable.reloadData()
-                                })
-                            } else {
-                                let (row, section) = getRowAndSectionOfTask(task: task)
-                                listTable.performBatchUpdates({
-                                    cell.setCellDone()
+//                            if newReccuringId != nil {
+//                                let (rowNew, sectionNew) = getRowAndSectionOfTask(id: UUID(uuidString: newReccuringId!)!)
+//                                listTable.performBatchUpdates({
+//                                    cell.setCellDone()
+//                                    if UserDefaults.standard.bool(forKey: "hideCompleted") {
+//                                        listTable.deleteRows(at: [indexPath!], with: .none)
+//                                    } else {
+//                                        let (row, section) = getRowAndSectionOfTask(id: task.id)
+//                                        listTable.moveRow(at: indexPath!, to: IndexPath(row: row, section: section))
+//                                    }
+//                                    listTable.insertRows(at: [IndexPath(row: rowNew, section: sectionNew)], with: rowNew == 0 ? .top : .left)
+//                                }, completion: { (_: Bool) in
+//                                    self.listTable.reloadData()
+//                                })
+//                                return
+//                            }
+//                            if UserDefaults.standard.bool(forKey: "hideCompleted") {
+//                                self.listTable.performBatchUpdates({
+//                                    cell.setCellDone()
+//                                    self.listTable.deleteRows(at: [indexPath!], with: .none)
+//                                }, completion: { (_: Bool) in
+//                                    self.listTable.reloadData()
+//                                })
+//                            } else {
+//                                let (row, section) = getRowAndSectionOfTask(id: task.id)
+//                                listTable.performBatchUpdates({
+//                                    cell.setCellDone()
+//                                    listTable.moveRow(at: indexPath!, to: IndexPath(row: row, section: section))
+//                                }, completion: { (_: Bool) in
+//                                    self.listTable.reloadData()
+//                                })
+//                            }
+
+                            listTable.performBatchUpdates({
+                                cell.setCellDone()
+                                if newReccuringId != nil {
+                                    let (rowNew, sectionNew) = getRowAndSectionOfTask(id: UUID(uuidString: newReccuringId!)!)
+                                    listTable.insertRows(at: [IndexPath(row: rowNew, section: sectionNew)], with: rowNew == 0 ? .top : .left)
+                                }
+                                if UserDefaults.standard.bool(forKey: "hideCompleted") {
+                                    listTable.deleteRows(at: [indexPath!], with: .none)
+                                } else {
+                                    let (row, section) = getRowAndSectionOfTask(id: task.id)
                                     listTable.moveRow(at: indexPath!, to: IndexPath(row: row, section: section))
-                                }, completion: { (_: Bool) in
-                                    self.listTable.reloadData()
-                                })
-                            }
+                                }
+                            }, completion: { (_: Bool) in
+                                self.listTable.reloadData()
+                            })
+
                         } else {
-                            daysCollectionView?.reloadData()
                             tasksTable.performBatchUpdates({
                                 cell.setCellDone()
                                 if let row = self.allTasksForDay.firstIndexById(id: task.id.uuidString) {
@@ -636,7 +664,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
                     setUndone(id: id.uuidString, completion: {
                         fetchTasks()
                         if isList {
-                            let (row, section) = getRowAndSectionOfTask(task: task)
+                            let (row, section) = getRowAndSectionOfTask(id: task.id)
                             listTable.performBatchUpdates({
                                 cell.setCellUndone()
                                 listTable.moveRow(at: indexPath!, to: IndexPath(row: row, section: section))
@@ -665,7 +693,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         save(model: task, completion: {
             fetchTasks()
             if isList {
-                let (row, section) = getRowAndSectionOfTask(task: task)
+                let (row, section) = getRowAndSectionOfTask(id: task.id)
                 listTable.insertRows(at: [IndexPath(row: row, section: section)], with: .left)
             } else {
                 if task.taskDate.startOfDay == Date().addDays(add: chosenIndex).startOfDay { // on current page
@@ -827,10 +855,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         })
     }
 
-    func didReceivedNewTask(task: TaskModel) { // TODO: make global
-        if task.isAlarmSet {
-            setupReminder(task: task)
-        }
+    func didReceivedNewTask(task: TaskModel) {
         self.insertNewTask(task: task)
         let generator = UINotificationFeedbackGenerator()
         generator.notificationOccurred(.success)
@@ -1134,13 +1159,13 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
     func checkFirstLaunch() {
         if UserDefaults.standard.integer(forKey: "morningHour") == 0 {
+            UserDefaults.standard.set(true, forKey: "dailyNotifications")
             UserDefaults.standard.set(8, forKey: "morningHour")
             UserDefaults.standard.set(0, forKey: "morningMinute")
             UserDefaults.standard.set(21, forKey: "eveningHour")
             UserDefaults.standard.set(0, forKey: "eveningMinute")
         }
         if !UserDefaults.standard.bool(forKey: "notFirstLaunch") {
-            UserDefaults.standard.set(true, forKey: "dailyNotifications")
             createInitialTasks()
             let onboarding = OnboardingVC()
             onboarding.modalPresentationStyle = .fullScreen
@@ -1279,5 +1304,7 @@ extension MainVC {
             save(model: task, completion: {})
         }
         fetchTasks()
+        tasksTable.reloadData()
+        daysCollectionView?.reloadData()
     }
 }

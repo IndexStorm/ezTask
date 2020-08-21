@@ -19,6 +19,8 @@ class TaskCell: UITableViewCell {
     public var model: TaskModel?
     var alarmWidth: NSLayoutConstraint!
     var subtaskWidth: NSLayoutConstraint!
+    var reccuringWidth: NSLayoutConstraint!
+    var reccuringLead: NSLayoutConstraint!
 
     static let identifier = "TaskCell"
 
@@ -158,6 +160,15 @@ class TaskCell: UITableViewCell {
         return image
     }()
 
+    private let reccuringIcon: UIImageView = {
+        let image = UIImageView()
+        image.image = UIImage(named: "repeat")
+        image.contentMode = .scaleAspectFit
+        image.tintColor = .systemGray
+
+        return image
+    }()
+
     public func configure(task: TaskModel) {
         self.model = task
         self.titleLabel.text = task.mainText
@@ -170,7 +181,7 @@ class TaskCell: UITableViewCell {
             self.dayLabel.text = "label.tomorrow".localized
         } else {
             let formatter = DateFormatter()
-            formatter.dateFormat = "dd MMMM"
+            formatter.dateFormat = "d MMMM"
             self.dayLabel.text = formatter.string(from: task.taskDate)
         }
 
@@ -192,8 +203,16 @@ class TaskCell: UITableViewCell {
 
         if task.subtasks != nil {
             subtaskWidth.constant = 10
+            reccuringLead.constant = 5
         } else {
             subtaskWidth.constant = 0
+            reccuringLead.constant = 0
+        }
+
+        if task.reccuringDays != nil {
+            reccuringWidth.constant = 10
+        } else {
+            reccuringWidth.constant = 0
         }
     }
 
@@ -204,7 +223,7 @@ class TaskCell: UITableViewCell {
             self.dayLabel.text = "label.tomorrow".localized
         } else {
             let formatter = DateFormatter()
-            formatter.dateFormat = "dd MMMM"
+            formatter.dateFormat = "d MMMM"
             self.dayLabel.text = formatter.string(from: date)
         }
     }
@@ -235,6 +254,7 @@ class TaskCell: UITableViewCell {
         self.contentView.addSubview(dayLabel)
         self.contentView.addSubview(alarmView)
         self.contentView.addSubview(subtasksIcon)
+        self.contentView.addSubview(reccuringIcon)
 
         priorityIcon.translatesAutoresizingMaskIntoConstraints = false
         priorityIcon.heightAnchor.constraint(equalToConstant: 10).isActive = true
@@ -274,6 +294,14 @@ class TaskCell: UITableViewCell {
         subtasksIcon.leadingAnchor.constraint(equalTo: alarmView.trailingAnchor, constant: 5).isActive = true
         subtaskWidth = subtasksIcon.widthAnchor.constraint(equalToConstant: 0)
         subtaskWidth.isActive = true
+
+        reccuringIcon.translatesAutoresizingMaskIntoConstraints = false
+        reccuringIcon.bottomAnchor.constraint(equalTo: dayLabel.bottomAnchor, constant: -4).isActive = true
+        reccuringIcon.heightAnchor.constraint(equalToConstant: 10).isActive = true
+        reccuringLead = reccuringIcon.leadingAnchor.constraint(equalTo: subtasksIcon.trailingAnchor, constant: 5)
+        reccuringLead.isActive = true
+        reccuringWidth = reccuringIcon.widthAnchor.constraint(equalToConstant: 0)
+        reccuringWidth.isActive = true
     }
 
     override func prepareForReuse() {
