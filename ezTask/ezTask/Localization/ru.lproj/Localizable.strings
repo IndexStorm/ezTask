@@ -58,8 +58,7 @@
 
 
 
-
-"Repeat every %d day" = "Повторять через %d день";
+"Repeat every %d days" = "Повторять каждые %d дней";
 "Set equal to the number of today's tasks" = "Показывать количество задач на сегодня";
 "Send morning and evening notifications" = "Отправлять утренние и вечерние уведомления";
 "Hide completed tasks in List" = "Скрывать выполненные на неделе";
