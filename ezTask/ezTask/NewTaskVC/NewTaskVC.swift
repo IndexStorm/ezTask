@@ -178,7 +178,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate, UIPi
 
     private let reccuringTextField: UITextField = {
         let field = UITextField()
-        field.placeholder = "Make Recurring"
+        field.placeholder = "lable.repeat".localized
         field.font = UIFont.systemFont(ofSize: 17, weight: .medium)
         field.tintColor = .clear
 
@@ -268,7 +268,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate, UIPi
 
     @objc func reccuringPickerDonePressed() {
         let days = reccuringPicker.selectedRow(inComponent: 0) + 1
-        reccuringTextField.text = "Repeat every \(days) days"
+        reccuringTextField.text = "Repeat every %d days".localized.format(days)
         reccuringImage.tintColor = ThemeManager.currentTheme().mainColor
         self.view.endEditing(true)
         let generator = UIImpactFeedbackGenerator(style: .light)
@@ -303,14 +303,14 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate, UIPi
         if component == 0 {
             return String(row + 1)
         } else {
-            return "Days"
+            return "label.days".localized
         }
     }
 
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         if component == 0 {
             let days = row + 1
-            reccuringTextField.text = "Repeat every \(days) days"
+            reccuringTextField.text = "Repeat every %d days".localized.format(days)
             reccuringImage.tintColor = ThemeManager.currentTheme().mainColor
             deleteReccuringImage.alpha = 1
             isReccuring = true

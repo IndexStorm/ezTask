@@ -600,39 +600,6 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
                     setDone(id: id.uuidString, completion: { newReccuringId in
                         fetchTasks()
                         if isList {
-//                            if newReccuringId != nil {
-//                                let (rowNew, sectionNew) = getRowAndSectionOfTask(id: UUID(uuidString: newReccuringId!)!)
-//                                listTable.performBatchUpdates({
-//                                    cell.setCellDone()
-//                                    if UserDefaults.standard.bool(forKey: "hideCompleted") {
-//                                        listTable.deleteRows(at: [indexPath!], with: .none)
-//                                    } else {
-//                                        let (row, section) = getRowAndSectionOfTask(id: task.id)
-//                                        listTable.moveRow(at: indexPath!, to: IndexPath(row: row, section: section))
-//                                    }
-//                                    listTable.insertRows(at: [IndexPath(row: rowNew, section: sectionNew)], with: rowNew == 0 ? .top : .left)
-//                                }, completion: { (_: Bool) in
-//                                    self.listTable.reloadData()
-//                                })
-//                                return
-//                            }
-//                            if UserDefaults.standard.bool(forKey: "hideCompleted") {
-//                                self.listTable.performBatchUpdates({
-//                                    cell.setCellDone()
-//                                    self.listTable.deleteRows(at: [indexPath!], with: .none)
-//                                }, completion: { (_: Bool) in
-//                                    self.listTable.reloadData()
-//                                })
-//                            } else {
-//                                let (row, section) = getRowAndSectionOfTask(id: task.id)
-//                                listTable.performBatchUpdates({
-//                                    cell.setCellDone()
-//                                    listTable.moveRow(at: indexPath!, to: IndexPath(row: row, section: section))
-//                                }, completion: { (_: Bool) in
-//                                    self.listTable.reloadData()
-//                                })
-//                            }
-
                             listTable.performBatchUpdates({
                                 cell.setCellDone()
                                 if newReccuringId != nil {
@@ -648,7 +615,6 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
                             }, completion: { (_: Bool) in
                                 self.listTable.reloadData()
                             })
-
                         } else {
                             tasksTable.performBatchUpdates({
                                 cell.setCellDone()

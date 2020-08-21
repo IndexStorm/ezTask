@@ -44,7 +44,7 @@ class UpdateVC: UIViewController {
         style.headIndent = 28
 
         let attributes = [NSAttributedString.Key.paragraphStyle: style, NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: .regular)]
-        txt.attributedText = NSAttributedString(string: "☑️ Added Russian language 🇷🇺\n\n☑️ Now you can modify daily notifications\n\n☑️ Fixed more bugs\n\n☑️ Working hard on new features!".localized, attributes: attributes)
+        txt.attributedText = NSAttributedString(string: "☑️ Added repeating tasks 🔄\n\n☑️ Added Russian language 🇷🇺\n\n☑️ Now you can modify daily notifications\n\n☑️ Fixed more bugs\n\n☑️ Working hard on new features!".localized, attributes: attributes)
 
         return txt
     }()
@@ -77,7 +77,7 @@ class UpdateVC: UIViewController {
 
     func setup() {
         self.view.addSubview(container)
-        container.pin.horizontally().height(self.view.frame.size.height / 1.5).bottom()
+        container.pin.horizontally().height(500).bottom()
 
         container.addSubview(topLabel)
         topLabel.pin.top(20).hCenter().sizeToFit()

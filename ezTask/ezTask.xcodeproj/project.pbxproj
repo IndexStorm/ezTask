@@ -32,8 +32,9 @@
 		E6A5CB9D24D829EA0036F45B /* sound-pull.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = E6A5CB9924D829EA0036F45B /* sound-pull.mp3 */; };
 		E6A5CB9E24D829EA0036F45B /* sound-pop.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = E6A5CB9A24D829EA0036F45B /* sound-pop.mp3 */; };
 		E6A5CB9F24D829EA0036F45B /* sound-push.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = E6A5CB9B24D829EA0036F45B /* sound-push.mp3 */; };
-		E6B1153B24EE758600768048 /* UpdateVCViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6B1153A24EE758600768048 /* UpdateVCViewController.swift */; };
+		E6B1153B24EE758600768048 /* UpdateVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6B1153A24EE758600768048 /* UpdateVC.swift */; };
 		E6B1154124EE786F00768048 /* PinLayout in Frameworks */ = {isa = PBXBuildFile; productRef = E6B1154024EE786F00768048 /* PinLayout */; };
+		E6CFA69024EFF6CD0055CA30 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = E6CFA68F24EFF6CD0055CA30 /* Localizable.stringsdict */; };
 		E6D6EEEE24C2D94400AF82A3 /* DayCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D6EEED24C2D94400AF82A3 /* DayCell.swift */; };
 		E6D6EEF024C37CE300AF82A3 /* TaskCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D6EEEF24C37CE300AF82A3 /* TaskCell.swift */; };
 		E6DC7FEE24ED2265004A5731 /* Amplitude in Frameworks */ = {isa = PBXBuildFile; productRef = E6DC7FED24ED2265004A5731 /* Amplitude */; };
@@ -76,7 +77,8 @@
 		E6A5CB9924D829EA0036F45B /* sound-pull.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "sound-pull.mp3"; sourceTree = "<group>"; };
 		E6A5CB9A24D829EA0036F45B /* sound-pop.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "sound-pop.mp3"; sourceTree = "<group>"; };
 		E6A5CB9B24D829EA0036F45B /* sound-push.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "sound-push.mp3"; sourceTree = "<group>"; };
-		E6B1153A24EE758600768048 /* UpdateVCViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateVCViewController.swift; sourceTree = "<group>"; };
+		E6B1153A24EE758600768048 /* UpdateVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateVC.swift; sourceTree = "<group>"; };
+		E6CFA68F24EFF6CD0055CA30 /* Localizable.stringsdict */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; path = Localizable.stringsdict; sourceTree = "<group>"; };
 		E6D6EEED24C2D94400AF82A3 /* DayCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayCell.swift; sourceTree = "<group>"; };
 		E6D6EEEF24C37CE300AF82A3 /* TaskCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskCell.swift; sourceTree = "<group>"; };
 		E6DC7FF324ED2C6E004A5731 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
@@ -268,7 +270,7 @@
 		E6B1153724EE747500768048 /* UpdateVC */ = {
 			isa = PBXGroup;
 			children = (
-				E6B1153A24EE758600768048 /* UpdateVCViewController.swift */,
+				E6B1153A24EE758600768048 /* UpdateVC.swift */,
 			);
 			path = UpdateVC;
 			sourceTree = "<group>";
@@ -277,6 +279,7 @@
 			isa = PBXGroup;
 			children = (
 				E6DC7FF924ED2F33004A5731 /* Localizable.strings */,
+				E6CFA68F24EFF6CD0055CA30 /* Localizable.stringsdict */,
 			);
 			path = Localization;
 			sourceTree = "<group>";
@@ -385,6 +388,7 @@
 				E6E0118A24EA863200A5982D /* tutorial.mp4 in Resources */,
 				E60DFBDD24C2121B00043A76 /* LaunchScreen.storyboard in Resources */,
 				E6A5CB9E24D829EA0036F45B /* sound-pop.mp3 in Resources */,
+				E6CFA69024EFF6CD0055CA30 /* Localizable.stringsdict in Resources */,
 				E6A5CB9F24D829EA0036F45B /* sound-push.mp3 in Resources */,
 				E6DC7FF724ED2F33004A5731 /* Localizable.strings in Resources */,
 				E6A5CB9C24D829EA0036F45B /* sound-done.mp3 in Resources */,
@@ -407,7 +411,7 @@
 				E68E3F5524CF38E900E7EA7F /* Date.swift in Sources */,
 				E63240DE24DAEFB1000D9F19 /* ColorThemeCell.swift in Sources */,
 				E6E0118524E9D28B00A5982D /* AwesomeSpotlight.swift in Sources */,
-				E6B1153B24EE758600768048 /* UpdateVCViewController.swift in Sources */,
+				E6B1153B24EE758600768048 /* UpdateVC.swift in Sources */,
 				E68E3F4524CF300300E7EA7F /* LocalNotifications.swift in Sources */,
 				E6A5CB9624D81F320036F45B /* UIApplication.swift in Sources */,
 				E6E0118624E9D28B00A5982D /* Localizator.swift in Sources */,
