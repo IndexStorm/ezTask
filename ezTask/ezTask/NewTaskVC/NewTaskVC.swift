@@ -216,6 +216,13 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate, UIPi
 
         return label
     }()
+    
+    let customToolbar: UIView = {
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 35))
+        view.backgroundColor = .red
+        
+        return view
+    }()
 
     func createDatePicker() {
         let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 35))
@@ -659,8 +666,9 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate, UIPi
     }
 
     func dismiss() {
-        // TODO: add dismiss cross button to the top of view
         self.dismiss(animated: true, completion: nil)
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
     }
 
     func alertNotificationsDenied() {
@@ -854,7 +862,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate, UIPi
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         if text == "\n" {
             textView.resignFirstResponder()
-//            dismiss() // TODO: don't hide
+            dismiss() // TODO: don't hide
             return false
         }
         return true

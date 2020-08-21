@@ -22,6 +22,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     let deleteSound = URL(fileURLWithPath: Bundle.main.path(forResource: "sound-pop", ofType: "mp3")!)
     var audioPlayer = AVAudioPlayer()
     var isList: Bool = false
+    var gradient: CAGradientLayer?
 
     // Views
 
@@ -257,6 +258,22 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         return view
     }()
 
+    private let createTaskView: UIView = {
+        let view = UIView()
+        let image = UIImageView()
+        image.image = UIImage(named: "plus")
+        image.contentMode = .scaleAspectFit
+        image.tintColor = .white
+        view.addSubview(image)
+        image.translatesAutoresizingMaskIntoConstraints = false
+        image.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        image.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        image.widthAnchor.constraint(equalToConstant: 22).isActive = true
+        image.heightAnchor.constraint(equalToConstant: 22).isActive = true
+
+        return view
+    }()
+
     // CollectionView
 
     private var daysCollectionView: UICollectionView?
@@ -282,7 +299,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         collectionView.reloadData()
         tasksTable.reloadData()
         animateTable()
-        let generator = UIImpactFeedbackGenerator(style: .medium)
+        let generator = UIImpactFeedbackGenerator(style: .light)
         generator.impactOccurred()
     }
 
@@ -494,7 +511,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let cell = tableView.cellForRow(at: indexPath) as! TaskCell
-        let generator = UIImpactFeedbackGenerator(style: .medium)
+        let generator = UIImpactFeedbackGenerator(style: .light)
         generator.impactOccurred()
         let newVC = NewTaskVC()
         newVC.model = cell.model
@@ -771,6 +788,17 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         backTodayBtn.tintColor = ThemeManager.currentTheme().mainColor
         calendarOrList.tintColor = ThemeManager.currentTheme().mainColor
         safeAreaView.backgroundColor = ThemeManager.currentTheme().mainColor
+
+        if gradient == nil {
+            gradient = CAGradientLayer()
+            createTaskView.layer.insertSublayer(gradient!, at: 0)
+        }
+        gradient!.frame = createTaskView.bounds
+        gradient!.colors = [ThemeManager.currentTheme().mainColor.withAlphaComponent(0.8).cgColor, ThemeManager.currentTheme().mainColor.cgColor]
+        gradient!.startPoint = CGPoint(x: 0.0, y: 0.0)
+        gradient!.endPoint = CGPoint(x: 1.0, y: 1.0)
+        gradient!.cornerRadius = 30
+
         fetchTasks()
         tasksTable.reloadData()
         listTable.reloadData()
@@ -785,6 +813,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         super.viewDidAppear(animated)
         checkFirstLaunch()
         checkUpdate()
+        setupColorsFromTheme()
     }
 
     func animateTable() {
@@ -804,8 +833,8 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     // @objc
 
     @objc
-    func newTask(_ sender: AnyObject) {
-        let generator = UIImpactFeedbackGenerator(style: .medium)
+    func newTask() {
+        let generator = UIImpactFeedbackGenerator(style: .light)
         generator.impactOccurred()
         let newVC = NewTaskVC()
         newVC.chosenDate = Date().addDays(add: chosenIndex).startOfDay
@@ -1051,13 +1080,13 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         listTable.showsVerticalScrollIndicator = false
         listTable.backgroundColor = .tertiarySystemBackground
 
-        refreshControl.addTarget(self, action: #selector(self.newTask(_:)), for: .valueChanged)
+        refreshControl.addTarget(self, action: #selector(self.newTask), for: .valueChanged)
         refreshControl.tintColor = .clear
         refreshControl.layer.zPosition = -1
         refreshControl.addSubview(animatedView)
         tasksTable.refreshControl = refreshControl
 
-        refreshControlList.addTarget(self, action: #selector(self.newTask(_:)), for: .valueChanged)
+        refreshControlList.addTarget(self, action: #selector(self.newTask), for: .valueChanged)
         refreshControlList.tintColor = .clear
         refreshControlList.layer.zPosition = -1
         refreshControlList.addSubview(animatedView1)
@@ -1076,6 +1105,16 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         calendarOrList.heightAnchor.constraint(equalToConstant: 28).isActive = true
         calendarOrList.centerYAnchor.constraint(equalTo: dayLabel.centerYAnchor).isActive = true
         calendarOrList.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -25).isActive = true
+
+        self.view.addSubview(createTaskView)
+        createTaskView.translatesAutoresizingMaskIntoConstraints = false
+        createTaskView.widthAnchor.constraint(equalToConstant: 60).isActive = true
+        createTaskView.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        createTaskView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -25).isActive = true
+        createTaskView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -70).isActive = true
+        createTaskView.layer.cornerRadius = 30
+        createTaskView.isUserInteractionEnabled = true
+        createTaskView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(newTask)))
     }
 
     func createCollection() {

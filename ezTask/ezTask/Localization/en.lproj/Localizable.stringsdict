@@ -13,7 +13,7 @@
 			<key>NSStringFormatValueTypeKey</key>
 			<string>d</string>
 			<key>one</key>
-			<string>Repeat every %d day</string>
+			<string>Repeat every day</string>
 			<key>few</key>
 			<string>Repeat every %d days</string>
 			<key>many</key>
