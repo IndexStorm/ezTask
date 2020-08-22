@@ -2,8 +2,10 @@
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="16119" systemVersion="19G73" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="TaskCoreModel" representedClassName="TaskCoreModel" syncable="YES" codeGenerationType="class">
         <attribute name="alarmDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="calendarTitle" optional="YES" attributeType="String"/>
         <attribute name="dateCompleted" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="dateModified" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="eventId" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="isAlarmSet" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="isDone" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
@@ -14,6 +16,6 @@
         <attribute name="taskDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
     </entity>
     <elements>
-        <element name="TaskCoreModel" positionX="-63" positionY="-18" width="128" height="208"/>
+        <element name="TaskCoreModel" positionX="-63" positionY="-18" width="128" height="238"/>
     </elements>
 </model>

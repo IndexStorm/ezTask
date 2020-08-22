@@ -6,11 +6,11 @@
 //  Copyright © 2020 Mike Ovyan. All rights reserved.
 //
 
+import Amplitude
 import AVFoundation
 import CoreData
 import SideMenu
 import UIKit
-import Amplitude
 
 @UIApplicationMain
 final class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
@@ -109,7 +109,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationC
         }
         completionHandler()
     }
-    
+
     func setupAnalytics() {
         // Enable sending automatic session events
         Amplitude.instance()?.trackingSessionEvents = true

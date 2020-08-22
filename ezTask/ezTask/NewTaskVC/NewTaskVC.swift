@@ -375,10 +375,9 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate, UIPi
     func loadSubtasks(str: String) {
         var data = str.components(separatedBy: "\n")
         data.removeLast()
-        for var i in stride(from: 0, to: data.count, by: 2) {
+        for i in stride(from: 0, to: data.count, by: 2) {
             let view = generateNewSubtask(shouldRespond: false, isPreloaded: true, isDoneSubtask: data[i] == "done", text: data[i + 1])
             subtaskStackView.insertArrangedSubview(view, at: subtaskStackView.arrangedSubviews.count - 1)
-            i += 1
         }
     }
 
@@ -687,7 +686,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate, UIPi
         }
         let days = reccuringPicker.selectedRow(inComponent: 0) + 1
         let reccuringDays = isReccuring ? days : nil
-        let task = TaskModel(id: id, mainText: mainTextView.text, subtasks: dataFromSubtasks, isPriority: isPriority, isDone: isDone, taskDate: datePicker.date, isAlarmSet: isAlarmSet, alarmDate: isAlarmSet ? timePicker.date : nil, dateCompleted: dateCompleted, dateModified: Date(), reccuringDays: reccuringDays)
+        let task = TaskModel(id: id, mainText: mainTextView.text, subtasks: dataFromSubtasks, isPriority: isPriority, isDone: isDone, taskDate: datePicker.date, isAlarmSet: isAlarmSet, alarmDate: isAlarmSet ? timePicker.date : nil, dateCompleted: dateCompleted, dateModified: Date(), reccuringDays: reccuringDays, calendarTitle: nil, eventId: nil)
         returnTask?(task)
     }
 

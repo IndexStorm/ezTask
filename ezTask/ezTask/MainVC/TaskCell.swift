@@ -21,6 +21,7 @@ class TaskCell: UITableViewCell {
     var subtaskWidth: NSLayoutConstraint!
     var reccuringWidth: NSLayoutConstraint!
     var reccuringLead: NSLayoutConstraint!
+    var calendarLead: NSLayoutConstraint!
 
     static let identifier = "TaskCell"
 
@@ -108,8 +109,6 @@ class TaskCell: UITableViewCell {
                 self.label.text = formatter.string(from: time)
                 self.label.textColor = .systemYellow
                 self.image.tintColor = .systemYellow
-//                self.label.textColor = .tertiarySystemBackground
-//                self.image.tintColor = .tertiarySystemBackground
             }
             self.label.setNeedsLayout()
             self.label.layoutIfNeeded()
@@ -168,6 +167,16 @@ class TaskCell: UITableViewCell {
 
         return image
     }()
+    
+    private let calendarLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Calendar"
+        label.font = UIFont.systemFont(ofSize: 14, weight: .regular)
+        label.lineBreakMode = .byWordWrapping
+        label.numberOfLines = 0
+
+        return label
+    }()
 
     public func configure(task: TaskModel) {
         self.model = task
@@ -211,8 +220,17 @@ class TaskCell: UITableViewCell {
 
         if task.reccuringDays != nil {
             reccuringWidth.constant = 10
+            calendarLead.constant = 5
         } else {
             reccuringWidth.constant = 0
+            calendarLead.constant = 0
+        }
+        
+        if task.calendarTitle != nil {
+            calendarLabel.text = task.calendarTitle!
+            calendarLabel.textColor = getColorOfCalendar(calendarTitle: task.calendarTitle!)
+        } else {
+            calendarLabel.text = ""
         }
     }
 
@@ -255,6 +273,7 @@ class TaskCell: UITableViewCell {
         self.contentView.addSubview(alarmView)
         self.contentView.addSubview(subtasksIcon)
         self.contentView.addSubview(reccuringIcon)
+        self.contentView.addSubview(calendarLabel)
 
         priorityIcon.translatesAutoresizingMaskIntoConstraints = false
         priorityIcon.heightAnchor.constraint(equalToConstant: 10).isActive = true
@@ -302,6 +321,12 @@ class TaskCell: UITableViewCell {
         reccuringLead.isActive = true
         reccuringWidth = reccuringIcon.widthAnchor.constraint(equalToConstant: 0)
         reccuringWidth.isActive = true
+        
+        calendarLabel.translatesAutoresizingMaskIntoConstraints = false
+        calendarLabel.bottomAnchor.constraint(equalTo: dayLabel.bottomAnchor).isActive = true
+        calendarLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
+        calendarLead = calendarLabel.leadingAnchor.constraint(equalTo: reccuringIcon.trailingAnchor, constant: 5)
+        calendarLead.isActive = true
     }
 
     override func prepareForReuse() {

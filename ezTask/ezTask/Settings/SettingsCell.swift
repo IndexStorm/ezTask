@@ -62,7 +62,7 @@ class SettingsCell: UITableViewCell {
             switch indexPath.row {
             case 0:
                 UserDefaults.standard.set(sender.isOn, forKey: "badgeToday")
-            case 2:
+            case 3:
                 UserDefaults.standard.set(sender.isOn, forKey: "hideCompleted")
             default:
                 return
@@ -94,6 +94,13 @@ class SettingsCell: UITableViewCell {
                 arrow.alpha = 1
                 self.selectionStyle = .default
             case 2:
+                label.text = "Import from Calendar"
+                subtitle.text = "Import events from calendar"
+                icon.image = UIImage(named: "calendar")
+                cellSwitch.alpha = 0
+                arrow.alpha = 1
+                self.selectionStyle = .default
+            case 3:
                 label.text = "label.hideCompleted".localized
                 subtitle.text = "Hide completed tasks in List".localized
                 icon.image = UIImage(named: "hide")
@@ -136,18 +143,18 @@ class SettingsCell: UITableViewCell {
         icon.widthAnchor.constraint(equalToConstant: 28).isActive = true
         icon.heightAnchor.constraint(equalToConstant: 28).isActive = true
         icon.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 16).isActive = true
-        icon.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 13).isActive = true
+        icon.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 14).isActive = true
 
         self.contentView.addSubview(cellSwitch)
         cellSwitch.translatesAutoresizingMaskIntoConstraints = false
         cellSwitch.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -16).isActive = true
-        cellSwitch.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor).isActive = true
+        cellSwitch.centerYAnchor.constraint(equalTo: icon.centerYAnchor).isActive = true
         cellSwitch.addTarget(self, action: #selector(cellSwitchChange(_:)), for: .valueChanged)
 
         self.contentView.addSubview(arrow)
         arrow.translatesAutoresizingMaskIntoConstraints = false
         arrow.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -28).isActive = true
-        arrow.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor).isActive = true
+        arrow.centerYAnchor.constraint(equalTo: icon.centerYAnchor).isActive = true
         arrow.widthAnchor.constraint(equalToConstant: 18).isActive = true
         arrow.heightAnchor.constraint(equalToConstant: 18).isActive = true
 
@@ -163,7 +170,7 @@ class SettingsCell: UITableViewCell {
         subtitle.trailingAnchor.constraint(equalTo: cellSwitch.leadingAnchor, constant: -10).isActive = true
         subtitle.leadingAnchor.constraint(equalTo: icon.trailingAnchor, constant: 10).isActive = true
         subtitle.topAnchor.constraint(equalTo: label.bottomAnchor).isActive = true
-        subtitle.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -5).isActive = true
+        subtitle.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -7).isActive = true
     }
 
     override func prepareForReuse() {

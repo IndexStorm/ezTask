@@ -32,6 +32,8 @@ public func save(model: TaskModel, completion: () -> Void) {
     task.setValue(model.dateCompleted, forKey: "dateCompleted")
     task.setValue(model.dateModified, forKey: "dateModified")
     task.setValue(model.reccuringDays, forKey: "reccuringDays")
+    task.setValue(model.calendarTitle, forKey: "calendarTitle")
+    task.setValue(model.eventId, forKey: "eventId")
     do {
         try managedContext.save()
         completion()
@@ -182,7 +184,22 @@ func fetchAllTasks() -> [TaskModel] {
 func repeatReccuringTask(task: TaskModel) -> String {
     let newAlarmDate = task.isAlarmSet ? task.alarmDate!.addDays(add: task.reccuringDays!) : nil
     let newId = UUID()
-    let newTask = TaskModel(id: newId, mainText: task.mainText, subtasks: task.subtasks, isPriority: task.isPriority, isDone: false, taskDate: task.taskDate.addDays(add: task.reccuringDays!), isAlarmSet: task.isAlarmSet, alarmDate: newAlarmDate, dateCompleted: nil, dateModified: Date(), reccuringDays: task.reccuringDays)
+    let newTask = TaskModel(id: newId, mainText: task.mainText, subtasks: setAllSubtasksUndone(subtasks: task.subtasks), isPriority: task.isPriority, isDone: false, taskDate: task.taskDate.addDays(add: task.reccuringDays!), isAlarmSet: task.isAlarmSet, alarmDate: newAlarmDate, dateCompleted: nil, dateModified: Date(), reccuringDays: task.reccuringDays, calendarTitle: nil, eventId: nil) // TODO: keep calendar
     save(model: newTask, completion: {})
     return newId.uuidString
+}
+
+func setAllSubtasksUndone(subtasks: String?) -> String? {
+    if subtasks == nil {
+        return nil
+    }
+    var data = subtasks!.components(separatedBy: "\n")
+    var res = ""
+    data.removeLast()
+    for i in stride(from: 0, to: data.count, by: 2) {
+        data[i] = "undone"
+        res += data[i] + "\n" + data[i + 1] + "\n"
+    }
+
+    return res
 }

@@ -7,12 +7,13 @@
 //
 
 import UIKit
+import EventKit
 
 class SettingsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0:
-            return 3
+            return 4
         case 1:
             return 2
         default:
@@ -40,7 +41,7 @@ class SettingsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        return "Eazy Task 1.3.3 @ Mike Ovyan"
+        return "Eazy Task 1.3.4 @ Mike Ovyan"
     }
 
     func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
@@ -81,7 +82,6 @@ class SettingsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-//        return 60
         return UITableView.automaticDimension
     }
 
@@ -96,6 +96,22 @@ class SettingsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
                 present(vc, animated: true, completion: {})
                 let generator = UIImpactFeedbackGenerator(style: .light)
                 generator.impactOccurred()
+            case 2:
+
+                switch EKEventStore.authorizationStatus(for: .event) {
+                case .authorized:
+                    let vc = CalendarImportVC()
+                    self.modalPresentationStyle = .overFullScreen
+                    present(vc, animated: true, completion: {})
+                    let generator = UIImpactFeedbackGenerator(style: .light)
+                    generator.impactOccurred()
+                case .denied:
+                    alertCalendarDenied()
+                case .notDetermined:
+                    requestCalendarAccess()
+                default:
+                    return
+                }
             default:
                 return
             }
@@ -201,5 +217,11 @@ class SettingsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         super.viewWillAppear(true)
         safeAreaView.backgroundColor = ThemeManager.currentTheme().mainColor
         settingsTable.reloadData()
+    }
+    
+    func alertCalendarDenied() {
+        let alert = UIAlertController(title: "Calendar access denied", message: "In order to import events from calendars, please give our app an access to them.", preferredStyle: UIAlertController.Style.alert)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
     }
 }

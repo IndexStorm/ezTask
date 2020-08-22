@@ -21,6 +21,8 @@ public struct TaskModel: Equatable, Comparable {
     let dateCompleted: Date?
     let dateModified: Date
     let reccuringDays: Int?
+    let calendarTitle: String?
+    let eventId: String?
 
     init(task: NSManagedObject) {
         self.id = task.value(forKey: "id") as! UUID
@@ -34,9 +36,11 @@ public struct TaskModel: Equatable, Comparable {
         self.dateCompleted = task.value(forKey: "dateCompleted") as? Date
         self.dateModified = task.value(forKey: "dateModified") as! Date
         self.reccuringDays = task.value(forKey: "reccuringDays") as? Int
+        self.calendarTitle = task.value(forKey: "calendarTitle") as? String
+        self.eventId = task.value(forKey: "eventId") as? String
     }
 
-    init(id: UUID, mainText: String, subtasks: String?, isPriority: Bool, isDone: Bool, taskDate: Date, isAlarmSet: Bool, alarmDate: Date?, dateCompleted: Date?, dateModified: Date, reccuringDays: Int?) {
+    init(id: UUID, mainText: String, subtasks: String?, isPriority: Bool, isDone: Bool, taskDate: Date, isAlarmSet: Bool, alarmDate: Date?, dateCompleted: Date?, dateModified: Date, reccuringDays: Int?, calendarTitle: String?, eventId: String?) {
         self.id = id
         self.mainText = mainText
         self.subtasks = subtasks
@@ -48,6 +52,8 @@ public struct TaskModel: Equatable, Comparable {
         self.dateCompleted = dateCompleted
         self.dateModified = dateModified
         self.reccuringDays = reccuringDays
+        self.calendarTitle = calendarTitle
+        self.eventId = eventId
     }
 
     public static func == (lhs: TaskModel, rhs: TaskModel) -> Bool {

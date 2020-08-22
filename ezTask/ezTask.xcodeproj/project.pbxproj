@@ -35,6 +35,8 @@
 		E6A5CB9F24D829EA0036F45B /* sound-push.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = E6A5CB9B24D829EA0036F45B /* sound-push.mp3 */; };
 		E6B1153B24EE758600768048 /* UpdateVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6B1153A24EE758600768048 /* UpdateVC.swift */; };
 		E6B1154124EE786F00768048 /* PinLayout in Frameworks */ = {isa = PBXBuildFile; productRef = E6B1154024EE786F00768048 /* PinLayout */; };
+		E6C9673124F169AB002C29F0 /* CalendarIntegration.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6C9673024F169AB002C29F0 /* CalendarIntegration.swift */; };
+		E6C9673424F17FA8002C29F0 /* CalendarImportVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6C9673324F17FA8002C29F0 /* CalendarImportVC.swift */; };
 		E6D6EEEE24C2D94400AF82A3 /* DayCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D6EEED24C2D94400AF82A3 /* DayCell.swift */; };
 		E6D6EEF024C37CE300AF82A3 /* TaskCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D6EEEF24C37CE300AF82A3 /* TaskCell.swift */; };
 		E6DC7FEE24ED2265004A5731 /* Amplitude in Frameworks */ = {isa = PBXBuildFile; productRef = E6DC7FED24ED2265004A5731 /* Amplitude */; };
@@ -80,6 +82,8 @@
 		E6A5CB9A24D829EA0036F45B /* sound-pop.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "sound-pop.mp3"; sourceTree = "<group>"; };
 		E6A5CB9B24D829EA0036F45B /* sound-push.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "sound-push.mp3"; sourceTree = "<group>"; };
 		E6B1153A24EE758600768048 /* UpdateVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateVC.swift; sourceTree = "<group>"; };
+		E6C9673024F169AB002C29F0 /* CalendarIntegration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarIntegration.swift; sourceTree = "<group>"; };
+		E6C9673324F17FA8002C29F0 /* CalendarImportVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarImportVC.swift; sourceTree = "<group>"; };
 		E6D6EEED24C2D94400AF82A3 /* DayCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayCell.swift; sourceTree = "<group>"; };
 		E6D6EEEF24C37CE300AF82A3 /* TaskCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskCell.swift; sourceTree = "<group>"; };
 		E6DC7FF324ED2C6E004A5731 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
@@ -141,6 +145,7 @@
 				E68E3F5024CF34FE00E7EA7F /* Structs */,
 				E68E3F4D24CF34AA00E7EA7F /* Storage */,
 				E68E3F4324CF2FE700E7EA7F /* Notifications */,
+				E6C9672F24F1698E002C29F0 /* Calendar */,
 				E68E3F5324CF38D600E7EA7F /* Extensions */,
 				E68E3F5624D0103E00E7EA7F /* Resources */,
 				E6DC7FF024ED2B95004A5731 /* Localization */,
@@ -198,6 +203,7 @@
 			children = (
 				E6505E8624DB555900107180 /* SettingsVC.swift */,
 				E647C55724E428D60048628F /* SettingsCell.swift */,
+				E6C9673224F17E6F002C29F0 /* Calendar Import */,
 				E623249324EE85A10091E6D8 /* DailyNotifications */,
 			);
 			path = Settings;
@@ -274,6 +280,22 @@
 				E6B1153A24EE758600768048 /* UpdateVC.swift */,
 			);
 			path = UpdateVC;
+			sourceTree = "<group>";
+		};
+		E6C9672F24F1698E002C29F0 /* Calendar */ = {
+			isa = PBXGroup;
+			children = (
+				E6C9673024F169AB002C29F0 /* CalendarIntegration.swift */,
+			);
+			path = Calendar;
+			sourceTree = "<group>";
+		};
+		E6C9673224F17E6F002C29F0 /* Calendar Import */ = {
+			isa = PBXGroup;
+			children = (
+				E6C9673324F17FA8002C29F0 /* CalendarImportVC.swift */,
+			);
+			path = "Calendar Import";
 			sourceTree = "<group>";
 		};
 		E6DC7FF024ED2B95004A5731 /* Localization */ = {
@@ -412,6 +434,7 @@
 				E68E3F5524CF38E900E7EA7F /* Date.swift in Sources */,
 				E63240DE24DAEFB1000D9F19 /* ColorThemeCell.swift in Sources */,
 				E6E0118524E9D28B00A5982D /* AwesomeSpotlight.swift in Sources */,
+				E6C9673124F169AB002C29F0 /* CalendarIntegration.swift in Sources */,
 				E6B1153B24EE758600768048 /* UpdateVC.swift in Sources */,
 				E68E3F4524CF300300E7EA7F /* LocalNotifications.swift in Sources */,
 				E6A5CB9624D81F320036F45B /* UIApplication.swift in Sources */,
@@ -432,6 +455,7 @@
 				E6E0117A24E9B57900A5982D /* OnboardingVC.swift in Sources */,
 				E6505E8424DB487800107180 /* MenuCell.swift in Sources */,
 				E60DFBD124C2121600043A76 /* AppDelegate.swift in Sources */,
+				E6C9673424F17FA8002C29F0 /* CalendarImportVC.swift in Sources */,
 				E6E0118424E9D28B00A5982D /* AwesomeSpotlightView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -592,7 +616,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = S77KJ672M8;
 				INFOPLIST_FILE = ezTask/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -600,7 +624,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3.3;
+				MARKETING_VERSION = 1.3.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.indexStorm.ezTask;
 				PRODUCT_NAME = "Eazy Task";
 				SWIFT_VERSION = 5.0;
@@ -613,7 +637,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = S77KJ672M8;
 				INFOPLIST_FILE = ezTask/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -621,7 +645,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3.3;
+				MARKETING_VERSION = 1.3.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.indexStorm.ezTask;
 				PRODUCT_NAME = "Eazy Task";
 				SWIFT_VERSION = 5.0;

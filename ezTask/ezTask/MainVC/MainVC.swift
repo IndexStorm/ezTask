@@ -704,6 +704,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         NotificationCenter.default.addObserver(self, selector: #selector(handleAppDidBecomeActiveNotification(notification:)),
                                                name: UIApplication.didBecomeActiveNotification, object: nil)
 
+        loadAllChosenCalendars()
         createMenu()
         setupColorsFromTheme()
     }
@@ -1156,9 +1157,9 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     }
 
     func checkUpdate() {
-        if !UserDefaults.standard.bool(forKey: "1.3.3(5)") {
+        if !UserDefaults.standard.bool(forKey: "1.3.4(2)") {
             let updateVC = UpdateVC()
-            present(updateVC, animated: true, completion: { UserDefaults.standard.set(true, forKey: "1.3.3(5)") })
+            present(updateVC, animated: true, completion: { UserDefaults.standard.set(true, forKey: "1.3.4(2)") })
         }
     }
 
@@ -1186,6 +1187,9 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         if UserDefaults.standard.object(forKey: "dateInstalled") == nil {
             UserDefaults.standard.set(Date(), forKey: "dateInstalled")
         }
+        if UserDefaults.standard.stringArray(forKey: "chosenCalendars") == nil {
+            UserDefaults.standard.setValue(true, forKey: "importCalendars")
+        }
     }
 
     var spotlightView = AwesomeSpotlightView()
@@ -1200,6 +1204,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
     }
 
     @objc func handleAppDidBecomeActiveNotification(notification: Notification) {
+        loadAllChosenCalendars()
         if allTasks.isEmpty {
             fetchTasks()
             if isList {
@@ -1297,15 +1302,15 @@ extension MainVC: AwesomeSpotlightViewDelegate {
 extension MainVC {
     func createInitialTasks() {
         if fetchAllTasks().isEmpty {
-            var task = TaskModel(id: UUID(), mainText: "A simple task for today".localized, subtasks: "done\nDownload the app\nundone\nBecome more productive\n".localized, isPriority: false, isDone: false, taskDate: Date(), isAlarmSet: false, alarmDate: nil, dateCompleted: nil, dateModified: Date(), reccuringDays: nil)
+            var task = TaskModel(id: UUID(), mainText: "A simple task for today".localized, subtasks: "done\nDownload the app\nundone\nBecome more productive\n".localized, isPriority: false, isDone: false, taskDate: Date(), isAlarmSet: false, alarmDate: nil, dateCompleted: nil, dateModified: Date(), reccuringDays: nil, calendarTitle: nil, eventId: nil)
             save(model: task, completion: {})
-            task = TaskModel(id: UUID(), mainText: "Swipe left to delete the task".localized, subtasks: nil, isPriority: false, isDone: false, taskDate: Date(), isAlarmSet: false, alarmDate: nil, dateCompleted: nil, dateModified: Date(), reccuringDays: nil)
+            task = TaskModel(id: UUID(), mainText: "Swipe left to delete the task".localized, subtasks: nil, isPriority: false, isDone: false, taskDate: Date(), isAlarmSet: false, alarmDate: nil, dateCompleted: nil, dateModified: Date(), reccuringDays: nil, calendarTitle: nil, eventId: nil)
             save(model: task, completion: {})
-            task = TaskModel(id: UUID(), mainText: "Create a task by yourself".localized, subtasks: "undone\nSwipe down\nundone\nEnter the text\nundone\nSwipe down to save\n".localized, isPriority: false, isDone: false, taskDate: Date(), isAlarmSet: false, alarmDate: nil, dateCompleted: nil, dateModified: Date(), reccuringDays: nil)
+            task = TaskModel(id: UUID(), mainText: "Create a task by yourself".localized, subtasks: "undone\nSwipe down\nundone\nEnter the text\nundone\nSwipe down to save\n".localized, isPriority: false, isDone: false, taskDate: Date(), isAlarmSet: false, alarmDate: nil, dateCompleted: nil, dateModified: Date(), reccuringDays: nil, calendarTitle: nil, eventId: nil)
             save(model: task, completion: {})
-            task = TaskModel(id: UUID(), mainText: "Watch a movie".localized, subtasks: "undone\nSnatch\nundone\nThe Transporter\nundone\nCrank\n".localized, isPriority: false, isDone: false, taskDate: Date().dayAfter, isAlarmSet: false, alarmDate: nil, dateCompleted: nil, dateModified: Date(), reccuringDays: nil)
+            task = TaskModel(id: UUID(), mainText: "Watch a movie".localized, subtasks: "undone\nSnatch\nundone\nThe Transporter\nundone\nCrank\n".localized, isPriority: false, isDone: false, taskDate: Date().dayAfter, isAlarmSet: false, alarmDate: nil, dateCompleted: nil, dateModified: Date(), reccuringDays: nil, calendarTitle: nil, eventId: nil)
             save(model: task, completion: {})
-            task = TaskModel(id: UUID(), mainText: "Rate the app on AppStore".localized, subtasks: nil, isPriority: false, isDone: false, taskDate: Date().addDays(add: 4), isAlarmSet: false, alarmDate: nil, dateCompleted: nil, dateModified: Date(), reccuringDays: nil)
+            task = TaskModel(id: UUID(), mainText: "Rate the app on AppStore".localized, subtasks: nil, isPriority: false, isDone: false, taskDate: Date().addDays(add: 4), isAlarmSet: false, alarmDate: nil, dateCompleted: nil, dateModified: Date(), reccuringDays: nil, calendarTitle: nil, eventId: nil)
             save(model: task, completion: {})
         }
         fetchTasks()
