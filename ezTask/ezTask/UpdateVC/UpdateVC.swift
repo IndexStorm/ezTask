@@ -39,7 +39,7 @@ class UpdateVC: UIViewController {
     let textView: UITextView = {
         let txt = UITextView()
         txt.backgroundColor = .clear
-
+        txt.isUserInteractionEnabled = false
         txt.textContainer.lineBreakMode = .byWordWrapping
         let style = NSMutableParagraphStyle()
         style.lineSpacing = 1
@@ -124,7 +124,6 @@ class UpdateVC: UIViewController {
         textView.isScrollEnabled = false
 
         feedback.pin.bottom(165).hCenter().width(250).height(50)
-
         button.pin.bottom(100).hCenter().width(250).height(50)
     }
 }

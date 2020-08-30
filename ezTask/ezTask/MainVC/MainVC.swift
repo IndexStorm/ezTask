@@ -479,6 +479,7 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         if editingStyle == .delete {
             let cell = tableView.cellForRow(at: indexPath) as! TaskCell
             if let model = cell.model {
+                
                 deleteTask(id: model.id.uuidString, completion: {
                     do {
                         audioPlayer = try AVAudioPlayer(contentsOf: deleteSound)
@@ -635,6 +636,11 @@ class MainVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
                         } else {
                             tasksTable.performBatchUpdates({
                                 cell.setCellDone()
+                                if newReccuringId != nil {
+                                    if let row = self.allTasksForDay.firstIndexById(id: newReccuringId!) {
+                                        tasksTable.insertRows(at: [IndexPath(row: row, section: 0)], with: .automatic)
+                                    }
+                                }
                                 if let row = self.allTasksForDay.firstIndexById(id: task.id.uuidString) {
                                     tasksTable.moveRow(at: indexPath!, to: IndexPath(row: row, section: 0))
                                 }
@@ -1246,11 +1252,8 @@ extension MainVC {
         }
         let hideCompleted = UserDefaults.standard.bool(forKey: "hideCompleted")
         let managedContext = appDelegate.persistentContainer.viewContext
-        let fetchUndone = NSFetchRequest<TaskCoreModel>(entityName: "TaskCoreModel")
-        fetchUndone.predicate = NSPredicate(format: "isDone = false")
-        let fetchDone = NSFetchRequest<TaskCoreModel>(entityName: "TaskCoreModel")
-        fetchDone.predicate = NSPredicate(format: "isDone = true")
         let fetchAll = NSFetchRequest<TaskCoreModel>(entityName: "TaskCoreModel")
+        fetchAll.predicate = NSPredicate(format: "isHidden == nil")
         do {
             let objects = try managedContext.fetch(fetchAll)
             allTasks = objects.map { TaskModel(task: $0) }

@@ -216,11 +216,11 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate, UIPi
 
         return label
     }()
-    
+
     let customToolbar: UIView = {
         let view = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 35))
         view.backgroundColor = .red
-        
+
         return view
     }()
 
@@ -236,12 +236,8 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate, UIPi
         datePicker.datePickerMode = .date
         datePicker.addTarget(self, action: #selector(datePickerChanged(picker:)), for: .valueChanged)
         datePicker.minimumDate = Date()
-
-        let formatter = DateFormatter()
-        formatter.dateStyle = .full
-        formatter.timeStyle = .none
-        dateTextField.text = formatter.string(from: chosenDate).capitalized
         datePicker.date = chosenDate
+        updateDateText()
     }
 
     func createTimePicker() {
@@ -669,7 +665,7 @@ class NewTaskVC: UIViewController, UITextViewDelegate, UITextFieldDelegate, UIPi
     }
 
     func alertNotificationsDenied() {
-        let alert = UIAlertController(title: "label.notifications".localized, message: "In order to set alarms and get things done, please allow our app to deliver notifications.".localized, preferredStyle: UIAlertController.Style.alert)
+        let alert = UIAlertController(title: "label.notifications".localized, message: "In order to set alarms and get things done, please allow the app to deliver notifications.".localized, preferredStyle: UIAlertController.Style.alert)
         alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }

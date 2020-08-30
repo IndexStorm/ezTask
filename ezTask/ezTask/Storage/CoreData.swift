@@ -74,7 +74,7 @@ public func setDone(id: String, completion: (_ newId: String?) -> Void) {
         completion(newReccuringId)
         sendMorningReminder()
     } catch {
-        print("Failed to save updated")
+        print("Failed to done")
     }
 }
 
@@ -101,7 +101,7 @@ public func setUndone(id: String, completion: () -> Void) {
         completion()
         sendMorningReminder()
     } catch {
-        print("Failed to save updated")
+        print("Failed to undone")
     }
 }
 
@@ -117,7 +117,7 @@ public func deleteTask(id: String, completion: () -> Void) {
     do {
         let res = try managedContext.fetch(fetchRequest)
         if !res.isEmpty {
-            managedContext.delete(res[0])
+            res[0].setValue(true, forKey: "isHidden")
         }
     } catch let error as NSError {
         print("Could not fetch. \(error), \(error.userInfo)")
@@ -127,7 +127,7 @@ public func deleteTask(id: String, completion: () -> Void) {
         completion()
         sendMorningReminder()
     } catch {
-        print("Failed to save updated")
+        print("Failed to delete")
     }
 }
 
@@ -172,6 +172,7 @@ func fetchAllTasks() -> [TaskModel] {
     }
     let managedContext = appDelegate.persistentContainer.viewContext
     let fetchAll = NSFetchRequest<TaskCoreModel>(entityName: "TaskCoreModel")
+    fetchAll.predicate = NSPredicate(format: "isHidden = nil")
     do {
         let objects = try managedContext.fetch(fetchAll)
         return objects.map { TaskModel(task: $0) }
@@ -181,7 +182,7 @@ func fetchAllTasks() -> [TaskModel] {
     return []
 }
 
-func repeatReccuringTask(task: TaskModel) -> String {
+func repeatReccuringTask(task: TaskModel) -> String { // if new taskDate is past?
     let newAlarmDate = task.isAlarmSet ? task.alarmDate!.addDays(add: task.reccuringDays!) : nil
     let newId = UUID()
     let newTask = TaskModel(id: newId, mainText: task.mainText, subtasks: setAllSubtasksUndone(subtasks: task.subtasks), isPriority: task.isPriority, isDone: false, taskDate: task.taskDate.addDays(add: task.reccuringDays!), isAlarmSet: task.isAlarmSet, alarmDate: newAlarmDate, dateCompleted: nil, dateModified: Date(), reccuringDays: task.reccuringDays, calendarTitle: nil, eventId: nil) // TODO: keep calendar

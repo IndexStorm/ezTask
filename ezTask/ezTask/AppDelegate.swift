@@ -30,6 +30,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationC
     // MARK: - Private
 
     private func setupWindow() {
+        print(Date().dayBefore.endOfWeek.endOfDay)
         let window = UIWindow(frame: UIScreen.main.bounds)
         let navigationController = UINavigationController()
         let mainViewController = MainVC()

@@ -23,6 +23,7 @@ public struct TaskModel: Equatable, Comparable {
     let reccuringDays: Int?
     let calendarTitle: String?
     let eventId: String?
+    let isHidden: Bool?
 
     init(task: NSManagedObject) {
         self.id = task.value(forKey: "id") as! UUID
@@ -38,9 +39,10 @@ public struct TaskModel: Equatable, Comparable {
         self.reccuringDays = task.value(forKey: "reccuringDays") as? Int
         self.calendarTitle = task.value(forKey: "calendarTitle") as? String
         self.eventId = task.value(forKey: "eventId") as? String
+        self.isHidden = task.value(forKey: "isHidden") as? Bool
     }
 
-    init(id: UUID, mainText: String, subtasks: String?, isPriority: Bool, isDone: Bool, taskDate: Date, isAlarmSet: Bool, alarmDate: Date?, dateCompleted: Date?, dateModified: Date, reccuringDays: Int?, calendarTitle: String?, eventId: String?) {
+    init(id: UUID, mainText: String, subtasks: String?, isPriority: Bool, isDone: Bool, taskDate: Date, isAlarmSet: Bool, alarmDate: Date?, dateCompleted: Date?, dateModified: Date, reccuringDays: Int?, calendarTitle: String?, eventId: String?, isHidden: Bool? = nil) {
         self.id = id
         self.mainText = mainText
         self.subtasks = subtasks
@@ -54,6 +56,7 @@ public struct TaskModel: Equatable, Comparable {
         self.reccuringDays = reccuringDays
         self.calendarTitle = calendarTitle
         self.eventId = eventId
+        self.isHidden = isHidden
     }
 
     public static func == (lhs: TaskModel, rhs: TaskModel) -> Bool {
@@ -124,8 +127,8 @@ extension Array where Element == TaskModel {
 
     public func tasksForLater() -> [TaskModel] {
         return self.filter {
-            (($0.taskDate > Date().dayBefore.endOfWeek.endOfDay) && !$0.isDone)
-                || (($0.taskDate > Date().dayBefore.endOfWeek.endOfDay) && $0.isDone && $0.dateModified.isToday())
+            (($0.taskDate > Date().dayBefore.endOfWeek.endOfDay) && ($0.taskDate > Date().dayAfter.endOfDay) && !$0.isDone)
+                || (($0.taskDate > Date().dayBefore.endOfWeek.endOfDay) && ($0.taskDate > Date().dayAfter.endOfDay) && $0.isDone && $0.dateModified.isToday())
         }.sorted()
     }
 
