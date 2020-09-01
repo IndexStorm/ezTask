@@ -220,7 +220,7 @@ class SettingsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     }
     
     func alertCalendarDenied() {
-        let alert = UIAlertController(title: "Calendar access denied", message: "In order to import events from calendars, please give our app an access to them.", preferredStyle: UIAlertController.Style.alert)
+        let alert = UIAlertController(title: "Calendar access denied".localized, message: "In order to import events from calendars, please give our app an access to them.".localized, preferredStyle: UIAlertController.Style.alert)
         alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }

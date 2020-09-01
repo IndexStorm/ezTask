@@ -89,11 +89,14 @@
 "You have completed %d tasks today. Good job 👍" = "Итак, задач за сегодня выполнено: %d\n Хорошая работа 👍";
 "Don't forget to mark your completed tasks for today 😉" = "Не забудь отметить выполненные задачи 😉";
 "“The Way To Get Started Is To Quit Talking And Begin Doing.”" = "“Лучший способ начать делать – перестать говорить и начать делать.”";
-
+"Calendar access denied" = "Нет доступа к календарю";
+"In order to import events from calendars, please give our app an access to them." = "Пожалуйста, разрешите доступ к календарю, чтобы импортировать события.";
+"Import from Calendar" = "Импорт из календаря";
+"Import events from calendar" = "Импортировать события из календаря";
 
 
 
 
 "What's new" = "Что новенького?";
-"Version: 1.3.3" = "Версия: 1.3.3";
-"☑️  Added repeating tasks 🔄\n\n☑️  Added Russian language 🇷🇺\n\n☑️  Now you can modify daily notifications 💌\n\n☑️  Fixed more bugs 🛠\n\n☑️  Working hard on new features 💪\n\n🙊  Do not hesitate to give your feedback" = "☑️  Добавили повторение задач 🔄\n\n☑️  Добавили русский язык 🇷🇺\n\n☑️  Настройте ежедневные уведомления 💌\n\n☑️  Что-то починили и подкрутили 🛠\n\n☑️  Продолжаем работать дальше 💪\n\n🙊  Не стесняйтесь писать нам о всех замечаниях и пожеланиях";
+"Version: 1.3.4" = "Версия: 1.3.4";
+"☑️  Now you can import events from calendar 🗓\n\n☑️  Fixed even more bugs 🛠\n\n☑️  Working hard on new features 💪\n\n🙊  Do not hesitate to give your feedback" = "☑️  Добавили импорт из календаря 🗓\n\n☑️  Что-то починили и подкрутили 🛠\n\n☑️  Продолжаем работать дальше 💪\n\n🙊  Не стесняйтесь писать нам о всех замечаниях и пожеланиях";

@@ -89,15 +89,13 @@
 "You have completed %d tasks today. Good job 👍" = "You have completed %d tasks today. Good job 👍";
 "Don't forget to mark your completed tasks for today 😉" = "Don't forget to mark your completed tasks for today 😉";
 "“The Way To Get Started Is To Quit Talking And Begin Doing.”" = "“The Way To Get Started Is To Quit Talking And Begin Doing.”";
-
-
-
-
-
-
+"Calendar access denied" = "Calendar access denied";
+"In order to import events from calendars, please give our app an access to them." = "In order to import events from calendars, please give our app an access to them.";
+"Import from Calendar" = "Import from Calendar";
+"Import events from calendar" = "Import events from calendar";
 
 
 
 "What's new" = "What's new";
-"Version: 1.3.3" = "Version: 1.3.3";
-"☑️  Added repeating tasks 🔄\n\n☑️  Added Russian language 🇷🇺\n\n☑️  Now you can modify daily notifications 💌\n\n☑️  Fixed more bugs 🛠\n\n☑️  Working hard on new features 💪\n\n🙊  Do not hesitate to give your feedback" = "☑️  Added repeating tasks 🔄\n\n☑️  Added Russian language 🇷🇺\n\n☑️  Now you can modify daily notifications 💌\n\n☑️  Fixed more bugs 🛠\n\n☑️  Working hard on new features 💪\n\n🙊  Do not hesitate to give your feedback";
+"Version: 1.3.4" = "Version: 1.3.4";
+"☑️  Now you can import events from calendar 🗓\n\n☑️  Fixed even more bugs 🛠\n\n☑️  Working hard on new features 💪\n\n🙊  Do not hesitate to give your feedback" = "☑️  Now you can import events from calendar 🗓\n\n☑️  Fixed even more bugs 🛠\n\n☑️  Working hard on new features 💪\n\n🙊  Do not hesitate to give your feedback";

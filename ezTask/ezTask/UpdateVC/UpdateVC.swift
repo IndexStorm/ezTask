@@ -31,7 +31,7 @@ class UpdateVC: UIViewController {
         let lbl = UILabel()
         lbl.font = UIFont.systemFont(ofSize: 14, weight: .regular)
         lbl.textColor = .secondaryLabel
-        lbl.text = "Version: 1.3.3".localized
+        lbl.text = "Version: 1.3.4".localized
 
         return lbl
     }()
@@ -45,7 +45,7 @@ class UpdateVC: UIViewController {
         style.lineSpacing = 1
         style.headIndent = 32
         let attributes = [NSAttributedString.Key.paragraphStyle: style, NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: .regular), NSAttributedString.Key.foregroundColor: UIColor.label]
-        txt.attributedText = NSAttributedString(string: "☑️  Added repeating tasks 🔄\n\n☑️  Added Russian language 🇷🇺\n\n☑️  Now you can modify daily notifications 💌\n\n☑️  Fixed more bugs 🛠\n\n☑️  Working hard on new features 💪\n\n🙊  Do not hesitate to give your feedback".localized, attributes: attributes)
+        txt.attributedText = NSAttributedString(string: "☑️  Now you can import events from calendar 🗓\n\n☑️  Fixed even more bugs 🛠\n\n☑️  Working hard on new features 💪\n\n🙊  Do not hesitate to give your feedback".localized, attributes: attributes)
         return txt
     }()
 
@@ -100,7 +100,7 @@ class UpdateVC: UIViewController {
 
     func setup() {
         self.view.addSubview(container)
-        container.pin.horizontally().height(600).bottom()
+        container.pin.horizontally().height(500).bottom()
 
         container.addSubview(topLabel)
         topLabel.pin.top(20).hCenter().sizeToFit()

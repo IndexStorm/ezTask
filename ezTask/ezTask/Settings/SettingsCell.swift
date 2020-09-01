@@ -94,8 +94,8 @@ class SettingsCell: UITableViewCell {
                 arrow.alpha = 1
                 self.selectionStyle = .default
             case 2:
-                label.text = "Import from Calendar"
-                subtitle.text = "Import events from calendar"
+                label.text = "Import from Calendar".localized
+                subtitle.text = "Import events from calendar".localized
                 icon.image = UIImage(named: "calendar")
                 cellSwitch.alpha = 0
                 arrow.alpha = 1

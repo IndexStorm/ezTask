@@ -13,7 +13,6 @@ import UIKit
 
 func requestCalendarAccess() {
     let eventStore = EKEventStore()
-
     switch EKEventStore.authorizationStatus(for: .event) {
     case .authorized:
         print("Authorized")
@@ -113,6 +112,7 @@ func addTasksFromCalender(calendarTitle: String, usedEventIds: [String]) {
             let events = eventStore.events(matching: predicate)
             for event in events {
                 if usedEventIds.contains(event.eventIdentifier) {
+                    updateDateOfCalendarEvent(eventId: event.eventIdentifier, startDate: event.startDate)
                     continue
                 }
                 let task = TaskModel(id: UUID(), mainText: event.title, subtasks: nil, isPriority: false, isDone: false, taskDate: event.startDate, isAlarmSet: !event.isAllDay, alarmDate: event.isAllDay ? nil : event.startDate, dateCompleted: nil, dateModified: Date(), reccuringDays: nil, calendarTitle: event.calendar.title, eventId: event.eventIdentifier)
@@ -147,5 +147,30 @@ public func deleteTasksFromCalendar(calendarTitle: String, completion: () -> Voi
         sendMorningReminder()
     } catch {
         print("Failed to save updated")
+    }
+}
+
+public func updateDateOfCalendarEvent(eventId: String, startDate: Date) {
+    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+        return
+    }
+    let managedContext = appDelegate.persistentContainer.viewContext
+    let fetchRequest = NSFetchRequest<TaskCoreModel>(entityName: "TaskCoreModel")
+    fetchRequest.predicate = NSPredicate(format: "eventId = %@", eventId)
+    do {
+        let res = try managedContext.fetch(fetchRequest)
+        if !res.isEmpty {
+            res[0].setValue(startDate, forKey: "taskDate")
+            removeNotificationsById(id: res[0].id!.uuidString)
+            setupReminder(task: TaskModel(task: res[0]))
+        }
+    } catch let error as NSError {
+        print("Could not fetch. \(error), \(error.userInfo)")
+    }
+    do {
+        try managedContext.save()
+        sendMorningReminder()
+    } catch {
+        print("Failed to delete")
     }
 }

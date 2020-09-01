@@ -16,7 +16,7 @@ class CalendarImportVC: UIViewController, UITableViewDelegate, UITableViewDataSo
     let topLabel: UILabel = {
         let lbl = UILabel()
         lbl.font = UIFont.systemFont(ofSize: 22, weight: .semibold)
-        lbl.text = "Import from Calendar"
+        lbl.text = "Import from Calendar".localized
 
         return lbl
     }()
