@@ -108,6 +108,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationC
         }
         completionHandler()
     }
+    
 
     func setupAnalytics() {
         // Enable sending automatic session events
